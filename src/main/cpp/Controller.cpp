@@ -4,46 +4,6 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
-
-
-void Controller::Init(RobotData &robotData){
-
-    //stuff for auton
-    timer.Reset();
-
-
-    
-
-
-    //initializing struct values
-    robotData.pLYStick = 0;
-    robotData.pRYStick = 0;
-
-    robotData.sDPad = -1; 
-
-    robotData.sLYStick = 0; 
-    robotData.sRYStick = 0; 
-
-    robotData.sLTrigger = 0; 
-    robotData.sRTrigger = 0; 
-
-
-    robotData.sABtn = false; 
-    robotData.sBBtn = false; 
-    robotData.sXBtn = false; 
-    robotData.sYBtn = false; 
-    robotData.sLBumper = false; 
-    robotData.sRBumper = false;
-    
-}
-
-void Controller::Auton(RobotData &robotData){
-    
-
-}
-
-
-
 void Controller::Periodic(RobotData &robotData){
     updateTeleopData(robotData);
 }

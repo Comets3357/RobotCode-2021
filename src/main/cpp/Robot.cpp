@@ -7,7 +7,7 @@ void Robot::RobotInit() {
     db.Init();
     indexer.Init();
     shooter.Init();
-    control.Init(robotData);
+    auton.Init(robotData);
     limelight.Init();
 
 
@@ -21,6 +21,10 @@ void Robot::RobotPeriodic(){
     indexer.Periodic(robotData);
     shooter.Periodic(robotData);
     limelight.Periodic(robotData);
+}
+
+void Robot::AutonomousPeriodic() {
+    auton.Periodic(autonSelect_exitInitLine, robotData);
 }
 
 void Robot::TeleopPeriodic() {

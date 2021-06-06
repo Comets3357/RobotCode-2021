@@ -100,9 +100,12 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     setHood(robotData.sRYStick*.1);
     setTurret(robotData.sLYStick*.2);
 
+    frc::SmartDashboard::PutNumber("shootPOV",  shootPOV);
+    frc::SmartDashboard::PutNumber("sRYStick",  robotData.sRYStick);
+    frc::SmartDashboard::PutNumber("sLYStick",  robotData.sLYStick);
 
     //shooting from the line
-    if (secondaryPOVArrayInput == 0){
+    if (shootPOV == 0){
 
         if(!robotData.isZero){
             setHood(0.1);
@@ -162,7 +165,9 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
         }
         
     } else {
+        setTurret(0);
         setWheel(0);
+        setHood(0);
         robotData.isZero = false;
     }
 

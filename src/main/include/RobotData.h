@@ -1,5 +1,20 @@
 #pragma once
 
+// auton mode
+enum AutonSelect
+{
+    autonSelect_potato,
+    autonSelect_exitInitLine
+};
+
+// this is for drivebase auton
+enum DriveMode
+{
+    driveMode_teleop,       // 0
+    driveMode_potato,       // 1
+    driveMode_driveForward  // 2
+};
+
 //could be separated into all separate files for the data *from* each subsystem
 //commented out variables are not in use
 struct RobotData 
@@ -14,9 +29,9 @@ struct RobotData
     //primary
 
     double pLXStick;
-    double pLYStick;
+    double pLYStick = 0;
     double pRXStick;
-    double pRYStick;
+    double pRYStick = 0;
     bool pLStickBtn;
     bool pRStickBtn;
 
@@ -38,26 +53,26 @@ struct RobotData
     //sStick
 
     double sLXStick;
-    double sLYStick;
+    double sLYStick = 0;
     double sRXStick;
-    double sRYStick;
+    double sRYStick = 0;
     bool sLStickBtn;
     bool sRStickBtn;
 
-    double sLTrigger;
-    double sRTrigger;
-    bool sLBumper;
-    bool sRBumper;
+    double sLTrigger = 0;
+    double sRTrigger = 0;
+    bool sLBumper = false;
+    bool sRBumper = false;
 
-    bool sXBtn;
-    bool sYBtn;
-    bool sABtn;
-    bool sBBtn;
+    bool sXBtn = false;
+    bool sYBtn = false;
+    bool sABtn = false;
+    bool sBBtn = false;
 
     bool sLCenterBtn;
     bool sRCenterBtn;
 
-    int sDPad;
+    int sDPad = -1;
 
 
     //shooter data
@@ -72,6 +87,18 @@ struct RobotData
     double yOffset;
     double calcHoodPos;
 
+
+    // auton stuff
+    AutonSelect autonSelect{autonSelect_potato};
+    DriveMode driveMode{driveMode_potato};  // should have a default?
+
+    // drive_forward
+    double desiredDBDist = 40;
+    double initialLDBPos;
+    double initialRDBPos;
+    double currentLDBPos;
+    double currentRDBPos;
+    // prolly wanna check the other two encoders
 
 
     

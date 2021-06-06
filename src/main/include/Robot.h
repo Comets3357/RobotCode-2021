@@ -14,6 +14,7 @@
 #include "ShooterSubsystem.h"
 #include "Controller.h"
 #include "LimelightSubsystem.h"
+#include "Auton.h"
 
 #include "RobotData.h"
 
@@ -24,8 +25,10 @@ class Robot : public frc::TimedRobot {
 
   public:
       bool manualMode = false;
+
       void RobotInit() override;
       void RobotPeriodic() override;
+      void AutonomousPeriodic() override;
       void TeleopPeriodic() override;
       void DisabledInit() override;
 
@@ -37,6 +40,7 @@ class Robot : public frc::TimedRobot {
       LimelightSubsystem limelight{};
 
       Controller control{};
+      Auton auton{};
       RobotData robotData{};
 
 
