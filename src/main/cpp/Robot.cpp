@@ -7,6 +7,7 @@ void Robot::RobotInit() {
     db.Init();
     indexer.Init();
     shooter.Init();
+    limelight.Init();
     //controller.Init();
 
 
@@ -17,6 +18,7 @@ void Robot::RobotPeriodic(){
     intake.Periodic(robotData);
     indexer.Periodic(robotData);
     shooter.Periodic(robotData);
+    limelight.Periodic(robotData);
 }
 
 void Robot::TeleopPeriodic() {

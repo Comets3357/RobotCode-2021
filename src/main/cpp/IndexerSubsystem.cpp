@@ -23,72 +23,15 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     shootPOV = robotData.sDPad;
     frc::SmartDashboard::PutNumber("spinner",  robotData.sRYStick);
 
-    if(shootPOV == 90){
-        setSpinner(0.3); //need faster
-        setOmni(0.3);
+    if(shootPOV == 0){
+        setCenterSpindle(0.3); //need faster
+        setOmniWheel(0.3);
 
-        // if (getSpinnerVel() > 2850 && getSpinnerVel() < 3150){
-        //     setSpinner(0.65);
-        //     setOmni(0.65);
-        // } else if (getSpinnerVel() > 3150){
-        //     setSpinner(0.63);
-        //     setOmni(0.63);
-        // } else if (getSpinnerVel() > 1750){
-        //     setSpinner(0.69);
-        //     setOmni(0.69);
-        // } else{
-        //     setSpinner(0.76);
-        //     setOmni(0.76);
-        // }
-
-        bool f = false;
-        // if(robotData.flywheelVelocity > 2900 && robotData.flywheelVelocity < 3150){
-        //     f = true;
-        // } else {
-        //     f = false;
-        // }
-
-        //raw index for this button is 1, find what that is
-        if(robotData.sXBtn){
-            setOmni(-0.6);
+        if(robotData.readyShoot){
+            setOmniWheel(-0.6);
         } else {
-            setOmni(0.3);
+            setOmniWheel(0.3);
         }
-
-        // if(f){
-        //     if(robotData.sXBtn){
-        //         setOmni(-0.7);
-        //     } else {
-        //         setOmni(0.7);
-        //     }
-        // }
-
-    } else if (shootPOV == 0) { //automatic shooting
-        // if(robotData.hoodPosition > 10.5 && robotData.hoodPosition < 12.5){
-        //     setSpinner(0.5); // need faster
-        //     setOmni(0.5);
-
-        //     if (getSpinnerVel() > 2850 && getSpinnerVel() < 3150){
-        //         setSpinner(0.65);
-        //         setOmni(0.65*omniDir); //
-        //     } else if (getSpinnerVel() > 3150){
-        //         setSpinner(0.63);
-        //         setOmni(0.63*omniDir);
-        //     } else if (getSpinnerVel() > 1750){
-        //         setSpinner(0.69);
-        //         setOmni(0.69*omniDir);
-        //     } else{
-        //         setSpinner(0.76);
-        //         setOmni(0.76*omniDir);
-        //     }
-        // }
-
-        // if(robotData.flywheelVelocity > 2900 && robotData.flywheelVelocity < 3150){
-        //     omniDir = -1;
-        // } else {
-        //     omniDir = 1;
-        // }
-
     } else if (shootPOV == -1){
 
         // setSpinner(0);
@@ -97,11 +40,11 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     } else {
 
         if(robotData.sYBtn){
-            setOmni(0.2);
-            setSpinner(0.2);
+            setOmniWheel(0.2);
+            setCenterSpindle(0.2);
         } else {
-            setOmni(0);
-            setSpinner(0);
+            setOmniWheel(0);
+            setCenterSpindle(0);
         }
 
         frc::SmartDashboard::PutNumber("side", robotData.sLYStick);
@@ -120,20 +63,20 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
 
 void IndexerSubsystem::manualMode(RobotData &robotData){
     if(robotData.sRTrigger > 0.5){
-        setSpinner(.5 * robotData.shift);
+        setCenterSpindle(.5 * robotData.shift);
     } else {
         if(robotData.shootingMode){
-            setSpinner(.5);
-            setOmni(.5);
+            setCenterSpindle(.5);
+            setOmniWheel(.5);
         }
     }
 }
 
-void IndexerSubsystem::setSpinner(double power){
+void IndexerSubsystem::setCenterSpindle(double power){
     centerSpindle.Set(power);
 }
 
-void IndexerSubsystem::setOmni(double power){
+void IndexerSubsystem::setOmniWheel(double power){
     omniWheel.Set(power);
 }
 

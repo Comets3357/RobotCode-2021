@@ -20,7 +20,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
         int shootPOV;
         
-        void setIntakeWheels(double power);
+        void setIntakeRollers(double power);
         void setPiston(bool direction);
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
@@ -35,8 +35,8 @@ class IntakeSubsystem : public frc2::SubsystemBase {
         int shiftFactor = 1;
 
 
-        static const int intakeWheelsID = 32;
-        rev::CANSparkMax wheels{intakeWheelsID, rev::CANSparkMax::MotorType::kBrushless};
+        static const int intakeRollersID = 32;
+        rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
 
         frc::DoubleSolenoid solenoidOne{1, 2};
         

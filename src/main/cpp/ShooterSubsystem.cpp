@@ -102,7 +102,19 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
 
     //shooting from the line
-    if (secondaryPOVArrayInput == 90){
+    if (secondaryPOVArrayInput == 0){
+
+        if(!robotData.isZero){
+            setHood(0.1);
+            if(getHoodLimitSwitch()){
+                setHoodPos(0);
+                setHood(0);
+                robotData.isZero = true;
+            }
+
+        }
+        
+        
 
         // if (getHoodPos() > 12.5){
         //     setHood(-0.15);
@@ -111,70 +123,47 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
         // } else {
         //     setHood(0);
         // }
+
+        if(getHoodPos() < robotData.calcHoodPos-2){
+            setHood(0.1);
+        }else if(getHoodPos() > robotData.calcHoodPos+2){
+            setHood(-0.1);
+        }else{
+            setHood(0);
+        }
+
+        if(robotData.xOffset > 5 ){
+            setTurret(0.1);
+        }else if(robotData.xOffset < -5){
+            setTurret(-0.1);
+        }else{
+            setTurret(0);
+        }
 
         
         if (getWheelVel() > 2900 && getWheelVel() < 3150){
-            setWheel(0.95);
+            setWheel(0.74);
         } else if (getWheelVel() > 3150){
-            setWheel(0.95);
+            setWheel(0.68);
         } else if (getWheelVel() > 1750){
-            setWheel(0.95);
+            setWheel(0.77);
         } else{
-            setWheel(0.95);
+            setWheel(0.83);
         }
 
-        //bool f = false;
-        
-        // if ((getWheelVel() > 2900 && getWheelVel() < 3150)){
-        //     f = true;
-        // }else{
-        //     f = false;
-        // }
 
-            
-    
- 
-    } else if (shootPOV == 0) { // //Automatic shooting (secondary)
-        // if (getHoodPos() > 12.5){
-        //     setHood(-0.15);
-        // } else if (getHoodPos() < 10.5){
-        //     setHood(0.15);
-        // } else {
-        //     setHood(0);
-        // }
 
-        // if (getHoodPos() > 10.5 && getHoodPos() < 12.5){
-        //     if (getWheelVel() > 2900 && getWheelVel() < 3150){
-        //         setWheel(0.74);
-        //     } else if (getWheelPos() > 3150){
-        //         setWheel(0.74);
-        //     } else if (getWheelPos() > 1750){
-        //         setWheel(0.74);
-        //     } else{
-        //         setWheel(0.74);
-        //     }
-        // }
+        //add varibale to tell omni to switch directions
         
-    //Not shooting
-    } else if (shootPOV == -1){
-        // setWheel(0);
-        // if (getHoodPos() > .5){
-        //     setHood(-0.05);
-        // } else if (getHoodPos() < -.5) {
-        //     setHood(0.05);
-        // } else {
-        //     setHood(0);
-        // }
-        // if (getTurretPos() > .5){
-        //     setTurret(-0.05);
-        // } else if (getTurretPos() < -.5) {
-        //    setTurret(0.05);
-        // } else {
-        //     setTurret(0);
-        // }
+        if ((getWheelVel() > 2900 && getWheelVel() < 3150)){
+            robotData.readyShoot = true;
+        }else{
+            robotData.readyShoot = false;
+        }
         
     } else {
         setWheel(0);
+        robotData.isZero = false;
     }
 
 }
@@ -184,7 +173,13 @@ void ShooterSubsystem::manualMode(RobotData &robotData){
 }
 
 
+void ShooterSubsystem::setHoodPos(double pos){
+    shooterHoodPOS.SetPosition(pos);
+}
 
+void ShooterSubsystem::setTurretPos(double pos){
+    shooterTurretPOS.SetPosition(pos);
+}
 
 double ShooterSubsystem::getHoodPos(){
     return shooterHoodPOS.GetPosition();
@@ -195,6 +190,14 @@ double ShooterSubsystem::getTurretPos(){
 double ShooterSubsystem::getWheelPos(){
     return shooterWheelMPOS.GetPosition();
 } 
+
+bool ShooterSubsystem::getTurretLimitSwitch(){
+    return turretReverseLimit.Get();
+}
+
+bool ShooterSubsystem::getHoodLimitSwitch(){
+    return hoodReverseLimit.Get();
+}
 
 void ShooterSubsystem::setHood(double power){
     shooterHood.Set(power);

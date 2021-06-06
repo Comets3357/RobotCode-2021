@@ -35,10 +35,15 @@ class ShooterSubsystem : public frc2::SubsystemBase {
         double getTurretPos();
         double getWheelPos();
         double getWheelVel();
+        bool getTurretLimitSwitch();
+        bool getHoodLimitSwitch();
 
         void setHood(double power);
         void setTurret(double power);
         void setWheel(double power);
+        void setHoodPos(double pos);
+        void setTurretPos(double pos);
+        
         bool shooting = false;
 
         int secondaryPOVArrayInput;
@@ -70,6 +75,10 @@ class ShooterSubsystem : public frc2::SubsystemBase {
         rev::CANEncoder shooterTurretPOS = shooterTurret.GetEncoder();
         rev::CANEncoder shooterWheelMPOS = shooterWheelM.GetEncoder();
         rev::CANEncoder shooterWheelSPOS = shooterWheelS.GetEncoder();
+
+//limit switches;
+        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        rev::CANDigitalInput hoodReverseLimit = shooterHood.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
 
         /* rev::CANPIDController shooterFlywheelM_pidController = shooterFlywheelM.GetPIDController();
         rev::CANPIDController shooterFlywheelS_pidController = shooterFlywheelS.GetPIDController();
