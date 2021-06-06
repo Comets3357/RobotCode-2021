@@ -18,8 +18,8 @@ class IndexerSubsystem : public frc2::SubsystemBase {
     private:
 
     
-        void setSpinner (double power); //function
-        void setOmni (double power); //function
+        void setCenterSpindle (double power); //function
+        void setOmniWheel (double power); //function
         double getSpinnerVel();
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);

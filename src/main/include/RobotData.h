@@ -64,7 +64,15 @@ struct RobotData
     double hoodPosition;
     double turretPosition;
     double flywheelVelocity;
+    bool readyShoot = false;
+    bool isZero = false;
+
+    //limelight data
+    double xOffset;
+    double yOffset;
+    double calcHoodPos;
 
 
-    //
+
+    
 } ;

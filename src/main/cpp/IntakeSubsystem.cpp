@@ -6,9 +6,9 @@
 
 void IntakeSubsystem::Init(){
     //just the basics to start off
-    wheels.RestoreFactoryDefaults();
-    wheels.SetInverted(true);
-    wheels.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    rollers.RestoreFactoryDefaults();
+    rollers.SetInverted(true);
+    rollers.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
 /*  intakePivot_pidController.SetP(pkP);
     intakePivot_pidController.SetI(pkI);
@@ -25,7 +25,7 @@ void IntakeSubsystem::Init(){
     wheels_pidController.SetOutputRange(wkMinOutput, wkMaxOutput);
  */
 
-    wheels.SetSmartCurrentLimit(45);
+    rollers.SetSmartCurrentLimit(45);
 
 
 
@@ -50,9 +50,9 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
     } else {
 
         if(robotData.sABtn){
-            setIntakeWheels(-0.4);
+            setIntakeRollers(-0.4);
         }else{
-            setIntakeWheels(0);
+            setIntakeRollers(0);
         }
 
         if(robotData.sLBumper){ //in
@@ -78,9 +78,9 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
     }
 
     if(robotData.sLBumper){
-        setIntakeWheels(0.3*robotData.shift);
+        setIntakeRollers(0.3*robotData.shift);
     } else {
-        setIntakeWheels(0);
+        setIntakeRollers(0);
     }
 
 }
@@ -95,8 +95,8 @@ void IntakeSubsystem::setPiston(bool direction){
     
 }
 
-void IntakeSubsystem::setIntakeWheels(double power){
-    wheels.Set(power);
+void IntakeSubsystem::setIntakeRollers(double power){
+    rollers.Set(power);
 }
 
 
