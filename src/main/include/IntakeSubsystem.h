@@ -1,15 +1,13 @@
 #pragma once
 
-#include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
-#include <frc2/command/SubsystemBase.h>
 #include <frc/DoubleSolenoid.h>
 
 #include "RobotData.h"
 
 
-class IntakeSubsystem : public frc2::SubsystemBase {
+class IntakeSubsystem {
     
     public:
 

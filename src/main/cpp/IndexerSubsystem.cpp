@@ -24,8 +24,6 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutNumber("spinner",  robotData.sRYStick);
 
     if(shootPOV == 0){
-        setCenterSpindle(0.3); //need faster
-        setOmniWheel(0.3);
 
         if(robotData.readyShoot){
             setOmniWheel(-0.6);

@@ -15,7 +15,6 @@
 #include "Controller.h"
 #include "LimelightSubsystem.h"
 
-
 #include "RobotData.h"
 
 
@@ -28,10 +27,8 @@ class Robot : public frc::TimedRobot {
       void RobotInit() override;
       void RobotPeriodic() override;
       void TeleopPeriodic() override;
+      void DisabledInit() override;
 
-      //frc::Joystick mainStick{0}; //primary controller
-      frc::Joystick sStick{0}; //secondary controller
-      frc::Joystick mainStick{1};
 
       DriveSubsystem db{};
       ShooterSubsystem shooter{};

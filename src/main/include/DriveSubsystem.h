@@ -1,18 +1,17 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
-#include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
-#include <frc2/command/SubsystemBase.h>
 
 #include "RobotData.h"
 
 
-class DriveSubsystem : frc2::SubsystemBase {
+class DriveSubsystem {
     
     public: 
         void Init();
         void Periodic(RobotData &RobotData);
+        void Disabled();
 
     private:
 

@@ -1,15 +1,51 @@
 #include "Robot.h"
 #include "Controller.h"
+
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
 
-void Controller::Init(){
+
+void Controller::Init(RobotData &robotData){
+
+    //stuff for auton
+    timer.Reset();
+
+
+    
+
+
+    //initializing struct values
+    robotData.pLYStick = 0;
+    robotData.pRYStick = 0;
+
+    robotData.sDPad = -1; 
+
+    robotData.sLYStick = 0; 
+    robotData.sRYStick = 0; 
+
+    robotData.sLTrigger = 0; 
+    robotData.sRTrigger = 0; 
+
+
+    robotData.sABtn = false; 
+    robotData.sBBtn = false; 
+    robotData.sXBtn = false; 
+    robotData.sYBtn = false; 
+    robotData.sLBumper = false; 
+    robotData.sRBumper = false;
     
 }
 
+void Controller::Auton(RobotData &robotData){
+    
+
+}
+
+
+
 void Controller::Periodic(RobotData &robotData){
-    updateData(robotData);
+    updateTeleopData(robotData);
 }
 
 int Controller::getShiftFactor(){
@@ -65,7 +101,7 @@ double Controller::getAxis(int js, int index){
     }
 }
 
-void Controller::updateData(RobotData &robotData){
+void Controller::updateTeleopData(RobotData &robotData){
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
     robotData.shootingMode = shootingMode();

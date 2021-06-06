@@ -44,3 +44,9 @@ void DriveSubsystem::Periodic(RobotData &robotData){
     dbRM.Set(rDrive);
 
 } 
+
+void DriveSubsystem::Disabled(){
+    dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+}
+

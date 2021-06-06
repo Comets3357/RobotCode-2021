@@ -3,11 +3,10 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
-#include <frc2/command/SubsystemBase.h>
 
 #include "RobotData.h"
 
-class IndexerSubsystem : public frc2::SubsystemBase {
+class IndexerSubsystem {
     
     public:
 
