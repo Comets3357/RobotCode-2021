@@ -5,7 +5,7 @@
 #include <cmath>
 
 
-//web interface: http://10.33.57.11:5801/ 
+//web interface: http://10.33.57.16:5801/ 
 
 
 
@@ -54,16 +54,13 @@ void LimelightSubsystem::Periodic(RobotData &robotData){
     robotData.yOffset = getVerticalOffset();
     robotData.calcHoodPos = calcHoodPOS(robotData.yOffset);
 
-    getVerticalOffset();
-
-
     std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the networktable
     table->PutNumber("pipeline", 0); //set the pipeline
     
     //prints all the values to dashboard:
-    frc::SmartDashboard::PutNumber("tx",  table->GetNumber("tx",0.0)); //horizontal offset
-    frc::SmartDashboard::PutNumber("ty",  table->GetNumber("ty",0.0)); //vertical offset
-    frc::SmartDashboard::PutNumber("ts",  table->GetNumber("ts",0.0)); //skew offset
+    //frc::SmartDashboard::PutNumber("tx",  table->GetNumber("tx",0.0)); //horizontal offset
+    //frc::SmartDashboard::PutNumber("ty",  table->GetNumber("ty",0.0)); //vertical offset
+    //frc::SmartDashboard::PutNumber("ts",  table->GetNumber("ts",0.0)); //skew offset
 
 
    

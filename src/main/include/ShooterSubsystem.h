@@ -37,6 +37,7 @@ class ShooterSubsystem {
         bool getTurretLimitSwitch();
         bool getHoodLimitSwitch();
 
+        void setShooterPID(rev::CANPIDController motor, double p, double i, double d, double ff);
         void setHood(double power);
         void setTurret(double power);
         void setWheel(double power);
@@ -60,7 +61,7 @@ class ShooterSubsystem {
         static const int shooterWheelMID = 21;
         static const int shooterWheelSID = 20;
         static const int shooterHoodID = 22;
-        static const int shooterTurretID = 25;
+        static const int shooterTurretID = 23;
 
 
 //motors:
@@ -78,6 +79,13 @@ class ShooterSubsystem {
 //limit switches;
         rev::CANDigitalInput turretReverseLimit = shooterTurret.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
         rev::CANDigitalInput hoodReverseLimit = shooterHood.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        rev::CANPIDController shooterWheelMPID = shooterWheelM.GetPIDController();
+        rev::CANPIDController shooterWheelSPID = shooterWheelS.GetPIDController();
+        rev::CANPIDController shooterHoodPID = shooterHood.GetPIDController();
+        rev::CANPIDController shooterTurretPID= shooterTurret.GetPIDController();
+
+
+
 
         /* rev::CANPIDController shooterFlywheelM_pidController = shooterFlywheelM.GetPIDController();
         rev::CANPIDController shooterFlywheelS_pidController = shooterFlywheelS.GetPIDController();

@@ -28,40 +28,13 @@ void ShooterSubsystem::Init(){
     shooterWheelS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     shooterHood.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
-    /* shooterFlywheelM_pidController.SetP(fkP);
-    shooterFlywheelM_pidController.SetI(fkI);
-    shooterFlywheelM_pidController.SetD(fkD);
-    shooterFlywheelM_pidController.SetIZone(fkIz);
-    shooterFlywheelM_pidController.SetFF(fkFF);
-    shooterFlywheelM_pidController.SetOutputRange(fkMinOutput, fkMaxOutput);
+    setShooterPID(shooterWheelMPID, 0.0012, 0, 0.02, 0.0002);
+    setShooterPID(shooterWheelSPID, 0.0012, 0, 0.02, 0.0002);
+    setShooterPID(shooterHoodPID, 0.1, 0, 0, 0);
+    setShooterPID(shooterHoodPID, 0.1, 0, 0, 0);
+    setShooterPID(shooterTurretPID, 0.0535, 0,0,0);
 
-    shooterFlywheelS_pidController.SetP(fkP);
-    shooterFlywheelS_pidController.SetI(fkI);
-    shooterFlywheelS_pidController.SetD(fkD);
-    shooterFlywheelS_pidController.SetIZone(fkIz);
-    shooterFlywheelS_pidController.SetFF(fkFF);
-    shooterFlywheelS_pidController.SetOutputRange(fkMinOutput, fkMaxOutput);
 
-    shooterHood_pidController.SetP(hkP);
-    shooterHood_pidController.SetI(hkI);
-    shooterHood_pidController.SetD(hkD);
-    shooterHood_pidController.SetIZone(hkIz);
-    shooterHood_pidController.SetFF(hkFF);
-    shooterHood_pidController.SetOutputRange(hkMinOutput, hkMaxOutput);
-
-    shooterTurret_pidController.SetP(tkP);
-    shooterTurret_pidController.SetI(tkI);
-    shooterTurret_pidController.SetD(tkD);
-    shooterTurret_pidController.SetIZone(tkIz);
-    shooterTurret_pidController.SetFF(tkFF);
-    shooterTurret_pidController.SetOutputRange(tkMinOutput, tkMaxOutput);
-
-    shooterKick_pidController.SetP(kkP);
-    shooterKick_pidController.SetI(kkI);
-    shooterKick_pidController.SetD(kkD);
-    shooterKick_pidController.SetIZone(kkIz);
-    shooterKick_pidController.SetFF(kkFF);
-    shooterKick_pidController.SetOutputRange(kkMinOutput, kkMaxOutput); */
 
     shooterWheelM.SetSmartCurrentLimit(30);
     shooterWheelS.SetSmartCurrentLimit(30);
@@ -74,10 +47,33 @@ void ShooterSubsystem::Init(){
     shooterWheelSPOS.SetPosition(0);
     shooterHood.Set(0);
 
+    shooterWheelM.BurnFlash();
+    shooterWheelS.BurnFlash();
+    shooterHood.BurnFlash();
+    shooterTurret.BurnFlash();
+
+    
+
     
 }
 
 void ShooterSubsystem::Periodic(RobotData &robotData){
+    frc::SmartDashboard::PutNumber("hood Position",  getHoodPos()); //horizontal offset
+    frc::SmartDashboard::PutNumber("turret Position",  getTurretPos()); //horizontal offset
+    frc::SmartDashboard::PutNumber("calc hood pos",  robotData.calcHoodPos); //horizontal offset
+
+    // if(!robotData.isZero){
+    //     setHood(0.1);
+    //     if(getHoodLimitSwitch()){
+    //         setHoodPos(0);
+    //         setHood(0);
+    //         robotData.isZero = true;
+    //     }
+    // }
+   
+
+
+
     updateData(robotData);
 
     if(robotData.manualMode){
@@ -97,71 +93,100 @@ void ShooterSubsystem::updateData(RobotData &robotData){
 void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
     shootPOV = robotData.sDPad;
+    frc::SmartDashboard::PutNumber("sStick", robotData.sRYStick);
+    frc::SmartDashboard::PutNumber("pov", shootPOV);
+    frc::SmartDashboard::PutNumber("x", robotData.xOffset);
+    frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
+
+
+    if(getHoodLimitSwitch()){
+        setHoodPos(0);
+    }
+
+    // if(robotData.sBBtn){
+    //     setHood(-0.1);
+
+
+    //     if(getHoodLimitSwitch()){
+    //         setHood(0);
+    //         setHoodPos(0);
+
+    //     }
+
+    // }
+
+    
+
     setHood(robotData.sRYStick*.1);
     setTurret(robotData.sLYStick*.2);
 
 
+
+
+
     //shooting from the line
-    if (secondaryPOVArrayInput == 0){
+    if (shootPOV == 90){
 
-        if(!robotData.isZero){
-            setHood(0.1);
-            if(getHoodLimitSwitch()){
-                setHoodPos(0);
-                setHood(0);
-                robotData.isZero = true;
-            }
+        // if(!robotData.isZero){
+        //     setHood(0.1);
+        //     if(getHoodLimitSwitch()){
+        //         setHoodPos(0);
+        //         setHood(0);
+        //         robotData.isZero = true;
+        //     }
 
-        }
+        // }
+
+
+
         
         
 
-        // if (getHoodPos() > 12.5){
-        //     setHood(-0.15);
-        // } else if (getHoodPos() < 10.5){
-        //     setHood(0.15);
-        // } else {
+        // if(getHoodPos() < robotData.calcHoodPos-2){
+        //     setHood(0.1);
+        // }else if(getHoodPos() > robotData.calcHoodPos+2){
+        //     setHood(-0.1);
+        // }else{
         //     setHood(0);
         // }
 
-        if(getHoodPos() < robotData.calcHoodPos-2){
-            setHood(0.1);
-        }else if(getHoodPos() > robotData.calcHoodPos+2){
-            setHood(-0.1);
-        }else{
-            setHood(0);
-        }
 
-        if(robotData.xOffset > 5 ){
-            setTurret(0.1);
-        }else if(robotData.xOffset < -5){
-            setTurret(-0.1);
+
+        if(robotData.xOffset > 1 ){
+            setTurret(0.02);
+        }else if(robotData.xOffset < -1){
+            setTurret(-0.02);
         }else{
             setTurret(0);
         }
 
         
-        if (getWheelVel() > 2900 && getWheelVel() < 3150){
-            setWheel(0.74);
-        } else if (getWheelVel() > 3150){
-            setWheel(0.68);
-        } else if (getWheelVel() > 1750){
-            setWheel(0.77);
-        } else{
-            setWheel(0.83);
-        }
+        // if (getWheelVel() > 2900 && getWheelVel() < 3150){
+        //     setWheel(0.74);
+        // } else if (getWheelVel() > 3150){
+        //     setWheel(0.68);
+        // } else if (getWheelVel() > 1750){
+        //     setWheel(0.77);
+        // } else{
+        //     setWheel(0.83);
+        // }
 
+        shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
 
 
         //add varibale to tell omni to switch directions
+        //&& getWheelVel() < 3150
+
         
-        if ((getWheelVel() > 2900 && getWheelVel() < 3150)){
+        if ((getWheelVel() > 2900 )){
             robotData.readyShoot = true;
         }else{
             robotData.readyShoot = false;
         }
         
     } else {
+        // setHood(0);
+        // setTurret(0);
         setWheel(0);
         robotData.isZero = false;
     }
@@ -210,4 +235,12 @@ void ShooterSubsystem::setWheel(double power){
 }
 double ShooterSubsystem::getWheelVel(){
     return shooterWheelMPOS.GetVelocity();
+}
+
+void ShooterSubsystem::setShooterPID(rev::CANPIDController motor, double p, double i, double d, double ff){
+    motor.SetP(p);
+    motor.SetI(i);
+    motor.SetD(d);
+    motor.SetFF(ff);
+
 }

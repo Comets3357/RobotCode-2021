@@ -4,6 +4,8 @@
 void IndexerSubsystem::Init(){
     centerSpindle.RestoreFactoryDefaults();
     centerSpindle.SetInverted(false);
+    centerSpindle.SetInverted(true);
+
     centerSpindle.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     centerSpindle.SetSmartCurrentLimit(45);
 }
@@ -23,22 +25,21 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     shootPOV = robotData.sDPad;
     frc::SmartDashboard::PutNumber("spinner",  robotData.sRYStick);
 
-    if(shootPOV == 0){
+    if(shootPOV == 90){
+        setOmniWheel(0.4);
+        setCenterSpindle(0.3);
+
 
         if(robotData.readyShoot){
-            setOmniWheel(-0.6);
+            setOmniWheel(-0.7);
         } else {
-            setOmniWheel(0.3);
+            setOmniWheel(0.4);
         }
-    } else if (shootPOV == -1){
-
-        // setSpinner(0);
-        // setOmni(0);
 
     } else {
 
         if(robotData.sYBtn){
-            setOmniWheel(0.2);
+            setOmniWheel(0.3);
             setCenterSpindle(0.2);
         } else {
             setOmniWheel(0);
@@ -47,14 +48,6 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
 
         frc::SmartDashboard::PutNumber("side", robotData.sLYStick);
         frc::SmartDashboard::PutNumber("spinner",  robotData.sRYStick);
-
-        if(robotData.sLBumper){
-            // setOmni(robotData.sLYStick);
-            // setSpinner(robotData.sRYStick);
-        } else if (robotData.sLBumper){
-            // setOmni(0);
-            // setSpinner(0);
-        }
     }
 
 }

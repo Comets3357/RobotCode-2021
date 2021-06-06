@@ -46,12 +46,15 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
     shootPOV = robotData.sDPad;
 
     if (shootPOV == 90){
+        manualMode(robotData);
 
     } else {
 
         if(robotData.sABtn){
+            //setPiston(true);
             setIntakeRollers(-0.4);
         }else{
+            //setPiston(false);
             setIntakeRollers(0);
         }
 

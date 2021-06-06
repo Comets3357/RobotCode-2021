@@ -36,7 +36,7 @@ class IntakeSubsystem {
         static const int intakeRollersID = 32;
         rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
 
-        frc::DoubleSolenoid solenoidOne{1, 2};
+        frc::DoubleSolenoid solenoidOne{0, 1};
         
 
        /*  rev::CANPIDController intakePivot_pidController = intakePivot.GetPIDController();
