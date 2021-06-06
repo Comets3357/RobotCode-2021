@@ -30,6 +30,9 @@ void DriveSubsystem::Init(){
     dbLM.Set(0);
     dbRM.Set(0);
 
+    //gyro
+    gyro.Calibrate();
+
 }
 
 void DriveSubsystem::Periodic(RobotData &robotData)
@@ -40,6 +43,8 @@ void DriveSubsystem::Periodic(RobotData &robotData)
     {
     case driveMode_potato:
         potato(robotData);
+    case driveMode_initDriveForward:
+        initDriveForward(robotData);
     case driveMode_driveForward:
         driveForward(robotData);
     default:    // teleop and multiple auton driveModes will use this
@@ -53,11 +58,6 @@ void DriveSubsystem::Periodic(RobotData &robotData)
 }
 
 
-void DriveSubsystem::updateData(RobotData &robotData)
-{
-    robotData.currentRDBPos = dbRMEncoder.GetPosition();
-    robotData.currentLDBPos = dbLMEncoder.GetPosition();
-}
 
 
 // will be deleted
@@ -76,11 +76,40 @@ void DriveSubsystem::Disabled(){
     dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
 }
 
+
+
+/** 
+ * updates encoder and gyro values
+ * @param robotData the struct in which these values are stored
+ */ 
+void DriveSubsystem::updateData(RobotData &robotData)
+{
+    //add back encoders at some point
+    robotData.currentRDBPos = dbRMEncoder.GetPosition();
+    robotData.currentLDBPos = dbLMEncoder.GetPosition();
+
+    //this is the direction that the robot is facing
+    robotData.rawAngle = gyro.GetAngle();
+    robotData.robotAngle = gyro.GetAngle();
+
+
+    //calculates the non continuous angle
+    while(robotData.robotAngle > 360){
+        robotData.robotAngle -= 360;
+    }
+
+    while(robotData.robotAngle < 360){
+        robotData.robotAngle += 360;
+    }
+}
+
 void DriveSubsystem::setDrive(double lDrive, double rDrive)
 {
     dbLM.Set(lDrive);
     dbRM.Set(rDrive);
 }
+
+
 
 
 // auton functions:
@@ -90,6 +119,13 @@ void DriveSubsystem::potato(RobotData &robotData)
     robotData.pLYStick = 0;
     robotData.pRYStick = 0;
 
+}
+
+void DriveSubsystem::initDriveForward(RobotData &robotData)
+{
+    robotData.initialLDBPos = robotData.currentLDBPos;
+    robotData.initialRDBPos = robotData.currentRDBPos;
+    robotData.autonStep++;
 }
 
 void DriveSubsystem::driveForward(RobotData &robotData)
@@ -142,4 +178,36 @@ void DriveSubsystem::driveForward(RobotData &robotData)
     {
         robotData.pRYStick = 0;
     }
+
+    if ((robotData.pLYStick = 0) && (robotData.pRYStick = 0)) {
+        robotData.autonStep++;
+    }
+}
+
+/**
+ * makes the robot turn a desired angle
+ * @param target the amount that you want the robot to turn. positive for right, negative for left
+ * @param robotData struct from which you are retrieving necessary data
+ */ 
+void DriveSubsystem::turn(double target, RobotData &robotData){
+    
+    //when called record initial angle. calculate final angle by adding the target to it. 
+    robotData.initialAngle = robotData.rawAngle;
+    robotData.finalAngle = robotData.initialAngle + target;
+
+    //jank, gotta fix this, but this is the basic concept
+    //untested
+    while(robotData.finalAngle > robotData.rawAngle){
+        setDrive(.3, 0);
+        return;
+    }
+
+    while(robotData.finalAngle > robotData.rawAngle){
+        setDrive(0, .3);
+    }
+
+    
+
+
+
 }

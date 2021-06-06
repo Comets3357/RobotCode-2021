@@ -44,8 +44,6 @@ class Robot : public frc::TimedRobot {
       RobotData robotData{};
 
 
-
-
   private:
 
 

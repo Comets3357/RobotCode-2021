@@ -2,6 +2,7 @@
 
 #include <frc/TimedRobot.h>
 #include <rev/CANSparkMax.h>
+#include <adi/ADIS16448_IMU.h>
 
 #include "RobotData.h"
 
@@ -21,10 +22,15 @@ class DriveSubsystem {
         bool climbMode = false;
 
         void updateData(RobotData &robotData);
+        void updateGyro(RobotData &robotData);
 
         void setDrive(double lDrive, double rDrive);
 
+        void turn(double target, RobotData &robotData);
+    
+
         void potato(RobotData &robotData);
+        void initDriveForward(RobotData &robotData);
         void driveForward(RobotData &robotData);
         
 
@@ -42,6 +48,9 @@ class DriveSubsystem {
         /* rev::CANPIDController dbRM_pidController = dbRM.GetPIDController();
         rev::CANPIDController dbLM_pidController = dbLM.GetPIDController(); */
         
+
+//gyro:
+        frc::ADIS16448_IMU gyro{};
 
 
 }; 

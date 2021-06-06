@@ -10,26 +10,35 @@ void Auton::Init(RobotData &robotData)
 
 void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
 {
-    // ONLY SPOOFING ROBOTDATA VALUES
-    /* if (select == 0)    // potato
-    {
-        robotData.driveMode = driveMode_potato;
-    }
-    else if (select == 1)   // test drive forward
-    {
-        robotData.driveMode = driveMode_driveForward;
-    }
-    else {} */
-
-    switch(autonSelect)
+    switch (autonSelect)
     {
     case autonSelect_potato:
-
+        robotData.driveMode = driveMode_potato;
         break;
     case autonSelect_exitInitLine:
+        switch (robotData.autonStep)
+        {
+        case 0:
+            robotData.desiredDBDist = 30;
+            robotData.driveMode = driveMode_initDriveForward;
+            break;
+        case 1:
+            robotData.driveMode = driveMode_driveForward;
+            break;
+        // case 2:
+        //     robotData.desiredDBDist = 15;
+        //     robotData.driveMode = driveMode_initDriveForward;
+        //     break;
+        // case 3:
+        //     robotData.driveMode = driveMode_driveForward;
+        //     break;
+        
+        default:
+            robotData.driveMode = driveMode_potato;
         break;
+        }
     default:
-        // also potato for default
+        robotData.driveMode = driveMode_potato;
         break;
     }
 }

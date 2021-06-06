@@ -17,10 +17,10 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic(){
     db.Periodic(robotData);
-    intake.Periodic(robotData);
+    /* intake.Periodic(robotData);
     indexer.Periodic(robotData);
     shooter.Periodic(robotData);
-    limelight.Periodic(robotData);
+    limelight.Periodic(robotData); */
 }
 
 void Robot::AutonomousPeriodic() {

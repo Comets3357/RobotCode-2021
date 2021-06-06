@@ -10,9 +10,10 @@ enum AutonSelect
 // this is for drivebase auton
 enum DriveMode
 {
-    driveMode_teleop,       // 0
-    driveMode_potato,       // 1
-    driveMode_driveForward  // 2
+    driveMode_teleop,       
+    driveMode_potato,       
+    driveMode_initDriveForward,
+    driveMode_driveForward  
 };
 
 //could be separated into all separate files for the data *from* each subsystem
@@ -87,13 +88,25 @@ struct RobotData
     double yOffset;
     double calcHoodPos;
 
+    //gyro data
+    double rawAngle;
+    double robotAngle; // mod by 360
+
 
     // auton stuff
+    int autonStep  = 0;
+
     AutonSelect autonSelect{autonSelect_potato};
     DriveMode driveMode{driveMode_potato};  // should have a default?
 
+    //turn
+    double desiredAngleDiff; 
+    double radius;
+    double finalAngle;
+    double initialAngle;
+
     // drive_forward
-    double desiredDBDist = 40;
+    double desiredDBDist;
     double initialLDBPos;
     double initialRDBPos;
     double currentLDBPos;
