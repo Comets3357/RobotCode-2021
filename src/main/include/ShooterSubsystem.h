@@ -2,8 +2,10 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
-#include "rev/CANSparkMax.h"
+#include <rev/CANSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
+
+#include "RobotData.h"
 
 
 class ShooterSubsystem : public frc2::SubsystemBase {
@@ -11,15 +13,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     public:
 
         void Init();
-        double getHoodPos();
-        double getTurretPos();
-        double getWheelPos();
-
-        double getWheelVel();
-
-        void setHood(double power);
-        void setTurret(double power);
-        void setWheel(double power);
+        void Periodic(RobotData &robotData);
+        
 
         //pass limelight and indexer values through
         /* bool turretInRange(LimelightSubsystem &limelight); //function definition
@@ -28,6 +23,22 @@ class ShooterSubsystem : public frc2::SubsystemBase {
         
 
     private:
+
+        int shootPOV;
+
+        void updateData(RobotData &robotData);
+        void semiAutoMode(RobotData &robotData);
+        void manualMode(RobotData &robotData);
+
+
+        double getHoodPos();
+        double getTurretPos();
+        double getWheelPos();
+        double getWheelVel();
+
+        void setHood(double power);
+        void setTurret(double power);
+        void setWheel(double power);
         bool shooting = false;
 
         int secondaryPOVArrayInput;

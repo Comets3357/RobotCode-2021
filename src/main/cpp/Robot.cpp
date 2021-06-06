@@ -7,23 +7,20 @@ void Robot::RobotInit() {
     db.Init();
     indexer.Init();
     shooter.Init();
-    autoo.Init();
-    manual.Init();
     //controller.Init();
 
 
 }
 
+void Robot::RobotPeriodic(){
+    db.Periodic(robotData);
+    intake.Periodic(robotData);
+    indexer.Periodic(robotData);
+    shooter.Periodic(robotData);
+}
+
 void Robot::TeleopPeriodic() {
-    
-
-    if(control.getManual()){
-        manual.Periodic(control, sStick, indexer, shooter, intake);
-    }else{
-        autoo.Periodic(sStick, indexer, shooter, intake);
-    }
-    
-
+    control.Periodic(robotData);
 }
 
 

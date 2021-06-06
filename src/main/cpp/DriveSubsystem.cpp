@@ -32,11 +32,11 @@ void DriveSubsystem::Init(){
 
 }
 
-void DriveSubsystem::Periodic(frc::Joystick &mainStick){
+void DriveSubsystem::Periodic(RobotData &robotData){
 
     //slows down the speed to 0.3 of the total
-    lDrive = mainStick.GetRawAxis(1) * .3;
-    rDrive = mainStick.GetRawAxis(5) * .3;
+    lDrive = robotData.pLYStick * .3;
+    rDrive = robotData.pRYStick * .3;
 
     
     //setting the motor speed, tank drive

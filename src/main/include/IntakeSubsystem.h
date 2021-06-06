@@ -2,9 +2,11 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
-#include "rev/CANSparkMax.h"
+#include <rev/CANSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/DoubleSolenoid.h>
+
+#include "RobotData.h"
 
 
 class IntakeSubsystem : public frc2::SubsystemBase {
@@ -12,10 +14,16 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     public:
 
         void Init();
-        void setIntakeWheels(double power);
-        void setPiston(bool direction);
+        void Periodic(RobotData &robotData);
 
     private:
+
+        int shootPOV;
+        
+        void setIntakeWheels(double power);
+        void setPiston(bool direction);
+        void semiAutoMode(RobotData &robotData);
+        void manualMode(RobotData &robotData);
 
         /* bool goBack = false;
         bool manualIntakeButtonDown = false;
