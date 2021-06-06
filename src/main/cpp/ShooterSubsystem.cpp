@@ -5,7 +5,9 @@
 
 
 void ShooterSubsystem::Init(){
-    //just the basics to start off
+
+
+
     shooterWheelM.RestoreFactoryDefaults();
     shooterWheelS.RestoreFactoryDefaults();
     shooterHood.RestoreFactoryDefaults();
@@ -71,7 +73,117 @@ void ShooterSubsystem::Init(){
     shooterWheelMPOS.SetPosition(0);
     shooterWheelSPOS.SetPosition(0);
     shooterHood.Set(0);
+
+    
 }
+
+void ShooterSubsystem::Periodic(RobotData &robotData){
+    updateData(robotData);
+
+    if(robotData.manualMode){
+        manualMode(robotData);
+    } else {
+        semiAutoMode(robotData);
+    }
+
+}
+
+void ShooterSubsystem::updateData(RobotData &robotData){
+    robotData.flywheelVelocity = getWheelVel();
+    robotData.turretPosition = getTurretPos();
+    robotData.hoodPosition = getHoodPos();
+}
+
+void ShooterSubsystem::semiAutoMode(RobotData &robotData){
+
+    shootPOV = robotData.sDPad;
+    setHood(robotData.sRYStick*.1);
+    setTurret(robotData.sLYStick*.2);
+
+
+    //shooting from the line
+    if (secondaryPOVArrayInput == 90){
+
+        // if (getHoodPos() > 12.5){
+        //     setHood(-0.15);
+        // } else if (getHoodPos() < 10.5){
+        //     setHood(0.15);
+        // } else {
+        //     setHood(0);
+        // }
+
+        
+        if (getWheelVel() > 2900 && getWheelVel() < 3150){
+            setWheel(0.95);
+        } else if (getWheelVel() > 3150){
+            setWheel(0.95);
+        } else if (getWheelVel() > 1750){
+            setWheel(0.95);
+        } else{
+            setWheel(0.95);
+        }
+
+        //bool f = false;
+        
+        // if ((getWheelVel() > 2900 && getWheelVel() < 3150)){
+        //     f = true;
+        // }else{
+        //     f = false;
+        // }
+
+            
+    
+ 
+    } else if (shootPOV == 0) { // //Automatic shooting (secondary)
+        // if (getHoodPos() > 12.5){
+        //     setHood(-0.15);
+        // } else if (getHoodPos() < 10.5){
+        //     setHood(0.15);
+        // } else {
+        //     setHood(0);
+        // }
+
+        // if (getHoodPos() > 10.5 && getHoodPos() < 12.5){
+        //     if (getWheelVel() > 2900 && getWheelVel() < 3150){
+        //         setWheel(0.74);
+        //     } else if (getWheelPos() > 3150){
+        //         setWheel(0.74);
+        //     } else if (getWheelPos() > 1750){
+        //         setWheel(0.74);
+        //     } else{
+        //         setWheel(0.74);
+        //     }
+        // }
+        
+    //Not shooting
+    } else if (shootPOV == -1){
+        // setWheel(0);
+        // if (getHoodPos() > .5){
+        //     setHood(-0.05);
+        // } else if (getHoodPos() < -.5) {
+        //     setHood(0.05);
+        // } else {
+        //     setHood(0);
+        // }
+        // if (getTurretPos() > .5){
+        //     setTurret(-0.05);
+        // } else if (getTurretPos() < -.5) {
+        //    setTurret(0.05);
+        // } else {
+        //     setTurret(0);
+        // }
+        
+    } else {
+        setWheel(0);
+    }
+
+}
+
+void ShooterSubsystem::manualMode(RobotData &robotData){
+
+}
+
+
 
 
 double ShooterSubsystem::getHoodPos(){
@@ -82,7 +194,7 @@ double ShooterSubsystem::getTurretPos(){
 }
 double ShooterSubsystem::getWheelPos(){
     return shooterWheelMPOS.GetPosition();
-}
+} 
 
 void ShooterSubsystem::setHood(double power){
     shooterHood.Set(power);

@@ -2,21 +2,22 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
-#include "rev/CANSparkMax.h"
+#include <rev/CANSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
+
+#include "RobotData.h"
 
 
 class DriveSubsystem : frc2::SubsystemBase {
     
     public: 
         void Init();
-        void Periodic(frc::Joystick &mainStick);
+        void Periodic(RobotData &RobotData);
 
     private:
 
         double lDrive = 0;
         double rDrive = 0;
-
         bool climbMode = false;
 
 
