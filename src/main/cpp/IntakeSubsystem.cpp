@@ -5,29 +5,11 @@
 
 
 void IntakeSubsystem::Init(){
-    //just the basics to start off
+
     rollers.RestoreFactoryDefaults();
     rollers.SetInverted(true);
     rollers.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-
-/*  intakePivot_pidController.SetP(pkP);
-    intakePivot_pidController.SetI(pkI);
-    intakePivot_pidController.SetD(pkD);
-    intakePivot_pidController.SetIZone(pkIz);
-    intakePivot_pidController.SetFF(pkFF);
-    intakePivot_pidController.SetOutputRange(pkMinOutput, pkMaxOutput);
-
-    wheels_pidController.SetP(wkP);
-    wheels_pidController.SetI(wkI);
-    wheels_pidController.SetD(wkD);
-    wheels_pidController.SetIZone(wkIz);
-    wheels_pidController.SetFF(wkFF);
-    wheels_pidController.SetOutputRange(wkMinOutput, wkMaxOutput);
- */
-
     rollers.SetSmartCurrentLimit(45);
-
-
 
 }
 
@@ -45,27 +27,31 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
     shootPOV = robotData.sDPad;
 
-    if (shootPOV == 90){
+    //if in shooting mode then you want manual control of the intake
+    if (shootPOV == robotData.shootingButton){
         manualMode(robotData);
 
     } else {
 
+        //Intake balls
         if(robotData.sABtn){
-            //setPiston(true);
+            if(getPiston()){ //if the piston is up put it down
+                setPiston(false);
+            }
             setIntakeRollers(-0.4);
         }else{
-            //setPiston(false);
+            if(!getPiston()){ //if the piston is down put it up
+                setPiston(true);
+            }
             setIntakeRollers(0);
         }
 
-        if(robotData.sLBumper){ //in
-            setPiston(true);
-            //setIntakeWheels(0.2);
+        // if(robotData.sLBumper){ //in
+        //     setPiston(true);
 
-        }else if(robotData.sRBumper){ //out (reverse is out)
-            setPiston(false);
-            //setIntakeWheels(0);
-        }
+        // }else if(robotData.sRBumper){ //out (reverse is out)
+        //     setPiston(false);
+        // }
 
     }
 
@@ -74,28 +60,39 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
 void IntakeSubsystem::manualMode(RobotData &robotData){
 
-    if(robotData.sLTrigger){
+    if(robotData.sRBumper){
         setPiston(true);
-    } else {
+    } else if(robotData.sLBumper){
         setPiston(false);
     }
 
-    if(robotData.sLBumper){
-        setIntakeRollers(0.3*robotData.shift);
+    if(robotData.sYBtn){
+        setIntakeRollers(0.3);
     } else {
         setIntakeRollers(0);
     }
 
 }
 
+/**
+ * @param direction true is retracted and false is extended
+ */
 
-void IntakeSubsystem::setPiston(bool direction){
+void IntakeSubsystem::setPiston(bool direction){  
     if (direction){
         solenoidOne.Set(frc::DoubleSolenoid::Value::kForward);
     } else {
         solenoidOne.Set(frc::DoubleSolenoid::Value::kReverse);
     }
     
+}
+
+bool IntakeSubsystem::getPiston(){
+    if(solenoidOne.Get() == frc::DoubleSolenoid::Value::kForward){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 void IntakeSubsystem::setIntakeRollers(double power){

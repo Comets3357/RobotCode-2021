@@ -9,8 +9,6 @@ void IndexerSubsystem::Init(){
     centerSpindle.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     centerSpindle.SetSmartCurrentLimit(45);
 }
-//only setting power when needed according to shooter file
-//not much more is needed since we'll have to change everything for the spindexer
 
 void IndexerSubsystem::Periodic(RobotData &robotData){
     if(robotData.manualMode){
@@ -22,44 +20,44 @@ void IndexerSubsystem::Periodic(RobotData &robotData){
 }
 
 void IndexerSubsystem::semiAutoMode(RobotData &robotData){
-    shootPOV = robotData.sDPad;
-    frc::SmartDashboard::PutNumber("spinner",  robotData.sRYStick);
 
-    if(shootPOV == 90){
+    shootPOV = robotData.sDPad;
+
+    //if shooting
+    if(shootPOV == robotData.shootingButton){
+
+        //set indexer to set speed 
         setOmniWheel(0.4);
         setCenterSpindle(0.3);
 
-
+        //retrieve data from shooter for when shooting wheel is up to speed
         if(robotData.readyShoot){
+            //reverse direction for omniwheel to bring balls into shooter
             setOmniWheel(-0.7);
-        } else {
+        }else{
             setOmniWheel(0.4);
         }
 
-    } else {
 
-        if(robotData.sYBtn){
+    }else{
+
+        if(robotData.sABtn){ //when intaking balls, spin the indexer
             setOmniWheel(0.3);
             setCenterSpindle(0.2);
-        } else {
+        }else {
             setOmniWheel(0);
             setCenterSpindle(0);
         }
-
-        frc::SmartDashboard::PutNumber("side", robotData.sLYStick);
-        frc::SmartDashboard::PutNumber("spinner",  robotData.sRYStick);
     }
-
 }
 
-void IndexerSubsystem::manualMode(RobotData &robotData){
-    if(robotData.sRTrigger > 0.5){
-        setCenterSpindle(.5 * robotData.shift);
+void IndexerSubsystem::manualMode(RobotData &robotData){ 
+    if(robotData.sABtn){
+        setCenterSpindle(.2);
+        setOmniWheel(0.3);
     } else {
-        if(robotData.shootingMode){
-            setCenterSpindle(.5);
-            setOmniWheel(.5);
-        }
+        setOmniWheel(0);
+        setCenterSpindle(0);
     }
 }
 

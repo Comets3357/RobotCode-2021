@@ -9,19 +9,17 @@
 class IndexerSubsystem {
     
     public:
-
-
         void Init();
         void Periodic(RobotData &robotData);
 
     private:
-
-    
-        void setCenterSpindle (double power); //function
-        void setOmniWheel (double power); //function
-        double getSpinnerVel();
+        void setCenterSpindle (double power);
+        void setOmniWheel (double power); 
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
+
+        double getSpinnerVel();
+
 
 //state variables:
         int shootPOV = -1;
@@ -34,7 +32,7 @@ class IndexerSubsystem {
         rev::CANSparkMax omniWheel{omniWheelID, rev::CANSparkMax::MotorType::kBrushless};
 
 
-//encoder:
+//encoders:
         rev::CANEncoder centerSpindlePOS = centerSpindle.GetEncoder();
         rev::CANPIDController centerSpindle_pidController = centerSpindle.GetPIDController();
  

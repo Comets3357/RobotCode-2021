@@ -1,6 +1,6 @@
-#include <frc/smartdashboard/SmartDashboard.h>
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableInstance.h"
+#include <frc/smartdashboard/Smartdashboard.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
 #include "Robot.h"
 #include <cmath>
 
@@ -9,13 +9,7 @@
 
 
 
-void LimelightSubsystem::Init(){
-    /* double targetOffsetAngle_Horizontal = 0; Probably don't want to zero this
-    double targetOffsetAngle_Vertical = 0;
-    double targetArea = 0;
-    double targetSkew = 0; */  
- 
-}
+void LimelightSubsystem::Init(){}
 
 /**
  * calculates hood position needed 
@@ -56,14 +50,6 @@ void LimelightSubsystem::Periodic(RobotData &robotData){
 
     std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the networktable
     table->PutNumber("pipeline", 0); //set the pipeline
-    
-    //prints all the values to dashboard:
-    //frc::SmartDashboard::PutNumber("tx",  table->GetNumber("tx",0.0)); //horizontal offset
-    //frc::SmartDashboard::PutNumber("ty",  table->GetNumber("ty",0.0)); //vertical offset
-    //frc::SmartDashboard::PutNumber("ts",  table->GetNumber("ts",0.0)); //skew offset
-
-
-   
 
 }
 
