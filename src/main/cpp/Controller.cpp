@@ -70,15 +70,15 @@ void Controller::updateTeleopData(RobotData &robotData){
 
 
     //used for driving
-    robotData.pLYStick = getAxis(0, 1);
-    robotData.pRYStick = getAxis(0, 5);
+    robotData.pLYStick = -getAxis(0, 1);
+    robotData.pRYStick = -getAxis(0, 5);
 
     //secondary controls // indexes are NOT all right yet
     //robotData.sLCenterBtn = getAxis(1, 8); //only used within controller class
     robotData.sDPad = getPOV(1, 0); //secondaryPOVArrayInput in auto
 
-    robotData.sLYStick = getAxis(1, 1); //turret control in auto
-    robotData.sRYStick = getAxis(1, 5); //turret control in auto
+    robotData.sLYStick = -getAxis(1, 1); //turret control in auto
+    robotData.sRYStick = -getAxis(1, 5); //turret control in auto
 
     robotData.sLTrigger = getAxis(1, 2); //manual
     robotData.sRTrigger = getAxis(1, 3); // manual

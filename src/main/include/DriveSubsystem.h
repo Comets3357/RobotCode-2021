@@ -25,13 +25,13 @@ class DriveSubsystem {
         void updateGyro(RobotData &robotData);
 
         void setDrive(double lDrive, double rDrive);
-
-        void turn(double target, RobotData &robotData);
     
 
         void potato(RobotData &robotData);
         void initDriveForward(RobotData &robotData);
         void driveForward(RobotData &robotData);
+        void arc(RobotData &robotData);
+        void initArc(RobotData &robotData);
         
 
 

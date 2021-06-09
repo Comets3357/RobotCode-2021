@@ -4,22 +4,28 @@
 enum AutonSelect
 {
     autonSelect_potato,
-    autonSelect_exitInitLine
+    autonSelect_exitInitLine,
+    autonSelect_goofy // temporary
 };
 
 // this is for drivebase auton
 enum DriveMode
 {
-    driveMode_teleop,       
-    driveMode_potato,       
+    driveMode_teleop,
+    driveMode_potato,
     driveMode_initDriveForward,
-    driveMode_driveForward  
+    driveMode_driveForward,
+    driveMode_arc,
+    driveMode_initArc
 };
 
 //could be separated into all separate files for the data *from* each subsystem
 //commented out variables are not in use
 struct RobotData 
 {
+    // timer
+    double seconds;
+
     //controller data
 
     bool manualMode;
@@ -89,6 +95,7 @@ struct RobotData
     double calcHoodPos;
 
     //gyro data
+    //greater angle means clockwise
     double rawAngle;
     double robotAngle; // mod by 360
 
@@ -96,12 +103,13 @@ struct RobotData
     // auton stuff
     int autonStep  = 0;
 
-    AutonSelect autonSelect{autonSelect_potato};
-    DriveMode driveMode{driveMode_potato};  // should have a default?
+    // AutonSelect autonSelect{autonSelect_potato}; // don't think we need this unless a subsystem needs access
+    DriveMode driveMode{driveMode_teleop};  // should have a default?
 
     //turn
     double desiredAngleDiff; 
-    double radius;
+    double arcRadius;   // the inside radius. for a turn in place use radius -1
+    double sideRatio;
     double finalAngle;
     double initialAngle;
 
