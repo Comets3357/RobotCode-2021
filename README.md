@@ -14,6 +14,10 @@
 
 This repository contains the code developed by FRC team 3357 for the 2021 **FIRST INFINITE RECHARGE at Home** challenge. 
 
+## Contributing
+
+Be sure to check out the [contributing guidelines](https://github.com/Comets3357/2021-RobotCode/blob/main/.github/CONTRIBUTING.md) before making any changes.
+
 ## License
 
 The code is available under the [MIT](https://github.com/Comets3357/2021-RobotCode/blob/main/LICENSE) license.
