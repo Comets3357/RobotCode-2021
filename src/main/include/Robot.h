@@ -5,7 +5,7 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
-#include <frc2/command/SubsystemBase.h>
+#include <frc/Timer.h>
 
 //Header files from us
 #include "IntakeSubsystem.h"
@@ -14,6 +14,7 @@
 #include "ShooterSubsystem.h"
 #include "Controller.h"
 #include "LimelightSubsystem.h"
+#include "Auton.h"
 
 #include "RobotData.h"
 
@@ -24,12 +25,15 @@ class Robot : public frc::TimedRobot {
 
   public:
       bool manualMode = false;
+
       void RobotInit() override;
       void RobotPeriodic() override;
+      void AutonomousInit() override;
+      void AutonomousPeriodic() override;
       void TeleopPeriodic() override;
       void DisabledInit() override;
 
-
+  private:
       DriveSubsystem db{};
       ShooterSubsystem shooter{};
       IndexerSubsystem indexer{};
@@ -37,12 +41,13 @@ class Robot : public frc::TimedRobot {
       LimelightSubsystem limelight{};
 
       Controller control{};
+      Auton auton{};
       RobotData robotData{};
 
+      
 
 
 
-  private:
 
 
 

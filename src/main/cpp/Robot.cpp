@@ -7,20 +7,30 @@ void Robot::RobotInit() {
     db.Init();
     indexer.Init();
     shooter.Init();
-    control.Init(robotData);
     limelight.Init();
-
 
 }
 
 
 
 void Robot::RobotPeriodic(){
-    db.Periodic(robotData);
-    intake.Periodic(robotData);
-    indexer.Periodic(robotData);
-    shooter.Periodic(robotData);
-    limelight.Periodic(robotData);
+    if (!IsDisabled()) {
+        db.Periodic(robotData);
+        /* intake.Periodic(robotData);
+        indexer.Periodic(robotData);
+        shooter.Periodic(robotData);
+        limelight.Periodic(robotData); */
+    }
+}
+
+void Robot::AutonomousInit() {
+    auton.Init();
+}
+
+void Robot::AutonomousPeriodic() {
+    if (!IsDisabled()) {
+        auton.Periodic(autonSelect_goofy, robotData);
+    }
 }
 
 void Robot::TeleopPeriodic() {

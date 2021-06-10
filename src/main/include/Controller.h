@@ -3,7 +3,6 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <frc/Timer.h>
-
 #include "RobotData.h"
 
 
@@ -11,8 +10,6 @@ class Controller {
     
 public:
 
-    void Init(RobotData &robotData);
-    void Auton(RobotData &robotData);
     void Periodic(RobotData &robotData);
 
 
@@ -35,7 +32,6 @@ private:
     frc::Joystick secondary{1};
     frc::Joystick primary{0};
 
-    frc::Timer timer{};
 
     //this is necessary actually for the getManual() function
     bool inManualMode = false;

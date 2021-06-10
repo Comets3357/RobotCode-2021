@@ -6,8 +6,6 @@
 
 void ShooterSubsystem::Init(){
 
-
-
     shooterWheelM.RestoreFactoryDefaults();
     shooterWheelS.RestoreFactoryDefaults();
     shooterHood.RestoreFactoryDefaults();
@@ -27,6 +25,7 @@ void ShooterSubsystem::Init(){
     shooterWheelM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     shooterWheelS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     shooterHood.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    shooterTurret.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
     /* shooterFlywheelM_pidController.SetP(fkP);
     shooterFlywheelM_pidController.SetI(fkI);
@@ -88,6 +87,10 @@ void ShooterSubsystem::Periodic(RobotData &robotData){
 
 }
 
+void ShooterSubsystem::Disabled(){
+    
+}
+
 void ShooterSubsystem::updateData(RobotData &robotData){
     robotData.flywheelVelocity = getWheelVel();
     robotData.turretPosition = getTurretPos();
@@ -100,9 +103,12 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     setHood(robotData.sRYStick*.1);
     setTurret(robotData.sLYStick*.2);
 
+    frc::SmartDashboard::PutNumber("shootPOV",  shootPOV);
+    frc::SmartDashboard::PutNumber("sRYStick",  robotData.sRYStick);
+    frc::SmartDashboard::PutNumber("sLYStick",  robotData.sLYStick);
 
     //shooting from the line
-    if (secondaryPOVArrayInput == 0){
+    if (shootPOV == 0){
 
         if(!robotData.isZero){
             setHood(0.1);
@@ -162,7 +168,9 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
         }
         
     } else {
+        setTurret(0);
         setWheel(0);
+        setHood(0);
         robotData.isZero = false;
     }
 
