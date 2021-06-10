@@ -80,6 +80,8 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutNumber("x", robotData.xOffset);
     frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
     frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
+    frc::SmartDashboard::PutNumber("target velocity", robotData.targetVelocity);
+
 
 
     //if the hood touches the limit switch, zero the position
@@ -103,6 +105,8 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
         robotData.isZero = false;
 
     }
+
+
     
 
 
@@ -110,7 +114,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     setTurret(robotData.sLYStick*.1);
 
     //if you're pressing the shooting button
-    if (shootPOV == robotData.shootingButton){ 
+    if (shootPOV == robotData.shootingBtn){ 
     
         // if(getHoodPos() < robotData.calcHoodPos-2){
         //     setHood(0.1);
@@ -119,6 +123,12 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
         // }else{
         //     setHood(0);
         // }
+
+        if(robotData.yOffset > 5){
+            robotData.targetVelocity = 2400;
+        }else{
+            robotData.targetVelocity = 3000;
+        }
 
         //moves turret until in range
         if(robotData.xOffset > 1 ){ 
@@ -131,7 +141,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
             shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
 
             //once the shooter has high enough velocity tell robot to begin shooting
-            if ((getWheelVel() > 3000 )){
+            if ((getWheelVel() > robotData.targetVelocity)){
                 robotData.readyShoot = true;
             }else{
                 robotData.readyShoot = false;

@@ -14,6 +14,7 @@
 #include "ShooterSubsystem.h"
 #include "Controller.h"
 #include "LimelightSubsystem.h"
+#include "ControlpanelSubsystem.h"
 
 #include "RobotData.h"
 
@@ -35,6 +36,7 @@ class Robot : public frc::TimedRobot {
       IndexerSubsystem indexer{};
       IntakeSubsystem intake{};
       LimelightSubsystem limelight{};
+      ControlpanelSubsystem controlpanel{};
 
       Controller control{};
       RobotData robotData{};

@@ -5,6 +5,8 @@
 #include <rev/CANSparkMax.h>
 
 #include "RobotData.h"
+#include <frc/shuffleboard/Shuffleboard.h>
+
 
 class IndexerSubsystem {
     
@@ -17,6 +19,7 @@ class IndexerSubsystem {
         void setOmniWheel (double power); 
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
+        
 
         double getSpinnerVel();
 

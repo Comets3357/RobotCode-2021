@@ -2,7 +2,7 @@
 
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
-#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
 
 #include "RobotData.h"
 
@@ -29,6 +29,6 @@ class IntakeSubsystem {
         static const int intakeRollersID = 32;
         rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
 
-        frc::DoubleSolenoid solenoidOne{0, 1};
+        frc::Solenoid solenoidOne{0};
 
 };

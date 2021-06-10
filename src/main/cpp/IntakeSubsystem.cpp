@@ -10,6 +10,7 @@ void IntakeSubsystem::Init(){
     rollers.SetInverted(true);
     rollers.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     rollers.SetSmartCurrentLimit(45);
+    setPiston(false);
 
 }
 
@@ -28,7 +29,7 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
     shootPOV = robotData.sDPad;
 
     //if in shooting mode then you want manual control of the intake
-    if (shootPOV == robotData.shootingButton){
+    if (shootPOV == robotData.shootingBtn){
         manualMode(robotData);
 
     } else {
@@ -46,12 +47,6 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
             setIntakeRollers(0);
         }
 
-        // if(robotData.sLBumper){ //in
-        //     setPiston(true);
-
-        // }else if(robotData.sRBumper){ //out (reverse is out)
-        //     setPiston(false);
-        // }
 
     }
 
@@ -60,10 +55,14 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
 void IntakeSubsystem::manualMode(RobotData &robotData){
 
-    if(robotData.sRBumper){
-        setPiston(true);
-    } else if(robotData.sLBumper){
-        setPiston(false);
+    if(robotData.sXBtn){
+        if(getPiston()){ //if the piston is up put it down
+            setPiston(false);
+        }
+    }else{
+        if(!getPiston()){ //if the piston is down put it up
+            setPiston(true);
+        }
     }
 
     if(robotData.sYBtn){
@@ -80,15 +79,15 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
 
 void IntakeSubsystem::setPiston(bool direction){  
     if (direction){
-        solenoidOne.Set(frc::DoubleSolenoid::Value::kForward);
+        solenoidOne.Set(true);
     } else {
-        solenoidOne.Set(frc::DoubleSolenoid::Value::kReverse);
+        solenoidOne.Set(false);
     }
     
 }
 
 bool IntakeSubsystem::getPiston(){
-    if(solenoidOne.Get() == frc::DoubleSolenoid::Value::kForward){
+    if(solenoidOne.Get() == true){
         return true;
     }else{
         return false;

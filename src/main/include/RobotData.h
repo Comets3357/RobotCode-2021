@@ -66,7 +66,8 @@ struct RobotData
     double flywheelVelocity;
     bool readyShoot = false;
     bool isZero = false;
-    static const int shootingButton = 90;
+    static const int shootingBtn = 90;
+    int targetVelocity = 0;
 
 
     //limelight data

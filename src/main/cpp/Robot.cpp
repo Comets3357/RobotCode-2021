@@ -9,6 +9,7 @@ void Robot::RobotInit() {
     shooter.Init();
     control.Init(robotData);
     limelight.Init();
+    controlpanel.Init();
 
 
 }
@@ -21,6 +22,7 @@ void Robot::RobotPeriodic(){
     indexer.Periodic(robotData);
     shooter.Periodic(robotData);
     limelight.Periodic(robotData);
+    controlpanel.Periodic(robotData);
 }
 
 void Robot::TeleopPeriodic() {
