@@ -30,6 +30,11 @@ void DriveSubsystem::Init(){
     dbLM.Set(0);
     dbRM.Set(0);
 
+    dbLM.BurnFlash();
+    dbRM.BurnFlash();
+    dbLS.BurnFlash();
+    dbRS.BurnFlash();
+
     //gyro
     gyro.Calibrate();
     gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
@@ -92,6 +97,7 @@ void DriveSubsystem::Periodic(RobotData &robotData)
 
 
 void DriveSubsystem::Disabled(){
+    setDrive(0, 0);
     dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
 }
@@ -235,28 +241,38 @@ void DriveSubsystem::arc(RobotData &robotData){
 
     wpi::outs() << "arc" << '\n';
     
-    if (angleLeft < -30)
+    if (angleLeft < -10)
     {
         // 0.3 for now because we can
         robotData.pLYStick = 0.55 * robotData.sideRatio;
         robotData.pRYStick = 0.55;
     }
-    else if (angleLeft < -15)
+    else if (angleLeft < -1)
     {
         robotData.pLYStick = 0.1 * robotData.sideRatio;
         robotData.pRYStick = 0.1;
     }
-    else if (angleLeft > 30)
+    /* else if (angleLeft < -2)
+    {
+        robotData.pLYStick = 0.05 * robotData.sideRatio;
+        robotData.pRYStick = 0.05;
+    } */
+    else if (angleLeft > 10)
     {
         // 0.3 for now because we can
         robotData.pLYStick = 0.55;
         robotData.pRYStick = 0.55 * robotData.sideRatio;
     }
-    else if (angleLeft > 15)
+    else if (angleLeft > 1)
     {
         robotData.pLYStick = 0.1;
         robotData.pRYStick = 0.1 * robotData.sideRatio;
     }
+    /* else if (angleLeft > 2)
+    {
+        robotData.pLYStick = 0.05;
+        robotData.pRYStick = 0.05 * robotData.sideRatio;
+    } */
     else {
         // you done gud
         robotData.pLYStick = 0;

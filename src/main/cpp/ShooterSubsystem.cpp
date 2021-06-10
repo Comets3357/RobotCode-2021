@@ -6,8 +6,6 @@
 
 void ShooterSubsystem::Init(){
 
-
-
     shooterWheelM.RestoreFactoryDefaults();
     shooterWheelS.RestoreFactoryDefaults();
     shooterHood.RestoreFactoryDefaults();
@@ -27,6 +25,7 @@ void ShooterSubsystem::Init(){
     shooterWheelM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     shooterWheelS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     shooterHood.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    shooterTurret.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
     /* shooterFlywheelM_pidController.SetP(fkP);
     shooterFlywheelM_pidController.SetI(fkI);
@@ -86,6 +85,10 @@ void ShooterSubsystem::Periodic(RobotData &robotData){
         semiAutoMode(robotData);
     }
 
+}
+
+void ShooterSubsystem::Disabled(){
+    
 }
 
 void ShooterSubsystem::updateData(RobotData &robotData){
