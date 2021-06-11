@@ -16,7 +16,6 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
     updateTimer(robotData);
     frc::SmartDashboard::PutNumber("timer", robotData.seconds);
 
-
     switch (autonSelect)
     {
 

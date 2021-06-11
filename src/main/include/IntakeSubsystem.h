@@ -5,6 +5,7 @@
 #include <frc/DoubleSolenoid.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 
 class IntakeSubsystem {
@@ -12,7 +13,7 @@ class IntakeSubsystem {
     public:
 
         void Init();
-        void Periodic(RobotData &robotData);
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
 
     private:
 

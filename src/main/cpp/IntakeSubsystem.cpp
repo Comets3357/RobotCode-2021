@@ -31,7 +31,7 @@ void IntakeSubsystem::Init(){
 
 }
 
-void IntakeSubsystem::Periodic(RobotData &robotData){
+void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     //decide if in manual mode or auto mode
     if(robotData.manualMode){
         manualMode(robotData);

@@ -5,6 +5,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 class IndexerSubsystem {
     
@@ -12,7 +13,7 @@ class IndexerSubsystem {
 
 
         void Init();
-        void Periodic(RobotData &robotData);
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
 
     private:
 

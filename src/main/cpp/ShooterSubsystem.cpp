@@ -76,7 +76,7 @@ void ShooterSubsystem::Init(){
     
 }
 
-void ShooterSubsystem::Periodic(RobotData &robotData){
+void ShooterSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     updateData(robotData);
 
     if(robotData.manualMode){

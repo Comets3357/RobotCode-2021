@@ -10,7 +10,7 @@ void IndexerSubsystem::Init(){
 //only setting power when needed according to shooter file
 //not much more is needed since we'll have to change everything for the spindexer
 
-void IndexerSubsystem::Periodic(RobotData &robotData){
+void IndexerSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     if(robotData.manualMode){
         manualMode(robotData);
     } else {

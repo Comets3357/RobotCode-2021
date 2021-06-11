@@ -5,6 +5,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 
 class ShooterSubsystem {
@@ -13,7 +14,7 @@ class ShooterSubsystem {
 
         void Init();
         void Disabled();
-        void Periodic(RobotData &robotData);
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
         
 
         //pass limelight and indexer values through

@@ -43,7 +43,7 @@ void DriveSubsystem::Init(){
 
 }
 
-void DriveSubsystem::Periodic(RobotData &robotData)
+void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData)
 {
     updateData(robotData);
     frc::SmartDashboard::PutNumber("driveMode", robotData.driveMode);
@@ -133,6 +133,11 @@ void DriveSubsystem::updateData(RobotData &robotData)
 
     robotData.robotAngle = tempRobotAngle;
     frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
+}
+
+void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+
 }
 
 void DriveSubsystem::setDrive(double lDrive, double rDrive)

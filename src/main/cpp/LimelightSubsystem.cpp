@@ -48,7 +48,7 @@ double LimelightSubsystem::getVerticalOffset(){
 }
 
 
-void LimelightSubsystem::Periodic(RobotData &robotData){
+void LimelightSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
 
     robotData.xOffset = getHorizontalOffset();
     robotData.yOffset = getVerticalOffset();
