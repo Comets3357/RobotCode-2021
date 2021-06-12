@@ -109,11 +109,12 @@ void Controller::updateTeleopData(RobotData &robotData){
 
 
 
-    //used for driving
+    //Primary controls
     robotData.pLYStick = getAxis(0, 1);
     robotData.pRYStick = getAxis(0, 5);
 
-    //secondary controls // indexes are NOT all right yet
+    //secondary controls 
+        // indexes are NOT all right yet
     //robotData.sLCenterBtn = getAxis(1, 8); //only used within controller class
     robotData.sDPad = getPOV(1, 0); //secondaryPOVArrayInput in auto
 
@@ -130,7 +131,5 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.sYBtn = getButton(1, 4); // controls intake in auto
     robotData.sLBumper = getButton(1, 5); // controls indexer in auto
     robotData.sRBumper = getButton(1, 6); // manual
-    
-
 
 }

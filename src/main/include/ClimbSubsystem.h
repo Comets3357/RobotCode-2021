@@ -6,7 +6,7 @@
 
 #include "RobotData.h"
 
-class IntakeSubsystem {
+class ClimbSubsystem {
     
     public:
 
@@ -14,6 +14,9 @@ class IntakeSubsystem {
         void Periodic(RobotData &robotData);
 
     private:
+
+        void semiAutoMode(RobotData &robotData);
+        void manualMode(RobotData &robotData);
 
         void setPistonR(bool direction);
         void setPistonL(bool direction);

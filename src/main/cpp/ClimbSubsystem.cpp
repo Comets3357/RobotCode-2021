@@ -1,4 +1,3 @@
-#include <cmath>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Robot.h"
@@ -81,3 +80,39 @@
  *      - Start motors to reset climb until limit switches/ prox sensors are intiated
  *      - Set lock pistons to default position (push into gear)
 **/
+
+void ClimbSubsystem::Init(){
+    climbArmR.RestoreFactoryDefaults();
+    climbArmR.SetInverted(true);
+    climbArmR.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    climbArmR.SetSmartCurrentLimit(45);
+    climbArmR.Set(0);
+    
+    climbArmL.RestoreFactoryDefaults();
+    climbArmL.SetInverted(true);
+    climbArmL.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    climbArmL.SetSmartCurrentLimit(45);
+    climbArmL.Set(0);
+}
+
+void ClimbSubsystem::Periodic(RobotData &robotData){
+    if(robotData.manualMode){
+        manualMode(robotData);
+    } else {
+        semiAutoMode(robotData);
+    }
+}
+
+void ClimbSubsystem::semiAutoMode(RobotData &robotData){
+    // Climb inititation
+    if(robotData.sABtn){
+        
+    }else{
+
+    }
+
+    // Climb start
+
+    // Climb control panel
+
+}
