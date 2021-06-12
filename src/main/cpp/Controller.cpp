@@ -11,10 +11,6 @@ void Controller::Init(RobotData &robotData){
     //stuff for auton
     timer.Reset();
 
-
-    
-
-
     //initializing struct values
     robotData.pLYStick = 0;
     robotData.pRYStick = 0;
@@ -49,11 +45,11 @@ void Controller::Periodic(RobotData &robotData){
     frc::SmartDashboard::PutBoolean("Manual mode", robotData.manualMode);
 }
 
-int Controller::getShiftFactor(){
-    if (secondary.GetRawButton(5)){
-        return -1;
+bool Controller::getShiftFactor(){
+    if(secondary.GetRawButton(5)){
+        return true;
     } else {
-        return 1;
+        return false;
     }
 }
 
@@ -111,8 +107,8 @@ void Controller::updateTeleopData(RobotData &robotData){
 
 
     //used for driving
-    robotData.pLYStick = -getAxis(0, 1);
-    robotData.pRYStick = -getAxis(0, 5);
+    robotData.pLYStick = getAxis(0, 1);
+    robotData.pRYStick = getAxis(0, 5);
 
     //secondary controls // indexes are NOT all right yet
     //robotData.sLCenterBtn = getAxis(1, 8); //only used within controller class

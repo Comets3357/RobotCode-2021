@@ -10,6 +10,8 @@ void IndexerSubsystem::Init(){
 
     centerSpindle.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     centerSpindle.SetSmartCurrentLimit(45);
+    frc::SmartDashboard::PutNumber("Set Speed", 0);
+
 }
 
 void IndexerSubsystem::Periodic(RobotData &robotData){
@@ -32,13 +34,13 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     
         //retrieve data from shooter for when shooting wheel is up to speed
         if(robotData.readyShoot){
-            setCenterSpindle(0.4);
+            setCenterSpindle(0.47);
 
             //reverse direction for omniwheel to bring balls into shooter
             setOmniWheel(-0.7);
         }else{  
-            setOmniWheel(0.27);
-            setCenterSpindle(0.4);
+            setOmniWheel(0.3);
+            setCenterSpindle(0.47);
         }
 
 
@@ -46,29 +48,44 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
 
         if(robotData.sABtn){ //when intaking balls, spin the indexer
             setOmniWheel(0.1);
-            setCenterSpindle(0.05);
+            setCenterSpindle(0.075);
         }else {
             setOmniWheel(0);
             setCenterSpindle(0);
         }
 
-        if(robotData.sRBumper){
-            
-        }
     }
 }
 
 void IndexerSubsystem::manualMode(RobotData &robotData){ 
-    if(robotData.sABtn){
-        setCenterSpindle(0.4);
-        setOmniWheel(0.27);
-    } else {
-        setOmniWheel(0);
-        setCenterSpindle(0);
+    double speed = frc::SmartDashboard::GetNumber("Set Speed", 0);
+    //^^^ for setting speed after deployed
+
+
+    //if you're using the shift button reverse the indexer
+    if(robotData.shift){
+        if(robotData.sABtn){
+            setCenterSpindle(-0.1);
+            setOmniWheel(-0.1);
+        } else {
+            setOmniWheel(0);
+            setCenterSpindle(0);
+        }
+    //otherwise run the indexer
+    }else{
+       if(robotData.sABtn){
+            setCenterSpindle(0.1);
+            setOmniWheel(0.1);
+        } else {
+            setOmniWheel(0);
+            setCenterSpindle(0);
+        } 
     }
+    
 }
 
 void IndexerSubsystem::setCenterSpindle(double power){
+
     centerSpindle.Set(power);
 }
 

@@ -21,7 +21,7 @@ private:
     void updateTeleopData(RobotData &robotData);
 
 
-    int getShiftFactor();
+    bool getShiftFactor();
     bool shootingMode();
     bool getManual();
 

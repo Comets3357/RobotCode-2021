@@ -7,7 +7,7 @@ struct RobotData
     //controller data
 
     bool manualMode;
-    int shift;
+    bool shift;
     bool shootingMode;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button

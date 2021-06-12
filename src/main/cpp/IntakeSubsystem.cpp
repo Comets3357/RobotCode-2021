@@ -21,6 +21,7 @@ void IntakeSubsystem::Periodic(RobotData &robotData){
     } else {
         semiAutoMode(robotData);
     }
+    //setPiston(true);
 }
 
 
@@ -30,19 +31,20 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
     //if in shooting mode then you want manual control of the intake
     if (shootPOV == robotData.shootingBtn){
-        manualMode(robotData);
+        setPiston(true);
+        //manualMode(robotData);
 
     } else {
 
         //Intake balls
         if(robotData.sABtn){
-            if(getPiston()){ //if the piston is up put it down
-                setPiston(false);
+            if(!getPiston()){ //if the piston is up put it down
+                setPiston(true);
             }
             setIntakeRollers(-0.4);
         }else{
-            if(!getPiston()){ //if the piston is down put it up
-                setPiston(true);
+            if(getPiston()){ //if the piston is down put it up
+                setPiston(false);
             }
             setIntakeRollers(0);
         }
@@ -56,20 +58,32 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 void IntakeSubsystem::manualMode(RobotData &robotData){
 
     if(robotData.sXBtn){
-        if(getPiston()){ //if the piston is up put it down
-            setPiston(false);
+        if(!getPiston()){ //if the piston is up put it down
+            setPiston(true);
         }
     }else{
-        if(!getPiston()){ //if the piston is down put it up
-            setPiston(true);
+        if(getPiston()){ //if the piston is down put it up
+            setPiston(false);
         }
     }
 
-    if(robotData.sYBtn){
-        setIntakeRollers(0.3);
-    } else {
-        setIntakeRollers(0);
+    //if the shift is pressed reverse the intake roller
+    if(robotData.shift){
+        if(robotData.sYBtn){
+            setIntakeRollers(0.3);
+        } else {
+            setIntakeRollers(0);
+        }
+
+    //else run the intake roller
+    }else{
+        if(robotData.sYBtn){
+            setIntakeRollers(-0.3);
+        } else {
+            setIntakeRollers(0);
+        }
     }
+   
 
 }
 

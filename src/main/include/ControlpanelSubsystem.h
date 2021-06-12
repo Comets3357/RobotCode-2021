@@ -13,6 +13,9 @@ class ControlpanelSubsystem {
         void Periodic(RobotData &RobotData);
         void Disabled();
 
+        void semiAutoMode(RobotData &robotData);
+        void manualMode(RobotData &robotData);
+
     private:
 
 

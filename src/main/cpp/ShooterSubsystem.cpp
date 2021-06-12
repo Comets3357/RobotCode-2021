@@ -29,10 +29,12 @@ void ShooterSubsystem::Init(){
     shooterWheelM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     shooterWheelS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     shooterHood.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    shooterTurret.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+
 
     setShooterPID(shooterWheelMPID, 0.0012, 0, 0.02, 0.0002);
     setShooterPID(shooterHoodPID, 0.1, 0, 0, 0);
-    setShooterPID(shooterTurretPID, 0.0535, 0,0,0);
+    setShooterPID(shooterTurretPID, 0.0439, 0,0.9,0);
 
     shooterWheelM.SetSmartCurrentLimit(30);
     shooterWheelS.SetSmartCurrentLimit(30);
@@ -48,6 +50,12 @@ void ShooterSubsystem::Init(){
     shooterWheelS.BurnFlash();
     shooterHood.BurnFlash();
     shooterTurret.BurnFlash();
+
+    setHood(-0.1);
+    if(getHoodLimitSwitch()){
+        setHoodPos(0);
+        setHood(0);
+    }
 }
 
 void ShooterSubsystem::Periodic(RobotData &robotData){
@@ -85,73 +93,74 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
 
     //if the hood touches the limit switch, zero the position
-    if(getHoodLimitSwitch()){
-        setHoodPos(0);
-    }
-
-    //zeros the hood using limit switch through b button
-    if(robotData.sBBtn){
-        if(!robotData.isZero){
-            setHood(-0.1);
-            if(getHoodLimitSwitch()){
-                setHoodPos(0);
-                robotData.isZero = true;
-            }
-        }else{
-            setHood(0);
-        }
-    }else{ //otherwise control hood by joystick
-        setHood(robotData.sRYStick*.1);
-        robotData.isZero = false;
-
-    }
-
-
-    
-
 
     //make hood and turret moveable by joystick
     setTurret(robotData.sLYStick*.1);
 
     //if you're pressing the shooting button
     if (shootPOV == robotData.shootingBtn){ 
-    
-        // if(getHoodPos() < robotData.calcHoodPos-2){
-        //     setHood(0.1);
-        // }else if(getHoodPos() > robotData.calcHoodPos+2){
-        //     setHood(-0.1);
-        // }else{
-        //     setHood(0);
-        // }
 
+        //if we're close to the target the velocity doesn't need to be as high, gets us shooting faster
         if(robotData.yOffset > 5){
             robotData.targetVelocity = 2400;
         }else{
             robotData.targetVelocity = 3000;
         }
+    
 
-        //moves turret until in range
-        if(robotData.xOffset > 1 ){ 
-            setTurret(0.02);
-        }else if(robotData.xOffset < -1){
-            setTurret(-0.02);
-        }else{
-            setTurret(0);
-            //uses PID to get the shooter wheel up to speed and stay there
-            shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
-
-            //once the shooter has high enough velocity tell robot to begin shooting
-            if ((getWheelVel() > robotData.targetVelocity)){
-                robotData.readyShoot = true;
+        shooterHoodPID.SetReference(robotData.calcHoodPos, rev::ControlType::kPosition);
+        if((getHoodPos() > robotData.calcHoodPos-1) && (getHoodPos() < robotData.calcHoodPos+1)){
+            //moves turret until in range
+            if(robotData.xOffset > 1 ){ 
+                setTurret(0.02);
+            }else if(robotData.xOffset < -1){
+                setTurret(-0.02);
             }else{
-                robotData.readyShoot = false;
+                setTurret(0);
+                //uses PID to get the shooter wheel up to speed and stay there
+                shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
+
+                //once the shooter has high enough velocity tell robot to begin shooting
+                if ((getWheelVel() > robotData.targetVelocity)){
+                    robotData.readyShoot = true;
+                }else{
+                    robotData.readyShoot = false;
+                }
+
             }
 
         }
+
+        
+
+        
         
         
     } else {
         setWheel(0);
+        robotData.readyShoot = false;
+        //zeros the hood using limit switch through b button
+
+        setHood(-0.1);
+        if(getHoodLimitSwitch()){
+            setHoodPos(0);
+            setHood(0);
+            //robotData.isZero = true;
+        }
+        
+        // if(!robotData.isZero){
+        //     setHood(-0.1);
+        //     if(getHoodLimitSwitch()){
+        //         setHoodPos(0);
+        //         robotData.isZero = true;
+        //     }
+        // }else{
+        //     setHood(0);
+        // }
+        //otherwise control hood by joystick
+        //setHood(robotData.sRYStick*.1);
+        //robotData.isZero = false;
+
     }
 
 }

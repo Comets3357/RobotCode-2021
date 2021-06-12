@@ -17,8 +17,32 @@ void ControlpanelSubsystem::Init(){
 }
 
 void ControlpanelSubsystem::Periodic(RobotData &robotData){
+    if(robotData.manualMode){
+        manualMode(robotData);
+    } else {
+        semiAutoMode(robotData);
+    }
 
 } 
+
+void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
+    cpManipulator.Set(0.2);
+
+    /**
+     * use the color sensor to find the color
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     */
+
+}
+
+void ControlpanelSubsystem::manualMode(RobotData &robotData){ 
+    
+}
 
 void ControlpanelSubsystem::Disabled(){
    
