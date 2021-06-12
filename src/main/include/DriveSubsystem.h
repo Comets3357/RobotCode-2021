@@ -41,6 +41,7 @@ class DriveSubsystem {
 
 //motors:
         static const int leftLeadDeviceID = 1, leftFollowDeviceID = 2, rightLeadDeviceID = 3, rightFollowDeviceID = 4;
+        
         rev::CANSparkMax dbLM{leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
         rev::CANSparkMax dbRM{rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
         rev::CANSparkMax dbLS{leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -61,5 +62,7 @@ class DriveSubsystem {
 //gyro:
         frc::ADIS16448_IMU gyro{};
 
+// compressor
+        // frc::Compressor::Compressor compressor{0};
 
 }; 

@@ -17,7 +17,8 @@ struct DiagnosticsData
     // motor contollers
     std::array<std::uint16_t, 32> mControlFaults;
 
-    std::array<double, 32>
+    // 33 so that we can use real mControl CAN IDs
+    std::array<double, 33>
         mControlCurrents,
         mControlVoltages,
         mControlPositions,
@@ -25,7 +26,12 @@ struct DiagnosticsData
         mControlTemps;
 
     // PDP slots
-    std::array<double, 16> pdpCurrents, pdpPowers;
+    double pdpTotalVoltage;
+    double pdpTotalCurrent;
+    double pdpTotalPower;
+    double pdpTotalEnergy;
+    double pdpTemp;
+    std::array<double, 16> pdpCurrents;
 
     // compressor
     bool
@@ -56,10 +62,6 @@ private:
     void setLogValues();
     std::string appendLogValues(RobotData &RobotData);
 
-    frc::Timer timer{};
-    bool timerStarted = false;
-    double seconds;
-
     // meta data from driverstation
     std::string day, month, year;
     std::string eventName;
@@ -70,9 +72,12 @@ private:
 
     // match
     std::string matchMode;
-
-    // driverstation checks
     bool pStickConnected;
     bool sStickConnected;
+
+    frc::Timer timer{};
+    bool timerStarted = false;
+    double seconds;
+
     double batteryVoltage;
 };

@@ -22,10 +22,53 @@ void Diagnostics::LogPeriodic(RobotData &robotData, DiagnosticsData &diagnostics
     
     setLogValues();
     // wpi::outs() << appendLogValues(robotData).c_str() << '\n';
-    // frc::SmartDashboard::PutString("appendLogValues", appendLogValues(robotData));
+    frc::SmartDashboard::PutString("appendLogValues", appendLogValues(robotData));
+
     frc::SmartDashboard::PutString("day", day);
     frc::SmartDashboard::PutString("day", month);
     frc::SmartDashboard::PutString("day", year);
+
+    frc::SmartDashboard::PutString("eventName", eventName);
+    // frc::SmartDashboard::PutString("matchType", static_cast<std::string>(matchType));
+    // frc::SmartDashboard::PutString("matchType", matchType);
+    // frc::SmartDashboard::PutValue("matchType", matchType);
+    // alliance
+
+    frc::SmartDashboard::PutNumber("matchNum", matchNum);
+
+    frc::SmartDashboard::PutString("matchMode", matchMode);
+    frc::SmartDashboard::PutBoolean("pStickConnected", pStickConnected);
+    frc::SmartDashboard::PutBoolean("sStickConnected", sStickConnected);
+
+    frc::SmartDashboard::PutNumber("seconds", seconds);
+    frc::SmartDashboard::PutNumber("batteryVoltage", batteryVoltage);
+
+
+    frc::SmartDashboard::PutNumber("accelX", diagnosticsData.accelX);
+    frc::SmartDashboard::PutNumber("accelY", diagnosticsData.accelY);
+    frc::SmartDashboard::PutNumber("accelZ", diagnosticsData.accelZ);
+
+    frc::SmartDashboard::PutNumber("pdpTotalVoltage", diagnosticsData.pdpTotalVoltage);
+    frc::SmartDashboard::PutNumber("pdpTotalCurrent", diagnosticsData.pdpTotalCurrent);
+    frc::SmartDashboard::PutNumber("pdpTotalPower", diagnosticsData.pdpTotalPower);
+    frc::SmartDashboard::PutNumber("pdpTotalEnergy", diagnosticsData.pdpTotalEnergy);
+    frc::SmartDashboard::PutNumber("pdpTemp", diagnosticsData.pdpTemp);
+    
+    frc::SmartDashboard::PutNumber("dbLM current", diagnosticsData.mControlCurrents.at(1));
+    frc::SmartDashboard::PutNumber("dbRM current", diagnosticsData.mControlCurrents.at(3));
+    frc::SmartDashboard::PutNumber("dbLS current", diagnosticsData.mControlCurrents.at(2));
+    frc::SmartDashboard::PutNumber("dbRS current", diagnosticsData.mControlCurrents.at(4));
+
+    frc::SmartDashboard::PutNumber("dbLM voltage", diagnosticsData.mControlVoltages.at(1));
+    frc::SmartDashboard::PutNumber("dbRM voltage", diagnosticsData.mControlVoltages.at(3));
+    frc::SmartDashboard::PutNumber("dbLS voltage", diagnosticsData.mControlVoltages.at(2));
+    frc::SmartDashboard::PutNumber("dbRS voltage", diagnosticsData.mControlVoltages.at(4));
+    
+    frc::SmartDashboard::PutNumber("dbLM temperature", diagnosticsData.mControlTemps.at(1));
+    frc::SmartDashboard::PutNumber("dbRM temperature", diagnosticsData.mControlTemps.at(3));
+    frc::SmartDashboard::PutNumber("dbLS temperature", diagnosticsData.mControlTemps.at(2));
+    frc::SmartDashboard::PutNumber("dbRS temperature", diagnosticsData.mControlTemps.at(4));
+
 }
 
 void Diagnostics::TestPeriodic(DiagnosticsData &diagnosticsData)

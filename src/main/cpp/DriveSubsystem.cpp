@@ -135,10 +135,6 @@ void DriveSubsystem::updateData(RobotData &robotData)
     frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
 }
 
-void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
-{
-
-}
 
 void DriveSubsystem::setDrive(double lDrive, double rDrive)
 {
@@ -286,4 +282,42 @@ void DriveSubsystem::arc(RobotData &robotData){
         wpi::outs() << "FINISHED ARC" << '\n';
     }
 
+}
+
+void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    // accelerometer
+    diagnosticsData.accelX = accelerometer.GetX();
+    diagnosticsData.accelY = accelerometer.GetY();
+    diagnosticsData.accelZ = accelerometer.GetZ();
+
+    // pdp
+    diagnosticsData.pdpTotalVoltage = pdp.GetVoltage();
+    diagnosticsData.pdpTotalCurrent = pdp.GetTotalCurrent();
+    diagnosticsData.pdpTotalPower = pdp.GetTotalPower();
+    diagnosticsData.pdpTotalEnergy = pdp.GetTotalEnergy();
+    diagnosticsData.pdpTemp = pdp.GetTemperature();
+    for (int i = 0; i < 16; i++)
+    {
+        diagnosticsData.pdpCurrents.at(i) = pdp.GetCurrent(i);
+    }
+
+    // compressor
+
+
+    // db motor controllers
+    diagnosticsData.mControlCurrents.at(leftLeadDeviceID) = dbLM.GetOutputCurrent();
+    diagnosticsData.mControlCurrents.at(rightLeadDeviceID) = dbRM.GetOutputCurrent();
+    diagnosticsData.mControlCurrents.at(leftFollowDeviceID) = dbLS.GetOutputCurrent();
+    diagnosticsData.mControlCurrents.at(rightFollowDeviceID) = dbRS.GetOutputCurrent();
+
+    diagnosticsData.mControlVoltages.at(leftLeadDeviceID) = dbLM.GetBusVoltage();
+    diagnosticsData.mControlVoltages.at(rightLeadDeviceID) = dbRM.GetBusVoltage();
+    diagnosticsData.mControlVoltages.at(leftFollowDeviceID) = dbLS.GetBusVoltage();
+    diagnosticsData.mControlVoltages.at(rightFollowDeviceID) = dbRS.GetBusVoltage();
+
+    diagnosticsData.mControlTemps.at(leftLeadDeviceID) = dbLM.GetMotorTemperature();
+    diagnosticsData.mControlTemps.at(rightLeadDeviceID) = dbRM.GetMotorTemperature();
+    diagnosticsData.mControlTemps.at(leftFollowDeviceID) = dbLS.GetMotorTemperature();
+    diagnosticsData.mControlTemps.at(rightFollowDeviceID) = dbRS.GetMotorTemperature();
 }
