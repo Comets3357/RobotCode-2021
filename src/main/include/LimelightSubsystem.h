@@ -21,6 +21,7 @@ class LimelightSubsystem : public frc2::SubsystemBase {
 
     private:
 
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         //double getAngle_Horizontal();
         double targetOffsetAngle_Horizontal; 

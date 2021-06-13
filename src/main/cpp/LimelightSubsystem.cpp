@@ -65,11 +65,17 @@ void LimelightSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnos
     frc::SmartDashboard::PutNumber("ty",  table->GetNumber("ty",0.0)); //vertical offset
     frc::SmartDashboard::PutNumber("ts",  table->GetNumber("ts",0.0)); //skew offset
 
-
+    updateDiagnostics(diagnosticsData);
    
 
 }
 
 
 
-
+void LimelightSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * connected
+     * some other stuff
+     */
+}

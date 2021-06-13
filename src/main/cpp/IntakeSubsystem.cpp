@@ -38,6 +38,8 @@ void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostic
     } else {
         semiAutoMode(robotData);
     }
+
+    updateDiagnostics(diagnosticsData);
 }
 
 
@@ -101,3 +103,18 @@ void IntakeSubsystem::setIntakeRollers(double power){
 
 
 
+void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * solenoidOne
+     * intake rollers 32
+     */
+    diagnosticsData.solenoidOneValue = solenoidOne.Get();
+
+    diagnosticsData.mControlCurrents.at(32) = rollers.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(32) = rollers.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(32) = rollers.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(32) = rollersEncoder.GetPosition();
+    diagnosticsData.mControlVelocities.at(32) = rollersEncoder.GetVelocity();
+}

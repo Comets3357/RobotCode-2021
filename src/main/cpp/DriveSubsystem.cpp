@@ -91,6 +91,9 @@ void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostics
 
     //setting the motor speed, tank drive
     setDrive(lDrive, rDrive);
+
+
+    updateDiagnostics(diagnosticsData);
 }
 
 
@@ -320,4 +323,9 @@ void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
     diagnosticsData.mControlTemps.at(rightLeadDeviceID) = dbRM.GetMotorTemperature();
     diagnosticsData.mControlTemps.at(leftFollowDeviceID) = dbLS.GetMotorTemperature();
     diagnosticsData.mControlTemps.at(rightFollowDeviceID) = dbRS.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(leftLeadDeviceID) = dbLMEncoder.GetPosition();
+    diagnosticsData.mControlPositions.at(rightLeadDeviceID) = dbRMEncoder.GetPosition();
+    diagnosticsData.mControlVelocities.at(leftLeadDeviceID) = dbLMEncoder.GetVelocity();
+    diagnosticsData.mControlVelocities.at(rightLeadDeviceID) = dbRMEncoder.GetVelocity();
 }

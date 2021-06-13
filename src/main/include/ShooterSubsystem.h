@@ -44,6 +44,8 @@ class ShooterSubsystem {
         void setWheel(double power);
         void setHoodPos(double pos);
         void setTurretPos(double pos);
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         bool shooting = false;
 

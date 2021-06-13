@@ -24,6 +24,8 @@ class IntakeSubsystem {
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
 
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
+
         /* bool goBack = false;
         bool manualIntakeButtonDown = false;
         bool manualIntake = false;
@@ -36,6 +38,7 @@ class IntakeSubsystem {
 
         static const int intakeRollersID = 32;
         rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
+        rev::CANEncoder rollersEncoder = rollers.GetEncoder();
 
         frc::DoubleSolenoid solenoidOne{1, 2};
         

@@ -24,6 +24,8 @@ class IndexerSubsystem {
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
 
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
+
 //state variables:
         int shootPOV = -1;
         int omniDir = 1;
