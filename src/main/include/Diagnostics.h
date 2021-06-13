@@ -62,6 +62,9 @@ private:
     void setLogValues();
     std::string appendLogValues(RobotData &RobotData);
 
+    // field management system
+    bool fmsAttatched;
+
     // meta data from driverstation
     std::string day, month, year;
     std::string eventName;

@@ -17,6 +17,8 @@ void IndexerSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosti
         semiAutoMode(robotData);
     }
 
+    updateDiagnostics(diagnosticsData);
+
 }
 
 void IndexerSubsystem::semiAutoMode(RobotData &robotData){
@@ -83,3 +85,27 @@ double IndexerSubsystem::getSpinnerVel(){
 }
 
 
+void IndexerSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * center spindle/kick 11
+     * omni wheel 12
+     * 
+     * center spindle encoder
+     * omni wheel encoder
+     */
+
+    diagnosticsData.mControlCurrents.at(11) = centerSpindle.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(11) = centerSpindle.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(11) = centerSpindle.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(11) = centerSpindlePOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(11) = centerSpindlePOS.GetVelocity();
+
+    diagnosticsData.mControlCurrents.at(12) = centerSpindle.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(12) = centerSpindle.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(12) = centerSpindle.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(12) = centerSpindlePOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(12) = centerSpindlePOS.GetVelocity();
+}
