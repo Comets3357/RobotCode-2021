@@ -24,8 +24,11 @@ class DriveSubsystem {
         void updateData(RobotData &robotData);
         void updateGyro(RobotData &robotData);
 
-        void setDrive(double lDrive, double rDrive);
-    
+        //doesn't work
+        //void setDrivePID(rev::CANPIDController &motor, int p, int i, int d, int ff);
+
+        void setDrive(RobotData &robotData);
+        void courseCorrectedDrive(RobotData &robotData);
 
         void potato(RobotData &robotData);
         void initDriveForward(RobotData &robotData);
@@ -45,8 +48,8 @@ class DriveSubsystem {
         rev::CANEncoder dbRMEncoder = dbRM.GetEncoder();
         rev::CANEncoder dbLMEncoder = dbLM.GetEncoder();
 
-        /* rev::CANPIDController dbRM_pidController = dbRM.GetPIDController();
-        rev::CANPIDController dbLM_pidController = dbLM.GetPIDController(); */
+        rev::CANPIDController dbRMPID = dbRM.GetPIDController();
+        rev::CANPIDController dbLMPID = dbLM.GetPIDController();
         
 
 //gyro:

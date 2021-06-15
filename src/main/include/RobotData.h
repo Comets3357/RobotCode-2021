@@ -5,6 +5,8 @@ enum AutonSelect
 {
     autonSelect_potato,
     autonSelect_exitInitLine,
+    autonSelect_shootAndDrive,
+    autonSelect_shootAndCollectBalls,
     autonSelect_goofy // temporary
 };
 
@@ -16,7 +18,8 @@ enum DriveMode
     driveMode_initDriveForward,
     driveMode_driveForward,
     driveMode_arc,
-    driveMode_initArc
+    driveMode_initArc, 
+    driveMode_PIDtest
 };
 
 //could be separated into all separate files for the data *from* each subsystem
@@ -28,13 +31,13 @@ struct RobotData
 
     //controller data
 
-    bool manualMode;
+    bool manualMode = false;
     int shift;
     bool shootingMode;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
-    //primary
 
+    //primary
     double pLXStick;
     double pLYStick = 0;
     double pRXStick;
@@ -88,6 +91,8 @@ struct RobotData
     double flywheelVelocity;
     bool readyShoot = false;
     bool isZero = false;
+    static const int shootingBtn = 90;
+    int targetVelocity = 0;
 
     //limelight data
     double xOffset;

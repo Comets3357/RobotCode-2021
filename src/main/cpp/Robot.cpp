@@ -3,11 +3,11 @@
 
 void Robot::RobotInit() {
 
-    intake.Init();
+    //intake.Init();
     db.Init();
-    indexer.Init();
-    shooter.Init();
-    limelight.Init();
+    //indexer.Init();
+    //shooter.Init();
+    //limelight.Init();
 
 }
 
@@ -16,29 +16,31 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic(){
     if (!IsDisabled()) {
         db.Periodic(robotData);
-        /* intake.Periodic(robotData);
-        indexer.Periodic(robotData);
-        shooter.Periodic(robotData);
-        limelight.Periodic(robotData); */
+        //intake.Periodic(robotData);
+        //indexer.Periodic(robotData);
+        //shooter.Periodic(robotData);
+        //limelight.Periodic(robotData);
     }
 }
 
 void Robot::AutonomousInit() {
-    auton.Init();
+    //auton.Init();
 }
 
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
-        auton.Periodic(autonSelect_goofy, robotData);
+        //auton.Periodic(autonSelect_goofy, robotData);
     }
 }
 
 void Robot::TeleopPeriodic() {
     control.Periodic(robotData);
+    robotData.driveMode = driveMode_teleop;
+    //robotData.driveMode = driveMode_PIDtest;
 }
 
 void Robot::DisabledInit(){
-    db.Disabled();
+   db.Disabled();
 }
 
 

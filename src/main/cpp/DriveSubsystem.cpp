@@ -3,6 +3,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
+
 void DriveSubsystem::Init(){
 
     dbLM.RestoreFactoryDefaults();
@@ -29,6 +30,22 @@ void DriveSubsystem::Init(){
 
     dbLM.Set(0);
     dbRM.Set(0);
+
+    rev::CANSparkMaxLowLevel::EnableExternalUSBControl(true);
+
+
+    //values from testing on a weighted db
+    //have yet to be tested on the comp bot
+    dbLMPID.SetP(0.00027);
+    dbLMPID.SetI(0);
+    dbLMPID.SetD(0.008);
+    dbLMPID.SetFF(0.00019);
+
+    dbRMPID.SetP(0.00027);
+    dbRMPID.SetI(0);
+    dbRMPID.SetD(0.008);
+    dbRMPID.SetFF(0.00019);
+
 
     dbLM.BurnFlash();
     dbRM.BurnFlash();
@@ -58,46 +75,74 @@ void DriveSubsystem::Periodic(RobotData &robotData)
     frc::SmartDashboard::PutNumber("getAngle", gyro.GetAngle());
 
 
-
-
     switch (robotData.driveMode)
     {
     case driveMode_teleop:
+        setDrive(robotData);
         break;
     case driveMode_potato:
         potato(robotData);
+        setDrive(robotData);
         break;
     case driveMode_initDriveForward:
         initDriveForward(robotData);
+        setDrive(robotData);
         break;
     case driveMode_driveForward:
         driveForward(robotData);
+        setDrive(robotData);
         break;
     case driveMode_initArc:
         initArc(robotData);
+        setDrive(robotData);
         break;
     case driveMode_arc:
         arc(robotData);
+        setDrive(robotData);
+        break;
+    case driveMode_PIDtest:
+        courseCorrectedDrive(robotData);
         break;
     default:
         potato(robotData);
+        setDrive(robotData);
         break;
     }
 
-    // teleop and multiple auton driveModes will use this
-    //slows down the speed to 0.3 of the total
-    lDrive = robotData.pLYStick * .3;
-    rDrive = robotData.pRYStick * .3;
 
+    // teleop and multiple auton driveModes will use this
+    // lDrive = robotData.pLYStick*3000;
+    // rDrive = robotData.pRYStick*3000;
+
+
+    //adjusting deadzone, temporary
+    /* if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
+        lDrive = robotData.pLYStick*5000;
+    } else {
+        lDrive = 0;
+    }
+    if(robotData.pRYStick <= -.08 || robotData.pRYStick >= .08){
+        rDrive = robotData.pRYStick*5000;
+    } else {
+        rDrive = 0;
+    } */
+
+    
     //setting the motor speed, tank drive
-    setDrive(lDrive, rDrive);
+    // setDrive(robotData);
+
+    
+    /* wpi::outs() << "js input left" << robotData.pLYStick;
+    wpi::outs() << "set velocity left" << lDrive; */
 }
 
 
 
 
 void DriveSubsystem::Disabled(){
-    setDrive(0, 0);
+    //setDrive(0, 0);
+    dbLM.Set(0);
+    dbRM.Set(0);
     dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
 }
@@ -115,12 +160,11 @@ void DriveSubsystem::updateData(RobotData &robotData)
     robotData.currentLDBPos = dbLMEncoder.GetPosition();
 
 
-
     gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
     //this is the direction that the robot is facing
+    //add negative sign for comp bot, remove for test db
     robotData.rawAngle = -gyro.GetAngle();
     double tempRobotAngle = -gyro.GetAngle();
-
 
     //calculates the non continuous angle
     while(tempRobotAngle >= 360){
@@ -135,10 +179,62 @@ void DriveSubsystem::updateData(RobotData &robotData)
     frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
 }
 
-void DriveSubsystem::setDrive(double lDrive, double rDrive)
+//not in use bc it didn't work for some reason
+/* void DriveSubsystem::setDrivePID(rev::CANPIDController &motor, int p, int i, int d, int ff){
+    motor.SetP(p);
+    motor.SetI(i);
+    motor.SetD(d);
+    motor.SetFF(ff);
+} */
+
+void DriveSubsystem::setDrive(RobotData &robotData)
 {
-    dbLM.Set(lDrive);
-    dbRM.Set(rDrive);
+    //how to control db?
+    if(robotData.driveMode = driveMode_teleop){
+        if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
+            lDrive = robotData.pLYStick*5000;
+        } else {
+            lDrive = 0;
+        }
+        if(robotData.pRYStick <= -.08 || robotData.pRYStick >= .08){
+            rDrive = robotData.pRYStick*5000;
+        } else {
+            rDrive = 0;
+        }
+    }
+    
+    /* dbLM.Set(lDrive);
+    dbRM.Set(rDrive); */
+
+    //velocity goes from -5000 to 5000, joystick inputs go from -1 to 1
+    dbLMPID.SetReference(lDrive, rev::ControlType::kVelocity);
+    dbRMPID.SetReference(rDrive, rev::ControlType::kVelocity);
+
+    frc::SmartDashboard::PutNumber("js input left" , robotData.pLYStick);
+    frc::SmartDashboard::PutNumber("set velocity left" , lDrive);
+    frc::SmartDashboard::PutNumber("js input right" , robotData.pRYStick);
+    frc::SmartDashboard::PutNumber("set velocity right" , rDrive);
+    
+
+    
+}
+
+
+//this function is currently written so that the robot tries to stay at an angle of zero
+void DriveSubsystem::courseCorrectedDrive(RobotData &robotData){
+    //if left is behind right / if robotAngle (non continuous) is between 180 and 360
+        //give speed to left side + vice versa
+        double setPoint;
+
+        if(robotData.robotAngle > 180){
+            setPoint = (360-robotData.robotAngle) * 30;
+        } else {
+            setPoint = 0;
+        }
+        
+        dbLMPID.SetReference(setPoint, rev::ControlType::kVelocity);
+    
+    
 }
 
 
@@ -184,7 +280,7 @@ void DriveSubsystem::driveForward(RobotData &robotData)
     frc::SmartDashboard::PutNumber("lDistLeft", lDistLeft);
     frc::SmartDashboard::PutNumber("rDistLeft", rDistLeft);
 
-    if (lDistLeft > (robotData.desiredDBDist * 0.2)) {
+    /* if (lDistLeft > (robotData.desiredDBDist * 0.2)) {
         robotData.pLYStick = 0.5;
     }
     else if (lDistLeft > (robotData.desiredDBDist * 0.1)) {
@@ -208,6 +304,11 @@ void DriveSubsystem::driveForward(RobotData &robotData)
     }
     else {
         robotData.pRYStick = 0;
+    } */
+
+
+    if (lDistLeft > 5) {
+        
     }
 
     if (lDistLeft <= (robotData.desiredDBDist * 0.03) && (rDistLeft <= (robotData.desiredDBDist * 0.03))) {
@@ -241,32 +342,42 @@ void DriveSubsystem::arc(RobotData &robotData){
 
     wpi::outs() << "arc" << '\n';
     
-    if (angleLeft < -10)
+    if (angleLeft < -20)
     {
         // 0.3 for now because we can
         robotData.pLYStick = 0.55 * robotData.sideRatio;
         robotData.pRYStick = 0.55;
     }
-    else if (angleLeft < -1)
+    else if (angleLeft < -10)
     {
         robotData.pLYStick = 0.1 * robotData.sideRatio;
         robotData.pRYStick = 0.1;
+    }
+    else if (angleLeft < -2)
+    {
+        robotData.pLYStick = 0.07 * robotData.sideRatio;
+        robotData.pRYStick = 0.07;
     }
     /* else if (angleLeft < -2)
     {
         robotData.pLYStick = 0.05 * robotData.sideRatio;
         robotData.pRYStick = 0.05;
     } */
-    else if (angleLeft > 10)
+    else if (angleLeft > 20)
     {
         // 0.3 for now because we can
         robotData.pLYStick = 0.55;
         robotData.pRYStick = 0.55 * robotData.sideRatio;
     }
-    else if (angleLeft > 1)
+    else if (angleLeft > 10)
     {
         robotData.pLYStick = 0.1;
         robotData.pRYStick = 0.1 * robotData.sideRatio;
+    }
+    else if (angleLeft > 2)
+    {
+        robotData.pLYStick = 0.07;
+        robotData.pRYStick = 0.07 * robotData.sideRatio;
     }
     /* else if (angleLeft > 2)
     {

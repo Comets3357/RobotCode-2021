@@ -3,25 +3,24 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
+#include <frc/shuffleboard/Shuffleboard.h>
 
 #include "RobotData.h"
 
 class IndexerSubsystem {
     
     public:
-
-
         void Init();
         void Periodic(RobotData &robotData);
 
     private:
-
-    
-        void setCenterSpindle (double power); //function
-        void setOmniWheel (double power); //function
-        double getSpinnerVel();
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
+
+        void setCenterSpindle (double power); //function
+        void setOmniWheel (double power); //function
+        
+        double getSpinnerVel();
 
 //state variables:
         int shootPOV = -1;
