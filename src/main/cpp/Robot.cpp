@@ -8,19 +8,19 @@ void Robot::RobotInit() {
     indexer.Init();
     shooter.Init();
     limelight.Init();
+    controlpanel.Init();
 
 }
 
 
 
 void Robot::RobotPeriodic(){
-    if (!IsDisabled()) {
-        db.Periodic(robotData);
-        /* intake.Periodic(robotData);
-        indexer.Periodic(robotData);
-        shooter.Periodic(robotData);
-        limelight.Periodic(robotData); */
-    }
+    db.Periodic(robotData);
+    intake.Periodic(robotData);
+    indexer.Periodic(robotData);
+    shooter.Periodic(robotData);
+    limelight.Periodic(robotData);
+    controlpanel.Periodic(robotData);
 }
 
 void Robot::AutonomousInit() {
@@ -38,8 +38,9 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::DisabledInit(){
-    db.Disabled();
+    //db.Disabled();
 }
+
 
 
 

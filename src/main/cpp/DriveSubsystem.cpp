@@ -1,5 +1,4 @@
 #include "Robot.h"
-#include "DriveSubsystem.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
@@ -59,7 +58,6 @@ void DriveSubsystem::Periodic(RobotData &robotData)
 
 
 
-
     switch (robotData.driveMode)
     {
     case driveMode_teleop:
@@ -71,8 +69,8 @@ void DriveSubsystem::Periodic(RobotData &robotData)
         initDriveForward(robotData);
         break;
     case driveMode_driveForward:
-        driveForward(robotData);
         break;
+        driveForward(robotData);
     case driveMode_initArc:
         initArc(robotData);
         break;
@@ -81,26 +79,33 @@ void DriveSubsystem::Periodic(RobotData &robotData)
         break;
     default:
         potato(robotData);
-        break;
     }
 
-    // teleop and multiple auton driveModes will use this
-    //slows down the speed to 0.3 of the total
-    lDrive = robotData.pLYStick * .3;
-    rDrive = robotData.pRYStick * .3;
+    //adds spice to drive base :)
+    lDrive = robotData.pLYStick;
+    rDrive = robotData.pRYStick;
+    frc::SmartDashboard::PutNumber("ldrive", lDrive);
+    frc::SmartDashboard::PutNumber("rdrive", rDrive);
 
+
+    double frontBack = cStraight*(lDrive + rDrive)/2;
+    double leftRight = cTurn*(rDrive - lDrive)/2;
+
+    
     //setting the motor speed, tank drive
-    setDrive(lDrive, rDrive);
+    setDrive((frontBack - leftRight), (frontBack + leftRight));
 }
 
 
 
 
-void DriveSubsystem::Disabled(){
-    setDrive(0, 0);
-    dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-    dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-}
+// void DriveSubsystem::Disabled(){
+//     setDrive(0, 0);
+//     dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+//     dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+//     dbLM.Set(0);
+//     dbRM.Set(0);
+// }
 
 
 

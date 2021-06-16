@@ -5,21 +5,25 @@
 
 
 void ShooterSubsystem::Init(){
-
     shooterWheelM.RestoreFactoryDefaults();
     shooterWheelS.RestoreFactoryDefaults();
     shooterHood.RestoreFactoryDefaults();
     shooterTurret.RestoreFactoryDefaults();
 
     shooterWheelS.SetInverted(true);
+    shooterWheelM.SetInverted(true);
+    shooterTurret.SetInverted(false);
+    shooterHood.SetInverted(true);
+    /**
+     * note:
+     * the shooter hood isn't inverted the right way
+     * a positive set value moves the hood down rather than up
+     * but don't change it because it'll mess up the limit switch 
+     * easier to just do it this way then rewiring the entire limitswitch
+     */
 
 
     shooterWheelS.Follow(shooterWheelM);
-
-
-    shooterWheelM.SetInverted(true);
-    shooterHood.SetInverted(true);
-    shooterTurret.SetInverted(false);
 
 
     shooterWheelM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
@@ -27,40 +31,10 @@ void ShooterSubsystem::Init(){
     shooterHood.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     shooterTurret.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
-    /* shooterFlywheelM_pidController.SetP(fkP);
-    shooterFlywheelM_pidController.SetI(fkI);
-    shooterFlywheelM_pidController.SetD(fkD);
-    shooterFlywheelM_pidController.SetIZone(fkIz);
-    shooterFlywheelM_pidController.SetFF(fkFF);
-    shooterFlywheelM_pidController.SetOutputRange(fkMinOutput, fkMaxOutput);
 
-    shooterFlywheelS_pidController.SetP(fkP);
-    shooterFlywheelS_pidController.SetI(fkI);
-    shooterFlywheelS_pidController.SetD(fkD);
-    shooterFlywheelS_pidController.SetIZone(fkIz);
-    shooterFlywheelS_pidController.SetFF(fkFF);
-    shooterFlywheelS_pidController.SetOutputRange(fkMinOutput, fkMaxOutput);
-
-    shooterHood_pidController.SetP(hkP);
-    shooterHood_pidController.SetI(hkI);
-    shooterHood_pidController.SetD(hkD);
-    shooterHood_pidController.SetIZone(hkIz);
-    shooterHood_pidController.SetFF(hkFF);
-    shooterHood_pidController.SetOutputRange(hkMinOutput, hkMaxOutput);
-
-    shooterTurret_pidController.SetP(tkP);
-    shooterTurret_pidController.SetI(tkI);
-    shooterTurret_pidController.SetD(tkD);
-    shooterTurret_pidController.SetIZone(tkIz);
-    shooterTurret_pidController.SetFF(tkFF);
-    shooterTurret_pidController.SetOutputRange(tkMinOutput, tkMaxOutput);
-
-    shooterKick_pidController.SetP(kkP);
-    shooterKick_pidController.SetI(kkI);
-    shooterKick_pidController.SetD(kkD);
-    shooterKick_pidController.SetIZone(kkIz);
-    shooterKick_pidController.SetFF(kkFF);
-    shooterKick_pidController.SetOutputRange(kkMinOutput, kkMaxOutput); */
+    setShooterPID(shooterWheelMPID, 0.0012, 0, 0.02, 0.0002);
+    setShooterPID(shooterHoodPID, 0.1, 0, 0, 0);
+    setShooterPID(shooterTurretPID, 0.0439, 0,0.9,0);
 
     shooterWheelM.SetSmartCurrentLimit(30);
     shooterWheelS.SetSmartCurrentLimit(30);
@@ -71,12 +45,25 @@ void ShooterSubsystem::Init(){
     shooterTurretPOS.SetPosition(0);
     shooterWheelMPOS.SetPosition(0);
     shooterWheelSPOS.SetPosition(0);
-    shooterHood.Set(0);
 
-    
+    shooterWheelM.BurnFlash();
+    shooterWheelS.BurnFlash();
+    shooterHood.BurnFlash();
+    shooterTurret.BurnFlash();
+
+    setHood(-0.1);
+    if(getHoodLimitSwitch()){
+        setHoodPos(0);
+        setHood(0);
+    }
 }
 
 void ShooterSubsystem::Periodic(RobotData &robotData){
+
+    frc::SmartDashboard::PutNumber("hood Position",  getHoodPos()); 
+    frc::SmartDashboard::PutNumber("turret Position",  getTurretPos()); 
+    frc::SmartDashboard::PutNumber("calc hood pos",  robotData.calcHoodPos); 
+
     updateData(robotData);
 
     if(robotData.manualMode){
@@ -98,85 +85,91 @@ void ShooterSubsystem::updateData(RobotData &robotData){
 }
 
 void ShooterSubsystem::semiAutoMode(RobotData &robotData){
-
+   
+   //retreive controller input
     shootPOV = robotData.sDPad;
-    setHood(robotData.sRYStick*.1);
-    setTurret(robotData.sLYStick*.2);
+    frc::SmartDashboard::PutNumber("pov", shootPOV);
+    frc::SmartDashboard::PutNumber("x", robotData.xOffset);
+    frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
+    frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
+    frc::SmartDashboard::PutNumber("target velocity", robotData.targetVelocity);
 
     frc::SmartDashboard::PutNumber("shootPOV",  shootPOV);
     frc::SmartDashboard::PutNumber("sRYStick",  robotData.sRYStick);
     frc::SmartDashboard::PutNumber("sLYStick",  robotData.sLYStick);
 
-    //shooting from the line
-    if (shootPOV == 0){
+    //if you're pressing the shooting button
+    if (shootPOV == robotData.shootingBtn){ 
 
-        if(!robotData.isZero){
-            setHood(0.1);
-            if(getHoodLimitSwitch()){
-                setHoodPos(0);
-                setHood(0);
-                robotData.isZero = true;
+        //if we're close to the target the velocity doesn't need to be as high, gets us shooting faster
+        if(robotData.yOffset > 5){
+            robotData.targetVelocity = 2400;
+        }else{
+            robotData.targetVelocity = 3000;
+        }
+    
+        //Use PID to set Hood
+        shooterHoodPID.SetReference(robotData.calcHoodPos, rev::ControlType::kPosition);
+        if((getHoodPos() > robotData.calcHoodPos-1) && (getHoodPos() < robotData.calcHoodPos+1)){
+
+            //moves turret until in range
+            if(robotData.xOffset > 1 ){ 
+                setTurret(0.02);
+            }else if(robotData.xOffset < -1){
+                setTurret(-0.02);
+            }else{
+                setTurret(0);
+                //uses PID to get the shooter wheel up to speed and stay there
+                shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
+
+                //once the shooter has high enough velocity tell robot to begin shooting
+                if ((getWheelVel() > robotData.targetVelocity)){
+                    robotData.readyShoot = true;
+                }else{
+                    robotData.readyShoot = false;
+                }
+
             }
 
         }
-        
-        
 
-        // if (getHoodPos() > 12.5){
-        //     setHood(-0.15);
-        // } else if (getHoodPos() < 10.5){
-        //     setHood(0.15);
-        // } else {
-        //     setHood(0);
-        // }
+    } else {  //not shooting
 
-        if(getHoodPos() < robotData.calcHoodPos-2){
-            setHood(0.1);
-        }else if(getHoodPos() > robotData.calcHoodPos+2){
-            setHood(-0.1);
+        if(robotData.sBBtn){
+            shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
         }else{
+            setWheel(0);
+        }
+        
+        robotData.readyShoot = false;
+
+        //zeros the hood after
+        setHood(-0.1);
+        if(getHoodLimitSwitch()){
+            setHoodPos(0);
             setHood(0);
-        }
-
-        if(robotData.xOffset > 5 ){
-            setTurret(0.1);
-        }else if(robotData.xOffset < -5){
-            setTurret(-0.1);
-        }else{
-            setTurret(0);
-        }
-
-        
-        if (getWheelVel() > 2900 && getWheelVel() < 3150){
-            setWheel(0.74);
-        } else if (getWheelVel() > 3150){
-            setWheel(0.68);
-        } else if (getWheelVel() > 1750){
-            setWheel(0.77);
-        } else{
-            setWheel(0.83);
-        }
-
-
-
-        //add varibale to tell omni to switch directions
-        
-        if ((getWheelVel() > 2900 && getWheelVel() < 3150)){
-            robotData.readyShoot = true;
-        }else{
-            robotData.readyShoot = false;
+            //robotData.isZero = true;
         }
         
-    } else {
-        setTurret(0);
-        setWheel(0);
-        setHood(0);
-        robotData.isZero = false;
+
     }
 
 }
 
 void ShooterSubsystem::manualMode(RobotData &robotData){
+    //make hood and turret moveable by joystick
+    setTurret(robotData.sLYStick*.1);
+
+    //zeros hood using limitswitch
+    if(robotData.sBBtn){
+        setHood(-0.1);     
+        if(getHoodLimitSwitch()){
+            setHoodPos(0);
+            setHood(0);
+        }
+    }else{
+        setHood(robotData.sRYStick*.1);
+    }
 
 }
 
@@ -219,3 +212,21 @@ void ShooterSubsystem::setWheel(double power){
 double ShooterSubsystem::getWheelVel(){
     return shooterWheelMPOS.GetVelocity();
 }
+
+/**
+ * Sets all the PID values for specific motor
+ * @param motor name of the PID controller
+ */
+void ShooterSubsystem::setShooterPID(rev::CANPIDController motor, double p, double i, double d, double ff){
+    motor.SetP(p);
+    motor.SetI(i);
+    motor.SetD(d);
+    motor.SetFF(ff);
+
+}
+
+// void ShooterSubsystem::Disabled(){
+//     setHood(0);
+//     setTurret(0);
+//     setWheel(0);
+// }

@@ -11,6 +11,8 @@ class Controller {
 public:
 
     void Periodic(RobotData &robotData);
+    void Init(RobotData &robotData);
+    void Auton(RobotData &robotData);
 
 
 private:
@@ -18,8 +20,8 @@ private:
     void updateTeleopData(RobotData &robotData);
 
 
-    int getShiftFactor();
-    bool shootingMode();
+    bool getShiftFactor();
+    bool shootingMode(int pov);
     bool getManual();
 
 

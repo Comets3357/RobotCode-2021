@@ -13,12 +13,14 @@ class DriveSubsystem {
         void Init();
         void Periodic(RobotData &robotData);
         void Auton(int select, RobotData &robotData);
-        void Disabled();
+        //void Disabled();
 
     private:
 
         double lDrive = 0;
         double rDrive = 0;
+        const double cStraight = 1;
+        const double cTurn = 1;
         bool climbMode = false;
 
         void updateData(RobotData &robotData);
