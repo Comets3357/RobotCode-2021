@@ -2,7 +2,8 @@
 
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
-#include <frc/DoubleSolenoid.h>
+//#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
 
 #include "RobotData.h"
 
@@ -36,8 +37,8 @@ class IntakeSubsystem {
         static const int intakeRollersID = 32;
         rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
 
-        frc::DoubleSolenoid solenoidOne{1, 2};
-        
+        //frc::DoubleSolenoid solenoidOne{1, 2};
+        frc::Solenoid solenoidOne{0};
 
        /*  rev::CANPIDController intakePivot_pidController = intakePivot.GetPIDController();
         rev::CANPIDController wheels_pidController = wheels.GetPIDController(); */

@@ -88,9 +88,9 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
 
 void IntakeSubsystem::setPiston(bool direction){
     if (direction){
-        solenoidOne.Set(frc::DoubleSolenoid::Value::kForward);
+        solenoidOne.Set(true);
     } else {
-        solenoidOne.Set(frc::DoubleSolenoid::Value::kReverse);
+        solenoidOne.Set(false);
     }
     
 }

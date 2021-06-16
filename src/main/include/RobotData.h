@@ -23,7 +23,7 @@ struct RobotData
     double pLTrigger;
     double pRTrigger;
     bool pLBumper;
-    bool pRtBumper;
+    bool pRBumper;
 
     bool pXBtn;
     bool pYBtn;

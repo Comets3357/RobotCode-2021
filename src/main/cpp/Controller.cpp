@@ -19,6 +19,11 @@ void Controller::Init(RobotData &robotData){
     robotData.pLYStick = 0;
     robotData.pRYStick = 0;
 
+    robotData.pABtn = false;
+    robotData.pBBtn = false;
+    robotData.pXBtn = false;
+    robotData.pYBtn = false;
+
     robotData.sDPad = -1; 
 
     robotData.sLYStick = 0; 
@@ -112,6 +117,14 @@ void Controller::updateTeleopData(RobotData &robotData){
     //Primary controls
     robotData.pLYStick = getAxis(0, 1);
     robotData.pRYStick = getAxis(0, 5);
+
+    robotData.pABtn = getButton(0,1);
+    robotData.pBBtn = getButton(0,2);
+    robotData.pXBtn = getButton(0,3);
+    robotData.pYBtn = getButton(0,4);
+
+    robotData.pLBumper = getButton(0, 5); // controls indexer in auto
+    robotData.pRBumper = getButton(0, 6); // manual
 
     //secondary controls 
         // indexes are NOT all right yet

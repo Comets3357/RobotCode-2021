@@ -13,6 +13,16 @@ class ClimbSubsystem {
         void Init();
         void Periodic(RobotData &robotData);
 
+        bool initiationRunning = false;
+        bool initiated = false;
+
+        int startingPhase = 0;
+
+        double voltageTargetL;
+        double voltageTargetR;
+
+        int timer;
+
     private:
 
         void semiAutoMode(RobotData &robotData);
@@ -24,15 +34,20 @@ class ClimbSubsystem {
         void setLockL(bool direction);
 
         // Change SparkMax IDs
-        static const int climbArmRID = 99;
-        static const int climbArmLID = 99;
+        static const int climbArmRID = 34;
+        static const int climbArmLID = 35;
         rev::CANSparkMax climbArmR{climbArmRID, rev::CANSparkMax::MotorType::kBrushless};
         rev::CANSparkMax climbArmL{climbArmLID, rev::CANSparkMax::MotorType::kBrushless};
 
-        // Change CAN IDs
-        frc::Solenoid solenoidArmR{3};
-        frc::Solenoid solenoidArmL{4};
+        rev::CANEncoder climbArmRPos = climbArmR.GetEncoder();
+        rev::CANEncoder climbArmLPos = climbArmL.GetEncoder();
 
-        frc::Solenoid solenoidLockR{5};
-        frc::Solenoid solenoidLockL{6};
+        // Change CAN IDs
+        frc::Solenoid solenoidArmR{1};
+        frc::Solenoid solenoidArmL{3};
+
+        frc::Solenoid solenoidLockR{4};
+        frc::Solenoid solenoidLockL{2};
+
+        frc::ADIS16448_IMU imu{};
 };

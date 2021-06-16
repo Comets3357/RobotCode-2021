@@ -3,12 +3,13 @@
 
 void Robot::RobotInit() {
 
-    intake.Init();
+    //intake.Init();
     db.Init();
-    indexer.Init();
-    shooter.Init();
-    control.Init(robotData);
-    limelight.Init();
+    //indexer.Init();
+    //shooter.Init();
+    //control.Init(robotData);
+    //limelight.Init();
+    climb.Init();
 
 
 }
@@ -17,10 +18,11 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic(){
     db.Periodic(robotData);
-    intake.Periodic(robotData);
-    indexer.Periodic(robotData);
-    shooter.Periodic(robotData);
-    limelight.Periodic(robotData);
+    //intake.Periodic(robotData);
+    //indexer.Periodic(robotData);
+    //shooter.Periodic(robotData);
+    //limelight.Periodic(robotData);
+    climb.Periodic(robotData);
 }
 
 void Robot::TeleopPeriodic() {

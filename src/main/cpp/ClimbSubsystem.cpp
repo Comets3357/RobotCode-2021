@@ -82,6 +82,15 @@
 **/
 
 void ClimbSubsystem::Init(){
+    climbArmLPos.SetPosition(0);
+    climbArmRPos.SetPosition(0);
+
+    solenoidLockL.Set(false);
+    solenoidLockR.Set(false);
+    
+    solenoidArmL.Set(true);
+    solenoidArmR.Set(true);
+
     climbArmR.RestoreFactoryDefaults();
     climbArmR.SetInverted(true);
     climbArmR.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
@@ -89,13 +98,36 @@ void ClimbSubsystem::Init(){
     climbArmR.Set(0);
     
     climbArmL.RestoreFactoryDefaults();
-    climbArmL.SetInverted(true);
+    climbArmL.SetInverted(false);
     climbArmL.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     climbArmL.SetSmartCurrentLimit(45);
     climbArmL.Set(0);
+    
 }
 
 void ClimbSubsystem::Periodic(RobotData &robotData){
+
+/*
+IMPORTANT
+when arm motors are set a negative value it is not safe for the ratchet to be enabled
+*/
+    // if (robotData.pABtn){
+    //     solenoidArmL.Set(true);
+    //     solenoidArmR.Set(true);
+    // }
+
+    // if (robotData.pBBtn){
+    //     solenoidArmR.Set(false);
+    //     solenoidArmL.Set(false);
+    // }
+    
+
+
+
+    frc::SmartDashboard::PutNumber("Rrpm",  climbArmRPos.GetPosition());
+    frc::SmartDashboard::PutNumber("Lrpm",  climbArmLPos.GetPosition());
+    //climbArmL.Set(robotData.pLYStick*0.3);
+    //climbArmR.Set(robotData.pRYStick*0.3);
     if(robotData.manualMode){
         manualMode(robotData);
     } else {
@@ -103,16 +135,180 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
     }
 }
 
-void ClimbSubsystem::semiAutoMode(RobotData &robotData){
-    // Climb inititation
-    if(robotData.sABtn){
-        
-    }else{
+void ClimbSubsystem::manualMode(RobotData &robotData){
+    if (robotData.sLBumper){
+        solenoidLockL.Set(true);
+        solenoidLockR.Set(true);
+    }
+    if (robotData.sRBumper){
+        solenoidLockL.Set(false);
+        solenoidLockR.Set(false);
+    }
 
+    if (robotData.pLBumper){
+        climbArmLPos.SetPosition(0);
+        climbArmRPos.SetPosition(0);
+    }
+
+    if (robotData.pLBumper){
+        climbArmLPos.SetPosition(0);
+        climbArmRPos.SetPosition(0);
+    }
+    if (robotData.sRYStick > 0.1 || robotData.sRYStick < -0.1) {
+        
+        climbArmR.Set(robotData.sRYStick*0.3);
+    } else {
+        climbArmR.Set(0);
+    }
+    if (robotData.sLYStick > 0.1 || robotData.sLYStick < -0.1) {
+        
+        climbArmL.Set(robotData.sLYStick*0.3);
+    } else {
+        climbArmL.Set(0);
+    }
+}
+
+void ClimbSubsystem::semiAutoMode(RobotData &robotData){
+
+
+    
+    // Climb inititation
+
+    if(robotData.sABtn){
+        if (!initiationRunning){
+            solenoidLockL.Set(true);
+            solenoidLockR.Set(true);
+        
+            
+            initiationRunning = true;
+        }
+    }
+
+    if (initiationRunning && !initiated) {
+        solenoidLockR.Set(true);
+        solenoidLockL.Set(true);
+        timer += 1;
+        climbArmR.Set(0.2);
+        climbArmL.Set(0.2);
+        if (timer > 20){
+            if (climbArmRPos.GetPosition() > -72 || climbArmLPos.GetPosition() > -72) {//i dont know the exact numbers yet
+                solenoidArmR.Set(false);
+                solenoidArmL.Set(false);
+                if (climbArmRPos.GetPosition() > -72) {
+                    climbArmR.Set(-0.3);
+                } else {
+                    climbArmR.Set(0);
+                }
+                if (climbArmLPos.GetPosition() > -72) {
+                    climbArmL.Set(-0.3);
+                } else {
+                    climbArmL.Set(0);
+                }
+            } else {
+                climbArmR.Set(0);
+                climbArmL.Set(0);
+                initiated = true;
+                initiationRunning = false;
+            }
+        }
+    } else if (initiationRunning && initiated) {
+        if (climbArmRPos.GetPosition() < 0 || climbArmLPos.GetPosition() < 0) {
+            if (climbArmLPos.GetPosition() < 0){
+                climbArmL.Set(0.3);
+            } else {
+                climbArmL.Set(0);
+            }
+            if (climbArmRPos.GetPosition() < 0){
+                climbArmR.Set(0.3);
+            } else {
+                climbArmR.Set(0);
+            }
+        } else {
+            climbArmR.Set(0);
+            climbArmL.Set(0);
+            solenoidArmR.Set(true);
+            solenoidArmL.Set(true);
+            initiated = false;
+            initiationRunning = false;
+            solenoidLockL.Set(false);
+            solenoidLockR.Set(false);
+            timer = 0;
+        }
     }
 
     // Climb start
 
+    if (robotData.sBBtn && startingPhase == 0) {
+        climbArmR.Set(0.15);
+        climbArmL.Set(0.15);//i dont know the exact numbers yet
+        //climbArmL.Set(0.2);//i dont know the exact numbers yet
+        
+        voltageTargetL = climbArmL.GetBusVoltage();
+        voltageTargetR = climbArmR.GetBusVoltage();
+        startingPhase = 1;
+    }
+
+    frc::SmartDashboard::PutNumber("RVol",  climbArmR.GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("LVol",  climbArmL.GetOutputCurrent());
+
+    frc::SmartDashboard::PutNumber("getX",  imu.GetGyroAngleX());
+    frc::SmartDashboard::PutNumber("getY",  imu.GetGyroAngleY());
+
+    if (robotData.sXBtn){
+        climbArmR.Set(0);//i dont know the exact numbers yet
+        climbArmL.Set(0);//i dont know the exact numbers yet
+        //startingPhase = 2;
+    }
+
+    if (startingPhase == 1) {
+        if (climbArmR.GetOutputCurrent() > 40){//i dont know the exact numbers yet
+            climbArmR.Set(0);
+        } else if (climbArmL.GetOutputCurrent() > 40){//i dont know the exact numbers yet
+            climbArmL.Set(0);
+        }
+        if (climbArmL.GetOutputCurrent() > 30 && climbArmR.GetOutputCurrent() > 30){
+            climbArmL.Set(0);
+            climbArmR.Set(0);
+        }
+        if (climbArmR.Get() == 0 && climbArmL.Get() == 0) {
+            startingPhase = 0;
+        }
+    }
+    // } else if (startingPhase == 2) {
+    //     if (climbArmLPos.GetPosition() > 500 || climbArmRPos.GetPosition() > 500){
+    //         if (imu.GetGyroAngleZ() < 10 && imu.GetGyroAngleZ() > -10){//dont know gyro axis or offset
+    //             climbArmR.Set(-0.1);//i dont know the exact numbers yet
+    //             climbArmL.Set(-0.1);//i dont know the exact numbers yet
+    //         } else if (imu.GetGyroAngleZ() > 10){
+    //             climbArmR.Set(0);//i dont know the exact numbers yet
+    //             climbArmL.Set(-0.1);//i dont know the exact numbers yet
+    //         } else if (imu.GetGyroAngleZ() < -10){
+    //             climbArmR.Set(-0.1);//i dont know the exact numbers yet
+    //             climbArmL.Set(0);//i dont know the exact numbers yet
+    //         }
+    //     } else {
+    //         startingPhase = 3;
+    //     }
+    // } else if (startingPhase == 3) {
+    //     if (imu.GetGyroAngleZ() < 10 && imu.GetGyroAngleZ() > -10){//dont know gyro axis or offset
+    //         climbArmR.Set(0);
+    //         climbArmL.Set(0);
+    //         solenoidLockL.Set(false);
+    //         solenoidLockR.Set(false);
+    //         startingPhase = 4;
+    //     } else if (imu.GetGyroAngleZ() > 10){
+    //             climbArmR.Set(0.05);//i dont know the exact numbers yet
+    //             climbArmL.Set(-0.05);//i dont know the exact numbers yet
+    //         } else if (imu.GetGyroAngleZ() < -10){
+    //             climbArmR.Set(-0.05);//i dont know the exact numbers yet
+    //             climbArmL.Set(0.05);//i dont know the exact numbers yet
+    //         }
+    // }
+
     // Climb control panel
+
+    // if (robotData.sABtn){
+    //     climbArmL.Set(true);
+    // }
 
 }
