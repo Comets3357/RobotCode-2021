@@ -91,12 +91,6 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutNumber("target velocity", robotData.targetVelocity);
 
 
-
-    //if the hood touches the limit switch, zero the position
-
-    //make hood and turret moveable by joystick
-    setTurret(robotData.sLYStick*.1);
-
     //if you're pressing the shooting button
     if (shootPOV == robotData.shootingBtn){ 
 
@@ -107,9 +101,10 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
             robotData.targetVelocity = 3000;
         }
     
-
+        //Use PID to set Hood
         shooterHoodPID.SetReference(robotData.calcHoodPos, rev::ControlType::kPosition);
         if((getHoodPos() > robotData.calcHoodPos-1) && (getHoodPos() < robotData.calcHoodPos+1)){
+
             //moves turret until in range
             if(robotData.xOffset > 1 ){ 
                 setTurret(0.02);
@@ -131,16 +126,17 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
         }
 
-        
+    } else {  //not shooting
 
+        if(robotData.sBBtn){
+            shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
+        }else{
+            setWheel(0);
+        }
         
-        
-        
-    } else {
-        setWheel(0);
         robotData.readyShoot = false;
-        //zeros the hood using limit switch through b button
 
+        //zeros the hood after
         setHood(-0.1);
         if(getHoodLimitSwitch()){
             setHoodPos(0);
@@ -148,24 +144,25 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
             //robotData.isZero = true;
         }
         
-        // if(!robotData.isZero){
-        //     setHood(-0.1);
-        //     if(getHoodLimitSwitch()){
-        //         setHoodPos(0);
-        //         robotData.isZero = true;
-        //     }
-        // }else{
-        //     setHood(0);
-        // }
-        //otherwise control hood by joystick
-        //setHood(robotData.sRYStick*.1);
-        //robotData.isZero = false;
 
     }
 
 }
 
 void ShooterSubsystem::manualMode(RobotData &robotData){
+    //make hood and turret moveable by joystick
+    setTurret(robotData.sLYStick*.1);
+
+    //zeros hood using limitswitch
+    if(robotData.sBBtn){
+        setHood(-0.1);     
+        if(getHoodLimitSwitch()){
+            setHoodPos(0);
+            setHood(0);
+        }
+    }else{
+        setHood(robotData.sRYStick*.1);
+    }
 
 }
 
@@ -219,4 +216,10 @@ void ShooterSubsystem::setShooterPID(rev::CANPIDController motor, double p, doub
     motor.SetD(d);
     motor.SetFF(ff);
 
+}
+
+void ShooterSubsystem::Disabled(){
+    setHood(0);
+    setTurret(0);
+    setWheel(0);
 }

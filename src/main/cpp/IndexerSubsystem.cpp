@@ -84,6 +84,8 @@ void IndexerSubsystem::manualMode(RobotData &robotData){
     
 }
 
+
+
 void IndexerSubsystem::setCenterSpindle(double power){
 
     centerSpindle.Set(power);
@@ -96,5 +98,13 @@ void IndexerSubsystem::setOmniWheel(double power){
 double IndexerSubsystem::getSpinnerVel(){
     return centerSpindlePOS.GetVelocity();
 }
+
+void IndexerSubsystem::Disabled(){
+    setOmniWheel(0);
+    setCenterSpindle(0);
+}
+
+
+
 
 

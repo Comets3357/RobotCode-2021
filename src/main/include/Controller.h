@@ -22,7 +22,7 @@ private:
 
 
     bool getShiftFactor();
-    bool shootingMode();
+    bool shootingMode(int pov);
     bool getManual();
 
 

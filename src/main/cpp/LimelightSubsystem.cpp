@@ -38,14 +38,52 @@ double LimelightSubsystem::getVerticalOffset(){
 }
 
 
+/**
+ * @param verticalOffset y offset from limelight
+ * @return needed pipeline based off how close to the target the bot is
+ * 
+ * pipeline 0 = off
+ * pipeline 1 = 40 power
+ * pipeline 2 = 60 power
+ * pipeline 3 = 80 power
+ * pipeline 4 = 100 power
+ */
+int LimelightSubsystem::getPipeline(double verticalOffset){
+
+    int pipeline = 0;
+    if(verticalOffset > 14){
+        pipeline = 1;
+    }else if(verticalOffset > 11){
+        pipeline = 2;
+    }else if(verticalOffset > 6){
+        pipeline = 3;
+    }else if(verticalOffset <= 6){
+        pipeline = 4;
+    }else{
+        pipeline = 0;
+    }
+
+    return pipeline;
+}
+
+
 void LimelightSubsystem::Periodic(RobotData &robotData){
+   
+   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the networktable
 
     robotData.xOffset = getHorizontalOffset();
     robotData.yOffset = getVerticalOffset();
     robotData.calcHoodPos = calcHoodPOS(robotData.yOffset);
 
-    std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the networktable
-    table->PutNumber("pipeline", 0); //set the pipeline
+    //if the button to shoot is pressed, turn on the limelight led
+    if(robotData.shootingMode){
+        table->PutNumber("pipeline", getPipeline(robotData.yOffset)); //set the pipeline based on y offset
+    }else{
+        table->PutNumber("pipeline",0); //set the limelight to off
+
+    }
+
+
 
 }
 

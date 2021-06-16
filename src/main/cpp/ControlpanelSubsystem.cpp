@@ -26,12 +26,11 @@ void ControlpanelSubsystem::Periodic(RobotData &robotData){
 } 
 
 void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
-    cpManipulator.Set(0.2);
 
     /**
      * use the color sensor to find the color
      * 
-     * 
+     * cpManipulator.Set(0.2);
      * 
      * 
      * 
@@ -41,10 +40,13 @@ void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
 }
 
 void ControlpanelSubsystem::manualMode(RobotData &robotData){ 
-    
+    if(robotData.shift && robotData.sRBumper){
+        cpManipulator.Set(0.2);
+    }
 }
 
 void ControlpanelSubsystem::Disabled(){
-   
+    cpManipulator.Set(0);
+
 }
 

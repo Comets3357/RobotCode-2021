@@ -13,6 +13,8 @@ class IntakeSubsystem {
 
         void Init();
         void Periodic(RobotData &robotData);
+        void Disabled();
+
 
     private:
 

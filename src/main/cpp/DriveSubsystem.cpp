@@ -33,19 +33,27 @@ void DriveSubsystem::Init(){
 
 void DriveSubsystem::Periodic(RobotData &robotData){
 
-    //slows down the speed to 0.3 of the total
-    lDrive = robotData.pLYStick * .3;
-    rDrive = robotData.pRYStick * .3;
+    //adds spice to drive base :)
+    lDrive = robotData.pLYStick;
+    rDrive = robotData.pRYStick;
+    frc::SmartDashboard::PutNumber("ldrive", lDrive);
+    frc::SmartDashboard::PutNumber("rdrive", rDrive);
+
+
+    double frontBack = cStraight*(lDrive + rDrive)/2;
+    double leftRight = cTurn*(rDrive - lDrive)/2;
 
     
     //setting the motor speed, tank drive
-    dbLM.Set(lDrive);
-    dbRM.Set(rDrive);
+    dbRM.Set(frontBack + leftRight);
+    dbLM.Set(frontBack - leftRight);
 
 } 
 
 void DriveSubsystem::Disabled(){
     dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    dbLM.Set(0);
+    dbRM.Set(0);
 }
 

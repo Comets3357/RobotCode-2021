@@ -7,7 +7,7 @@ struct RobotData
     //controller data
 
     bool manualMode;
-    bool shift;
+    bool shift; //shift for more button options
     bool shootingMode;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
@@ -64,8 +64,7 @@ struct RobotData
     double hoodPosition;
     double turretPosition;
     double flywheelVelocity;
-    bool readyShoot = false;
-    bool isZero = false;
+    bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
     static const int shootingBtn = 90;
     int targetVelocity = 0;
 
@@ -74,6 +73,7 @@ struct RobotData
     double xOffset;
     double yOffset;
     double calcHoodPos;
+    int pipeline; //for LED power
 
 
 

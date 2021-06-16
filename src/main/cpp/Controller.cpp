@@ -53,9 +53,9 @@ bool Controller::getShiftFactor(){
     }
 }
 
-bool Controller::shootingMode(){
+bool Controller::shootingMode(int pov){
     //probably definitely wrong pov button index
-    if(secondary.GetPOV(1) == 0||secondary.GetPOV(1) == 90||secondary.GetPOV(1) == 180||secondary.GetPOV(1) == 270){
+    if(secondary.GetPOV(1) == pov){
         return true;
     }else{
         return false;
@@ -101,14 +101,14 @@ double Controller::getAxis(int js, int index){
 void Controller::updateTeleopData(RobotData &robotData){
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
-    robotData.shootingMode = shootingMode();
+    robotData.shootingMode = shootingMode(robotData.shootingBtn);
 
 
 
 
     //used for driving
-    robotData.pLYStick = getAxis(0, 1);
-    robotData.pRYStick = getAxis(0, 5);
+    robotData.pLYStick = getAxis(0, 2);
+    robotData.pRYStick = getAxis(0, 0);
 
     //secondary controls // indexes are NOT all right yet
     //robotData.sLCenterBtn = getAxis(1, 8); //only used within controller class

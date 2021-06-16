@@ -13,6 +13,8 @@ class IndexerSubsystem {
     public:
         void Init();
         void Periodic(RobotData &robotData);
+        void Disabled();
+
 
     private:
         void setCenterSpindle (double power);
