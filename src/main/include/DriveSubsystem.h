@@ -12,8 +12,7 @@ class DriveSubsystem {
     public: 
         void Init();
         void Periodic(RobotData &robotData);
-        void Auton(int select, RobotData &robotData);
-        //void Disabled();
+        void Disabled();
 
     private:
 
@@ -24,16 +23,18 @@ class DriveSubsystem {
         bool climbMode = false;
 
         void updateData(RobotData &robotData);
-        void updateGyro(RobotData &robotData);
+        
+        void teleopControl(RobotData &robotData); // converts js inputs to desire velocity
+        void setVelocity(RobotData &robotData);
 
-        void setDrive(double lDrive, double rDrive);
-    
+        void courseCorrectedDrive(RobotData &robotData); // was only used for pid testing
 
         void potato(RobotData &robotData);
         void initDriveForward(RobotData &robotData);
         void driveForward(RobotData &robotData);
-        void arc(RobotData &robotData);
         void initArc(RobotData &robotData);
+        //void arc(RobotData &robotData); // DOES NOT WORK
+        void turnInPlace(RobotData &robotData);
         
 
 
@@ -47,12 +48,11 @@ class DriveSubsystem {
         rev::CANEncoder dbRMEncoder = dbRM.GetEncoder();
         rev::CANEncoder dbLMEncoder = dbLM.GetEncoder();
 
-        /* rev::CANPIDController dbRM_pidController = dbRM.GetPIDController();
-        rev::CANPIDController dbLM_pidController = dbLM.GetPIDController(); */
+        rev::CANPIDController dbRMPID = dbRM.GetPIDController();
+        rev::CANPIDController dbLMPID = dbLM.GetPIDController();
         
 
 //gyro:
         frc::ADIS16448_IMU gyro{};
-
 
 }; 
