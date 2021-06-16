@@ -117,4 +117,6 @@ void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 
     diagnosticsData.mControlPositions.at(32) = rollersEncoder.GetPosition();
     diagnosticsData.mControlVelocities.at(32) = rollersEncoder.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(32) = rollers.GetFaults();
 }

@@ -102,10 +102,14 @@ void IndexerSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
     diagnosticsData.mControlPositions.at(11) = centerSpindlePOS.GetPosition();
     diagnosticsData.mControlVelocities.at(11) = centerSpindlePOS.GetVelocity();
 
-    diagnosticsData.mControlCurrents.at(12) = centerSpindle.GetOutputCurrent();
-    diagnosticsData.mControlVoltages.at(12) = centerSpindle.GetBusVoltage();
-    diagnosticsData.mControlTemps.at(12) = centerSpindle.GetMotorTemperature();
+    diagnosticsData.mControlFaults.at(11) = centerSpindle.GetFaults();
 
-    diagnosticsData.mControlPositions.at(12) = centerSpindlePOS.GetPosition();
-    diagnosticsData.mControlVelocities.at(12) = centerSpindlePOS.GetVelocity();
+    diagnosticsData.mControlCurrents.at(12) = omniWheel.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(12) = omniWheel.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(12) = omniWheel.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(12) = omniWheelPOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(12) = omniWheelPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(12) = omniWheel.GetFaults();
 }

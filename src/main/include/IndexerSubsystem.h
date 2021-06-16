@@ -40,5 +40,7 @@ class IndexerSubsystem {
 //encoder:
         rev::CANEncoder centerSpindlePOS = centerSpindle.GetEncoder();
         rev::CANPIDController centerSpindle_pidController = centerSpindle.GetPIDController();
+
+        rev::CANEncoder omniWheelPOS = omniWheel.GetEncoder();
  
 };

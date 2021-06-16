@@ -231,6 +231,8 @@ void ShooterSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
      * hood 22
      * shooter m 20
      * shooter s 21
+     * 
+     * limit switches
      */
 
     diagnosticsData.mControlCurrents.at(23) = shooterTurret.GetOutputCurrent();
@@ -240,6 +242,8 @@ void ShooterSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
     diagnosticsData.mControlPositions.at(23) = shooterTurretPOS.GetPosition();
     diagnosticsData.mControlVelocities.at(23) = shooterTurretPOS.GetVelocity();
 
+    diagnosticsData.mControlFaults.at(23) = shooterTurret.GetFaults();
+
 
     diagnosticsData.mControlCurrents.at(22) = shooterHood.GetOutputCurrent();
     diagnosticsData.mControlVoltages.at(22) = shooterHood.GetBusVoltage();
@@ -247,6 +251,8 @@ void ShooterSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 
     diagnosticsData.mControlPositions.at(22) = shooterHoodPOS.GetPosition();
     diagnosticsData.mControlVelocities.at(22) = shooterHoodPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(22) = shooterHood.GetFaults();
 
 
     diagnosticsData.mControlCurrents.at(20) = shooterWheelM.GetOutputCurrent();
@@ -256,6 +262,8 @@ void ShooterSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
     diagnosticsData.mControlPositions.at(20) = shooterWheelMPOS.GetPosition();
     diagnosticsData.mControlVelocities.at(20) = shooterWheelMPOS.GetVelocity();
 
+    diagnosticsData.mControlFaults.at(20) = shooterWheelM.GetFaults();
+
 
     diagnosticsData.mControlCurrents.at(21) = shooterWheelS.GetOutputCurrent();
     diagnosticsData.mControlVoltages.at(21) = shooterWheelS.GetBusVoltage();
@@ -263,4 +271,10 @@ void ShooterSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 
     diagnosticsData.mControlPositions.at(21) = shooterWheelSPOS.GetPosition();
     diagnosticsData.mControlVelocities.at(21) = shooterWheelSPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(21) = shooterWheelS.GetFaults();
+
+
+    diagnosticsData.turretLSwitch = getTurretLimitSwitch();
+    diagnosticsData.hoodLSwitch = getHoodLimitSwitch();
 }

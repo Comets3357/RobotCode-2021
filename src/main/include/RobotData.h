@@ -35,6 +35,9 @@ struct RobotData
     //L = left, R = right, p = primary, s = secondary, Btn = button
     //primary
 
+    // this will have merge conflict with climb's pLShoulderBtn
+    bool pLShoulderBtn;
+
     double pLXStick;
     double pLYStick = 0;
     double pRXStick;
@@ -93,6 +96,7 @@ struct RobotData
     double xOffset;
     double yOffset;
     double calcHoodPos;
+    bool validTarget;
 
     //gyro data
     //greater angle means clockwise

@@ -306,7 +306,13 @@ void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
     }
 
     // compressor
+    diagnosticsData.compEnabled = compressor.Enabled();
+    diagnosticsData.compPressureSwitchVal = compressor.GetPressureSwitchValue();
+    diagnosticsData.compCurrent = compressor.GetCompressorCurrent();
 
+    diagnosticsData.compCurrentHighFault = compressor.GetCompressorCurrentTooHighFault();
+    diagnosticsData.compShortedFault = compressor.GetCompressorShortedFault();
+    diagnosticsData.compNotConnectedFault = compressor.GetCompressorNotConnectedFault();
 
     // db motor controllers
     diagnosticsData.mControlCurrents.at(leftLeadDeviceID) = dbLM.GetOutputCurrent();
@@ -328,4 +334,9 @@ void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
     diagnosticsData.mControlPositions.at(rightLeadDeviceID) = dbRMEncoder.GetPosition();
     diagnosticsData.mControlVelocities.at(leftLeadDeviceID) = dbLMEncoder.GetVelocity();
     diagnosticsData.mControlVelocities.at(rightLeadDeviceID) = dbRMEncoder.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(leftLeadDeviceID) = dbLM.GetFaults();
+    diagnosticsData.mControlFaults.at(rightLeadDeviceID) = dbRM.GetFaults();
+    diagnosticsData.mControlFaults.at(leftFollowDeviceID) = dbLS.GetFaults();
+    diagnosticsData.mControlFaults.at(rightFollowDeviceID) = dbRS.GetFaults();
 }

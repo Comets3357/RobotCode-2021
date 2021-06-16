@@ -5,6 +5,7 @@
 #include <frc/BuiltInAccelerometer.h>
 #include <frc/PowerDistributionPanel.h>
 #include <adi/ADIS16448_IMU.h>
+#include <frc/Compressor.h>
 
 #include "RobotData.h"
 #include "Diagnostics.h"
@@ -63,6 +64,6 @@ class DriveSubsystem {
         frc::ADIS16448_IMU gyro{};
 
 // compressor
-        // frc::Compressor::Compressor compressor{0};
+        frc::Compressor compressor{0};
 
 }; 

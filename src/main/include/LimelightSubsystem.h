@@ -13,7 +13,7 @@ class LimelightSubsystem : public frc2::SubsystemBase {
     public:
 
         void Init();
-        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        void Periodic(RobotData &robotData);
 
         double getHorizontalOffset();
         double getVerticalOffset();
@@ -21,7 +21,6 @@ class LimelightSubsystem : public frc2::SubsystemBase {
 
     private:
 
-        void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         //double getAngle_Horizontal();
         double targetOffsetAngle_Horizontal; 

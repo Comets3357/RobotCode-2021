@@ -48,11 +48,12 @@ double LimelightSubsystem::getVerticalOffset(){
 }
 
 
-void LimelightSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
+void LimelightSubsystem::Periodic(RobotData &robotData){
 
     robotData.xOffset = getHorizontalOffset();
     robotData.yOffset = getVerticalOffset();
     robotData.calcHoodPos = calcHoodPOS(robotData.yOffset);
+    
 
     getVerticalOffset();
 
@@ -64,18 +65,7 @@ void LimelightSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnos
     frc::SmartDashboard::PutNumber("tx",  table->GetNumber("tx",0.0)); //horizontal offset
     frc::SmartDashboard::PutNumber("ty",  table->GetNumber("ty",0.0)); //vertical offset
     frc::SmartDashboard::PutNumber("ts",  table->GetNumber("ts",0.0)); //skew offset
+    frc::SmartDashboard::PutNumber("tv",  table->GetNumber("tv",0.0)); //valid target
 
-    updateDiagnostics(diagnosticsData);
-   
-
-}
-
-
-
-void LimelightSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
-{
-    /**
-     * connected
-     * some other stuff
-     */
+    robotData.validTarget = table->GetNumber("tv", 0.0);
 }

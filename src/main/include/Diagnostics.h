@@ -3,7 +3,9 @@
 #include <array>
 #include <string>
 #include <ctime>
+#include <fstream>
 #include <frc/Timer.h>
+#include <frc/TimedRobot.h>
 #include <frc/DriverStation.h>
 #include <frc/DoubleSolenoid.h>
 
@@ -12,42 +14,41 @@
 struct DiagnosticsData
 {
     // accelerometer
-    double accelX, accelY, accelZ;
+    double accelX{-1.0}, accelY{-1.0}, accelZ{-1.0};
 
     // motor contollers
-    std::array<std::uint16_t, 32> mControlFaults;
-
     // 33 so that we can use real mControl CAN IDs
     std::array<double, 33>
-        mControlCurrents,
-        mControlVoltages,
-        mControlPositions,
-        mControlVelocities,
-        mControlTemps;
+        mControlCurrents{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+        mControlVoltages{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+        mControlPositions{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+        mControlVelocities{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+        mControlTemps{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    std::array<std::uint16_t, 33> mControlFaults{};
 
     // PDP slots
-    double pdpTotalVoltage;
-    double pdpTotalCurrent;
-    double pdpTotalPower;
-    double pdpTotalEnergy;
-    double pdpTemp;
-    std::array<double, 16> pdpCurrents;
+    double pdpTotalVoltage{-1.0};
+    double pdpTotalCurrent{-1.0};
+    double pdpTotalPower{-1.0};
+    double pdpTotalEnergy{-1.0};
+    double pdpTemp{-1.0};
+    std::array<double, 16> pdpCurrents{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 
     // compressor
     bool
-        compEnabled,
-        compPressureSwitchVal,
-        compCurrent,
+        compEnabled{false},
+        compPressureSwitchVal{false},
+        compCurrent{false},
 
-        compCurrentHighFault,
-        compShortedFault,
-        compNotConnectedFault;
+        compCurrentHighFault{false},
+        compShortedFault{false},
+        compNotConnectedFault{false};
 
     // solenoids
-    frc::DoubleSolenoid::Value solenoidOneValue;
+    frc::DoubleSolenoid::Value solenoidOneValue{frc::DoubleSolenoid::Value::kOff};
 
     // limit switches
-    bool turrentLSwitch, hoodLSwitch;
+    bool turretLSwitch{false}, hoodLSwitch{false};
 };
 
 class Diagnostics
@@ -59,28 +60,30 @@ public:
     void TestPeriodic(DiagnosticsData &diagnosticsData);
 
 private:
+    std::string constructMetaElements(std::string &filePath, std::string &metaHeader);
+    std::string constructParamHeader(std::string &paramHeader);
     void setLogValues();
-    std::string appendLogValues(RobotData &RobotData);
+    std::string appendLogValues(RobotData &robotData, DiagnosticsData &diagnosticsData);
 
-    // field management system
-    bool fmsAttatched;
+    void addLogSnippet(std::string &log, std::string param);
+    void addLogSnippet(std::string &log, int param);
+    void addLogSnippet(std::string &log, bool param);
+    void addLogSnippet(std::string &log, double param);
+    void addLogSnippet(std::string &log, std::uint16_t param);
 
-    // meta data from driverstation
-    std::string day, month, year;
-    std::string eventName;
-    frc::DriverStation::MatchType matchType;
-    frc::DriverStation::Alliance alliance;
-    int location;
-    int matchNum = -1;
+    std::string convertMatchType(int param);
+    std::string convertAlliance(int param);
+    std::string convertSolenoidValue(int param);
 
-    // match
-    std::string matchMode;
-    bool pStickConnected;
-    bool sStickConnected;
+    std::ofstream log_file;
 
     frc::Timer timer{};
     bool timerStarted = false;
-    double seconds;
+    double seconds{-1.0};
 
-    double batteryVoltage;
+    // match
+    std::string matchMode{"none"};
+    bool pStickConnected{false};
+    bool sStickConnected{false};
+    double batteryVoltage{-1.0};
 };

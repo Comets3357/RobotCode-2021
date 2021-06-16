@@ -19,7 +19,7 @@ void Robot::RobotPeriodic()
         intake.Periodic(robotData, diagnosticsData);
         indexer.Periodic(robotData, diagnosticsData);
         shooter.Periodic(robotData, diagnosticsData);
-        limelight.Periodic(robotData, diagnosticsData);
+        limelight.Periodic(robotData);
         diagnostics.LogPeriodic(robotData, diagnosticsData);
     }
 }
