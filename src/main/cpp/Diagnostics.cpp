@@ -79,7 +79,7 @@ void Diagnostics::addLogSnippet(std::string &log, std::string param)
 
 void Diagnostics::addLogSnippet(std::string &log, int param)
 {
-    log += (param + ", ");
+    log += (std::to_string(param) + ", ");
 }
 
 void Diagnostics::addLogSnippet(std::string &log, bool param)
@@ -99,19 +99,19 @@ void Diagnostics::addLogSnippet(std::string &log, std::uint16_t param)
 
 std::string Diagnostics::convertMatchType(int param)
 {
-    std::array<std::string, 4> matchTypeStrings {"none", "practice", "qualification", "elimination"};
+    std::array<std::string, 4> matchTypeStrings {"none", "prac", "qual", "elim"};
     return matchTypeStrings.at(param);
 }
 
 std::string Diagnostics::convertAlliance(int param)
 {
-    std::array<std::string, 3> allianceStrings {"red", "blue", "invalid"};
+    std::array<std::string, 3> allianceStrings {"red", "blu", "inv"};
     return allianceStrings.at(param);
 }
 
 std::string Diagnostics::convertSolenoidValue(int param)
 {
-    std::array<std::string, 3> valueStrings {"none", "forward", "reverse"};
+    std::array<std::string, 3> valueStrings {"-1", "1", "0"};
     return valueStrings.at(param);
 }
 
@@ -215,7 +215,7 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     return log;
 }
 
-std::string Diagnostics::constructMetaElements(std::string &filePath, std::string &metaHeader)
+void Diagnostics::constructMetaElements(std::string &filePath, std::string &metaHeader)
 {
     // set defaults/errors
     std::string day = "-1";
@@ -245,7 +245,10 @@ std::string Diagnostics::constructMetaElements(std::string &filePath, std::strin
     frc::SmartDashboard::PutString("eventName", eventName);
     frc::SmartDashboard::PutString("matchType", matchType);
     frc::SmartDashboard::PutString("matchNum", matchNum);
-
+    frc::SmartDashboard::PutString("alliance", alliance);
+    frc::SmartDashboard::PutString("location", location);
+    
+    wpi::outs() << frc::DriverStation::GetInstance().IsFMSAttached() << '\n';
     if (frc::DriverStation::GetInstance().IsFMSAttached())
     {
         filePath += ("Matches/" + month + "." + day + "." + year + "event: " + eventName + " type: " + matchType + " match: " + matchNum + ".txt");
@@ -258,7 +261,7 @@ std::string Diagnostics::constructMetaElements(std::string &filePath, std::strin
     metaHeader += (month + "." + day + "." + year + "event: " + eventName + " type: " + matchType + " match: " + matchNum + " alliance: " + alliance + " location: " + location);
 }
 
-std::string Diagnostics::constructParamHeader(std::string &paramHeader)
+void Diagnostics::constructParamHeader(std::string &paramHeader)
 {
     paramHeader +=
     (
