@@ -35,13 +35,12 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
         //manualMode(robotData);
 
     } else {
-
         //Intake balls
         if(robotData.sABtn){
             if(!getPiston()){ //if the piston is up put it down
                 setPiston(true);
             }
-            setIntakeRollers(-0.8);
+            setIntakeRollers((robotData.Rdrive+robotData.Ldrive)/2);
         }else{
             if(getPiston()){ //if the piston is down put it up
                 setPiston(false);
@@ -64,7 +63,7 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
     //if the shift is pressed reverse the intake roller
     if(robotData.shift){
         if(robotData.sYBtn){
-            setIntakeRollers(0.8);
+            setIntakeRollers((robotData.Rdrive+robotData.Ldrive)/2);
         } else {
             setIntakeRollers(0);
         }
@@ -72,7 +71,7 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
     //else run the intake roller
     }else{
         if(robotData.sYBtn){
-            setIntakeRollers(-0.8);
+            setIntakeRollers((robotData.Rdrive+robotData.Ldrive)/2);
         } else {
             setIntakeRollers(0);
         }
@@ -102,14 +101,28 @@ bool IntakeSubsystem::getPiston(){
     }
 }
 
-void IntakeSubsystem::setIntakeRollers(double power){
-    rollers.Set(power);
+void IntakeSubsystem::setIntakeRollers(double avgDrive){
+
+    double pow = -0.4;
+
+    if(avgDrive > 0.7){
+        pow = -0.8;
+    }else if(avgDrive > 0.6){
+        pow = -0.7;
+    }else if(avgDrive > 0.5){
+        pow = -0.6;
+    }else if(avgDrive > 0.4){
+        pow = -0.5;
+    }else{
+        pow = -0.4;
+    }
+    rollers.Set(pow);
 }
 
-// void IntakeSubsystem::Disabled(){
-//     setIntakeRollers(0);
-//     setPiston(false);
-// }
+void IntakeSubsystem::Disabled(){
+    setIntakeRollers(0);
+    setPiston(false);
+}
 
 
 

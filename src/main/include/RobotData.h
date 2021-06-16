@@ -93,6 +93,10 @@ struct RobotData
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
 
+    //drive base
+    double Ldrive;
+    double Rdrive;
+
 
     //limelight data
     double xOffset;

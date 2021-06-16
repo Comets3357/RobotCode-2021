@@ -97,7 +97,6 @@ void DriveSubsystem::Periodic(RobotData &robotData)
     }
 
     
-    
 }
 
 void DriveSubsystem::Disabled()
@@ -143,6 +142,9 @@ void DriveSubsystem::teleopControl(RobotData &robotData)
 {
     double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
     double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
+
+    robotData.Rdrive = (frontBack + leftRight);
+    robotData.Ldrive = (frontBack - leftRight);
     
     //deadzone NOT needed for drone controller
     if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){

@@ -13,18 +13,19 @@ class IntakeSubsystem {
 
         void Init();
         void Periodic(RobotData &robotData);
-        //void Disabled();
+        void Disabled();
 
 
     private:
 
         int shootPOV;
         
-        void setIntakeRollers(double power);
+        void setIntakeRollers(double avgDrive);
         void setPiston(bool direction);
         bool getPiston();
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
+    
 
         int shiftFactor = 1;
 

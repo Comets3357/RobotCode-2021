@@ -100,10 +100,10 @@ double IndexerSubsystem::getSpinnerVel(){
     return centerSpindlePOS.GetVelocity();
 }
 
-// void IndexerSubsystem::Disabled(){
-//     setOmniWheel(0);
-//     setCenterSpindle(0);
-// }
+void IndexerSubsystem::Disabled(){
+    setOmniWheel(0);
+    setCenterSpindle(0);
+}
 
 
 

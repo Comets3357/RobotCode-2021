@@ -40,7 +40,10 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::DisabledInit(){
-   db.Disabled();
+    db.Disabled();
+    indexer.Disabled();
+    intake.Disabled();
+    shooter.Disabled();
 }
 
 
