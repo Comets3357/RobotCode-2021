@@ -5,6 +5,9 @@ enum AutonSelect
 {
     autonSelect_potato,
     autonSelect_exitInitLine,
+    autonSelect_shootAndDrive,
+    autonSelect_shootAndCollectBalls, // pretty much the same as trench run
+    autonSelect_trenchRun,
     autonSelect_goofy // temporary
 };
 
@@ -28,13 +31,13 @@ struct RobotData
 
     //controller data
 
-    bool manualMode;
+    bool manualMode = false;
     bool shift; //shift for more button options
     bool shootingMode;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
-    //primary
 
+    //primary
     double pLXStick;
     double pLYStick = 0;
     double pRXStick;
@@ -86,9 +89,9 @@ struct RobotData
     double hoodPosition;
     double turretPosition;
     double flywheelVelocity;
-    bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
     static const int shootingBtn = 90;
     int targetVelocity = 0;
+    bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
 
 
     //limelight data

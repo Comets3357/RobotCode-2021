@@ -14,6 +14,7 @@ void IndexerSubsystem::Init(){
 
 }
 
+
 void IndexerSubsystem::Periodic(RobotData &robotData){
     if(robotData.manualMode){
         manualMode(robotData);

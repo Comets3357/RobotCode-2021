@@ -74,10 +74,7 @@ void ShooterSubsystem::Periodic(RobotData &robotData){
 
 }
 
-void ShooterSubsystem::Disabled(){
-    
-}
-
+//updates the robotData struct with the flywheel velocity, turret position, and hood position
 void ShooterSubsystem::updateData(RobotData &robotData){
     robotData.flywheelVelocity = getWheelVel();
     robotData.turretPosition = getTurretPos();
@@ -94,9 +91,6 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
     frc::SmartDashboard::PutNumber("target velocity", robotData.targetVelocity);
 
-    frc::SmartDashboard::PutNumber("shootPOV",  shootPOV);
-    frc::SmartDashboard::PutNumber("sRYStick",  robotData.sRYStick);
-    frc::SmartDashboard::PutNumber("sLYStick",  robotData.sLYStick);
 
     //if you're pressing the shooting button
     if (shootPOV == robotData.shootingBtn){ 
@@ -177,7 +171,6 @@ void ShooterSubsystem::manualMode(RobotData &robotData){
 void ShooterSubsystem::setHoodPos(double pos){
     shooterHoodPOS.SetPosition(pos);
 }
-
 void ShooterSubsystem::setTurretPos(double pos){
     shooterTurretPOS.SetPosition(pos);
 }
@@ -195,7 +188,6 @@ double ShooterSubsystem::getWheelPos(){
 bool ShooterSubsystem::getTurretLimitSwitch(){
     return turretReverseLimit.Get();
 }
-
 bool ShooterSubsystem::getHoodLimitSwitch(){
     return hoodReverseLimit.Get();
 }
@@ -209,6 +201,7 @@ void ShooterSubsystem::setTurret(double power){
 void ShooterSubsystem::setWheel(double power){
     shooterWheelM.Set(power);
 }
+
 double ShooterSubsystem::getWheelVel(){
     return shooterWheelMPOS.GetVelocity();
 }

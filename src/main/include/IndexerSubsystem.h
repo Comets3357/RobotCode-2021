@@ -3,6 +3,7 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
+#include <frc/shuffleboard/Shuffleboard.h>
 
 #include "RobotData.h"
 #include <frc/shuffleboard/Shuffleboard.h>

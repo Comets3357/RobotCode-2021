@@ -12,7 +12,6 @@ class ShooterSubsystem {
     public:
 
         void Init();
-        void Disabled();
         void Periodic(RobotData &robotData);
         //void Disabled();
 
@@ -83,6 +82,7 @@ class ShooterSubsystem {
         rev::CANPIDController shooterKick_pidController = shooterKick.GetPIDController(); */
     
         
+
 
 
 };
