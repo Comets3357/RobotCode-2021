@@ -6,7 +6,7 @@ enum AutonSelect
     autonSelect_potato,
     autonSelect_exitInitLine,
     autonSelect_shootAndDrive,
-    autonSelect_shootAndCollectBalls,
+    autonSelect_shootAndCollectBalls, // pretty much the same as trench run
     autonSelect_trenchRun,
     autonSelect_goofy // temporary
 };
@@ -19,8 +19,7 @@ enum DriveMode
     driveMode_initDriveForward,
     driveMode_driveForward,
     driveMode_arc,
-    driveMode_initArc, 
-    //driveMode_PIDtest
+    driveMode_initArc
 };
 
 //could be separated into all separate files for the data *from* each subsystem

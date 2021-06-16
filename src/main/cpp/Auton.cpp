@@ -15,7 +15,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
     // robotData.autonSelect = autonSelect;    // currently not using the robotData.autonSelect
 
     updateTimer(robotData);
-    frc::SmartDashboard::PutNumber("timer", robotData.seconds);
+    // frc::SmartDashboard::PutNumber("timer", robotData.seconds);
 
 
     switch (autonSelect)
@@ -26,8 +26,8 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         break;
 
     case autonSelect_exitInitLine:
-        frc::SmartDashboard::PutNumber("desiredDBDist", robotData.desiredDBDist);
-        frc::SmartDashboard::PutNumber("autonStep", robotData.autonStep);
+        // frc::SmartDashboard::PutNumber("desiredDBDist", robotData.desiredDBDist);
+        // frc::SmartDashboard::PutNumber("autonStep", robotData.autonStep);
 
         switch (robotData.autonStep)
         {
@@ -38,13 +38,6 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         case 1:
             robotData.driveMode = driveMode_driveForward;
             break;
-        /* case 2:
-            robotData.desiredDBDist = 15;
-            robotData.driveMode = driveMode_initDriveForward;
-            break;
-        case 3:
-            robotData.driveMode = driveMode_driveForward;
-            break; */
         default:
             robotData.driveMode = driveMode_potato;
             break;
@@ -88,6 +81,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         
         break;
 
+    // has not been tested with intake control
     case autonSelect_shootAndCollectBalls:
         switch (robotData.autonStep)
         {
@@ -121,6 +115,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         }
         break;
 
+    //has not been tested with balls
     case autonSelect_trenchRun:
         switch (robotData.autonStep)
         {
@@ -165,83 +160,9 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             break;
         }
-        break;
+        break; 
 
-    // case autonSelect_arcTest:
-    //     switch(robotData.autonStep)
-    //     {
-    //     case 0:
-    //         robotData.desiredAngleDiff = -90;
-    //         robotData.arcRadius = -1;
-    //         robotData.driveMode = driveMode_initArc;
-    //         break;
-    //     case 1:
-    //         robotData.driveMode = driveMode_arc;
-    //         break;
-    //     /* case 2:
-    //         robotData.desiredAngleDiff = 180;
-    //         robotData.arcRadius = 3;
-    //         robotData.driveMode = driveMode_initArc;
-    //         break;
-    //     case 3:
-    //         robotData.driveMode = driveMode_arc;
-    //         break; */
-    //     default:
-    //         robotData.driveMode = driveMode_potato;
-    //         break;
-    //     }
-
-        // break;
-
-    // original goofy
-    /* case autonSelect_goofy:
-        switch(robotData.autonStep) {
-        case 0:
-            robotData.desiredAngleDiff = 180;
-            robotData.arcRadius = -1;
-            robotData.driveMode = driveMode_initArc;
-            break;
-        case 1:
-            robotData.driveMode = driveMode_arc;
-            break;
-        case 2:
-            robotData.desiredDBDist = 15;
-            robotData.driveMode = driveMode_initDriveForward;
-            break;
-        case 3:
-            robotData.driveMode = driveMode_driveForward;
-            break;
-        default:
-            robotData.driveMode = driveMode_potato;
-            break;
-        }
-        
-        break; */
-
-    /* case autonSelect_goofy:
-        switch(robotData.autonStep) {
-        case 0:
-            robotData.desiredAngleDiff = -90;
-            robotData.arcRadius = 5;
-            robotData.driveMode = driveMode_initArc;
-            break;
-        case 1:
-            robotData.driveMode = driveMode_arc;
-            break;
-        case 2:
-            robotData.desiredDBDist = 15;
-            robotData.driveMode = driveMode_initDriveForward;
-            break;
-        case 3:
-            robotData.driveMode = driveMode_driveForward;
-            break;
-        default:
-            robotData.driveMode = driveMode_potato;
-            break;
-        }
-        
-        break; */
-
+    // used for testing
     case autonSelect_goofy:
         switch(robotData.autonStep) {
         case 0:
@@ -252,51 +173,12 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         case 1:
             robotData.driveMode = driveMode_arc;
             break;
-        /* case 2:
-            // robotData.desiredDBDist = 15;
-            // robotData.driveMode = driveMode_initDriveForward;
-            break;
-        case 3:
-            // robotData.driveMode = driveMode_driveForward;
-            break; */
         default:
             robotData.driveMode = driveMode_potato;
             break;
         }
         
         break;
-
-    /* case autonSelect_goofy:
-        switch(robotData.autonStep) {
-        case 0:
-            robotData.desiredDBDist = 10;
-            robotData.driveMode = driveMode_initDriveForward;
-            break;
-        case 1:
-            robotData.driveMode = driveMode_driveForward;
-            break;
-        case 2:
-            startDelay(3, robotData);
-            robotData.autonStep++;
-            break;
-        case 3:
-            robotData.driveMode = driveMode_potato;
-            checkDelay(robotData);
-            break;
-        case 4:
-            robotData.desiredAngleDiff = 180;
-            robotData.arcRadius = -1;
-            robotData.driveMode = driveMode_initArc;
-            break;
-        case 5:
-            robotData.driveMode = driveMode_arc;
-            break; 
-        default:
-            robotData.driveMode = driveMode_potato;
-            break;
-        }
-        break; */
-
 
     default:
         robotData.driveMode = driveMode_potato;
@@ -305,19 +187,21 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
 }
 
 
-//returns the amount of time that has passed since the Timer object started keeping track of time
-void Auton::updateTimer(RobotData &robotData) {
+// updates the struct with the amount of time that has passed since the Timer object started keeping track of time
+void Auton::updateTimer(RobotData &robotData)
+{
     robotData.seconds = timer.Get();
-
 }
 
-//starts the delay function by recording when the delay should end
-//duration is how long you want the delay to be in seconds
+// starts the delay function by recording when the delay should end
+// duration is how long you want the delay to be in seconds
 void Auton::startDelay(double duration, RobotData &robotData)
 {
     delayFinal = robotData.seconds + duration;
 }
 
+// chekcs if the delay you started is over yet
+// increments autonStep once your delay is done
 void Auton::checkDelay(RobotData &robotData)
 {
     if (robotData.seconds > delayFinal)

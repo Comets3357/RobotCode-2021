@@ -12,30 +12,26 @@ class DriveSubsystem {
     public: 
         void Init();
         void Periodic(RobotData &robotData);
-        void Auton(int select, RobotData &robotData);
         void Disabled();
 
     private:
 
         double lDrive = 0;
         double rDrive = 0;
-        bool climbMode = false;
+        //bool climbMode = false; // not in use
 
         void updateData(RobotData &robotData);
-        //void updateGyro(RobotData &robotData); not in use
-
-        //doesn't work
-        //void setDrivePID(rev::CANPIDController &motor, int p, int i, int d, int ff);
-
-        void teleopControl(RobotData &robotData);
+        
+        void teleopControl(RobotData &robotData); // converts js inputs to desire velocity
         void setDrive(RobotData &robotData);
-        void courseCorrectedDrive(RobotData &robotData);
+
+        void courseCorrectedDrive(RobotData &robotData); // was only used for pid testing
 
         void potato(RobotData &robotData);
         void initDriveForward(RobotData &robotData);
         void driveForward(RobotData &robotData);
-        void arc(RobotData &robotData);
         void initArc(RobotData &robotData);
+        //void arc(RobotData &robotData); // DOES NOT WORK
         void turnInPlace(RobotData &robotData);
         
 
@@ -56,6 +52,5 @@ class DriveSubsystem {
 
 //gyro:
         frc::ADIS16448_IMU gyro{};
-
 
 }; 
