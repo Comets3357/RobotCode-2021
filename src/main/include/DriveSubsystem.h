@@ -22,11 +22,12 @@ class DriveSubsystem {
         bool climbMode = false;
 
         void updateData(RobotData &robotData);
-        void updateGyro(RobotData &robotData);
+        //void updateGyro(RobotData &robotData); not in use
 
         //doesn't work
         //void setDrivePID(rev::CANPIDController &motor, int p, int i, int d, int ff);
 
+        void teleopControl(RobotData &robotData);
         void setDrive(RobotData &robotData);
         void courseCorrectedDrive(RobotData &robotData);
 
@@ -35,6 +36,7 @@ class DriveSubsystem {
         void driveForward(RobotData &robotData);
         void arc(RobotData &robotData);
         void initArc(RobotData &robotData);
+        void turnInPlace(RobotData &robotData);
         
 
 

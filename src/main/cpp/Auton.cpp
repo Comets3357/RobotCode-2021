@@ -32,7 +32,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         switch (robotData.autonStep)
         {
         case 0:
-            robotData.desiredDBDist = 10;
+            robotData.desiredDBDist = 30;
             robotData.driveMode = driveMode_initDriveForward;
             break;
         case 1:
@@ -57,21 +57,25 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         switch (robotData.autonStep)
         {
         case 0:
-            startDelay(7, robotData);
+            robotData.manualMode = false;
+            startDelay(4.5, robotData);
             robotData.sDPad = 90;
+            robotData.driveMode = driveMode_potato;
             robotData.autonStep++;
             break;
         case 1:
             //shoot and check delay
             checkDelay(robotData);
+            robotData.driveMode = driveMode_potato;
             break;
         case 2:
             //turn shooter off before driving away
             robotData.sDPad = -1;
+            robotData.driveMode = driveMode_potato;
             robotData.autonStep++;
             break;
         case 3:
-            robotData.desiredDBDist = 15;
+            robotData.desiredDBDist = 30;
             robotData.driveMode = driveMode_initDriveForward;
             break;
         case 4:
@@ -112,6 +116,52 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             break;
         default:
             robotData.sABtn = false;
+            robotData.driveMode = driveMode_potato;
+            break;
+        }
+        break;
+
+    case autonSelect_trenchRun:
+        switch (robotData.autonStep)
+        {
+        case 0:
+            //init drive forward
+            robotData.desiredDBDist = 40;
+            robotData.driveMode = driveMode_initDriveForward;
+            //spin up flywheel
+
+            //intake and indexer in intaking mode 
+            //robotData.sABtn = true;
+            break;
+        case 1:
+            //drive forward
+            robotData.driveMode = driveMode_driveForward;
+            //spin up flywheel
+
+            //intake and indexer in intaking mode 
+            //robotData.sABtn = true;
+            //move on when two balls have been collected (in encoder values)
+            break;
+        /* case 2:
+            //start delay and go into shooting mode
+            startDelay(4.5, robotData);
+            robotData.sDPad = 90;
+            robotData.driveMode = driveMode_potato;
+            robotData.autonStep++;
+            break;
+        case 3:
+            //check delay
+            checkDelay(robotData);
+            robotData.driveMode = driveMode_potato;
+            break;
+        case 4:
+            //turn shooting off, drive to collect more balls
+            robotData.sABtn = false;
+            robotData.driveMode = driveMode_potato;
+            break; */
+        
+        default:
+            // robotData.sABtn = false;
             robotData.driveMode = driveMode_potato;
             break;
         }
@@ -192,34 +242,10 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         
         break; */
 
-    /* case autonSelect_goofy:
-        switch(robotData.autonStep) {
-        case 0:
-            robotData.desiredAngleDiff = -30;
-            robotData.arcRadius = -1;
-            robotData.driveMode = driveMode_initArc;
-            break;
-        case 1:
-            robotData.driveMode = driveMode_arc;
-            break;
-        case 2:
-            robotData.desiredDBDist = 15;
-            robotData.driveMode = driveMode_initDriveForward;
-            break;
-        case 3:
-            robotData.driveMode = driveMode_driveForward;
-            break;
-        default:
-            robotData.driveMode = driveMode_potato;
-            break;
-        }
-        
-        break; */
-
     case autonSelect_goofy:
         switch(robotData.autonStep) {
         case 0:
-            robotData.desiredAngleDiff = -180;
+            robotData.desiredAngleDiff = -90;
             robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initArc;
             break;
@@ -227,6 +253,29 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_arc;
             break;
         /* case 2:
+            // robotData.desiredDBDist = 15;
+            // robotData.driveMode = driveMode_initDriveForward;
+            break;
+        case 3:
+            // robotData.driveMode = driveMode_driveForward;
+            break; */
+        default:
+            robotData.driveMode = driveMode_potato;
+            break;
+        }
+        
+        break;
+
+    /* case autonSelect_goofy:
+        switch(robotData.autonStep) {
+        case 0:
+            robotData.desiredDBDist = 10;
+            robotData.driveMode = driveMode_initDriveForward;
+            break;
+        case 1:
+            robotData.driveMode = driveMode_driveForward;
+            break;
+        case 2:
             startDelay(3, robotData);
             robotData.autonStep++;
             break;
@@ -235,17 +284,18 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             checkDelay(robotData);
             break;
         case 4:
-            robotData.desiredDBDist = 10;
-            robotData.driveMode = driveMode_initDriveForward;
+            robotData.desiredAngleDiff = 180;
+            robotData.arcRadius = -1;
+            robotData.driveMode = driveMode_initArc;
             break;
         case 5:
-            robotData.driveMode = driveMode_driveForward;
-            break; */
+            robotData.driveMode = driveMode_arc;
+            break; 
         default:
             robotData.driveMode = driveMode_potato;
             break;
         }
-        break;
+        break; */
 
 
     default:

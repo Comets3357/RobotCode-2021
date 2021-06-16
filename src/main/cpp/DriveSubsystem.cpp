@@ -78,54 +78,40 @@ void DriveSubsystem::Periodic(RobotData &robotData)
     switch (robotData.driveMode)
     {
     case driveMode_teleop:
-        setDrive(robotData);
+        teleopControl(robotData);
         break;
     case driveMode_potato:
         potato(robotData);
-        setDrive(robotData);
         break;
     case driveMode_initDriveForward:
         initDriveForward(robotData);
-        setDrive(robotData);
         break;
     case driveMode_driveForward:
         driveForward(robotData);
-        setDrive(robotData);
         break;
     case driveMode_initArc:
         initArc(robotData);
-        setDrive(robotData);
         break;
     case driveMode_arc:
         arc(robotData);
-        setDrive(robotData);
         break;
-    case driveMode_PIDtest:
+    /* case driveMode_PIDtest:
         courseCorrectedDrive(robotData);
-        break;
+        break; */
     default:
         potato(robotData);
-        setDrive(robotData);
         break;
     }
+
+    setDrive(robotData);
+
+    frc::SmartDashboard::PutNumber("autonStep", robotData.autonStep);
 
 
     // teleop and multiple auton driveModes will use this
     // lDrive = robotData.pLYStick*3000;
     // rDrive = robotData.pRYStick*3000;
 
-
-    //adjusting deadzone, temporary
-    /* if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
-        lDrive = robotData.pLYStick*5000;
-    } else {
-        lDrive = 0;
-    }
-    if(robotData.pRYStick <= -.08 || robotData.pRYStick >= .08){
-        rDrive = robotData.pRYStick*5000;
-    } else {
-        rDrive = 0;
-    } */
 
     
     //setting the motor speed, tank drive
@@ -135,9 +121,6 @@ void DriveSubsystem::Periodic(RobotData &robotData)
     /* wpi::outs() << "js input left" << robotData.pLYStick;
     wpi::outs() << "set velocity left" << lDrive; */
 }
-
-
-
 
 void DriveSubsystem::Disabled(){
     //setDrive(0, 0);
@@ -163,8 +146,8 @@ void DriveSubsystem::updateData(RobotData &robotData)
     gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
     //this is the direction that the robot is facing
     //add negative sign for comp bot, remove for test db
-    robotData.rawAngle = -gyro.GetAngle();
-    double tempRobotAngle = -gyro.GetAngle();
+    robotData.rawAngle = gyro.GetAngle();
+    double tempRobotAngle = gyro.GetAngle();
 
     //calculates the non continuous angle
     while(tempRobotAngle >= 360){
@@ -187,35 +170,33 @@ void DriveSubsystem::updateData(RobotData &robotData)
     motor.SetFF(ff);
 } */
 
-void DriveSubsystem::setDrive(RobotData &robotData)
-{
-    //how to control db?
-    if(robotData.driveMode = driveMode_teleop){
-        if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
-            lDrive = robotData.pLYStick*5000;
+//adjusts for the deadzone and converts joystick input to velocity values
+void DriveSubsystem::teleopControl(RobotData &robotData){
+    if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
+            lDrive = robotData.pLYStick*5650;
         } else {
             lDrive = 0;
         }
         if(robotData.pRYStick <= -.08 || robotData.pRYStick >= .08){
-            rDrive = robotData.pRYStick*5000;
+            rDrive = robotData.pRYStick*5650;
         } else {
             rDrive = 0;
         }
-    }
-    
-    /* dbLM.Set(lDrive);
-    dbRM.Set(rDrive); */
+}
 
-    //velocity goes from -5000 to 5000, joystick inputs go from -1 to 1
+void DriveSubsystem::setDrive(RobotData &robotData)
+{
+    
+
+    //velocity goes from -5650 to 5650, joystick inputs go from -1 to 1
     dbLMPID.SetReference(lDrive, rev::ControlType::kVelocity);
     dbRMPID.SetReference(rDrive, rev::ControlType::kVelocity);
 
-    frc::SmartDashboard::PutNumber("js input left" , robotData.pLYStick);
+    /* frc::SmartDashboard::PutNumber("js input left" , robotData.pLYStick);
     frc::SmartDashboard::PutNumber("set velocity left" , lDrive);
     frc::SmartDashboard::PutNumber("js input right" , robotData.pRYStick);
-    frc::SmartDashboard::PutNumber("set velocity right" , rDrive);
+    frc::SmartDashboard::PutNumber("set velocity right" , rDrive); */
     
-
     
 }
 
@@ -242,13 +223,16 @@ void DriveSubsystem::courseCorrectedDrive(RobotData &robotData){
 
 // auton functions:
 
+//sets drive velocity values to 0
 void DriveSubsystem::potato(RobotData &robotData)
 {
-    robotData.pLYStick = 0;
-    robotData.pRYStick = 0;
+    lDrive = 0;
+    rDrive = 0;
 
 }
 
+//initializes the driveForward process
+//you need to set a desired distance beforehand
 void DriveSubsystem::initDriveForward(RobotData &robotData)
 {
     robotData.initialLDBPos = robotData.currentLDBPos;
@@ -257,6 +241,7 @@ void DriveSubsystem::initDriveForward(RobotData &robotData)
     robotData.autonStep++;
 }
 
+//drives the robot backwards
 void DriveSubsystem::driveForward(RobotData &robotData)
 {
     wpi::outs() << "driveForward" << '\n';
@@ -307,11 +292,34 @@ void DriveSubsystem::driveForward(RobotData &robotData)
     } */
 
 
-    if (lDistLeft > 5) {
-        
+    if (lDistLeft > 0) {
+        if(lDistLeft * 170 < 5000){
+            lDrive = lDistLeft * 170;
+        } else {
+            lDrive = 5000;
+        }
+    } else {
+        lDrive = 0;
     }
 
-    if (lDistLeft <= (robotData.desiredDBDist * 0.03) && (rDistLeft <= (robotData.desiredDBDist * 0.03))) {
+    
+
+    if (rDistLeft > 0){
+        if(rDistLeft * 170 < 5000){
+            rDrive = rDistLeft * 170;
+        } else {
+            rDrive = 5000;
+        }
+    } else {
+        rDrive = 0;
+    }
+
+    /* if (lDistLeft <= (robotData.desiredDBDist * 0.03) && (rDistLeft <= (robotData.desiredDBDist * 0.03))) {
+        wpi::outs() << "FINISHED DRIVE_FORWARD" << '\n';
+        robotData.autonStep++;
+    } */
+
+    if (lDistLeft <= .5 && (rDistLeft <= .5)) {
         wpi::outs() << "FINISHED DRIVE_FORWARD" << '\n';
         robotData.autonStep++;
     }
@@ -342,7 +350,7 @@ void DriveSubsystem::arc(RobotData &robotData){
 
     wpi::outs() << "arc" << '\n';
     
-    if (angleLeft < -20)
+    /* if (angleLeft < -20)
     {
         // 0.3 for now because we can
         robotData.pLYStick = 0.55 * robotData.sideRatio;
@@ -358,11 +366,7 @@ void DriveSubsystem::arc(RobotData &robotData){
         robotData.pLYStick = 0.07 * robotData.sideRatio;
         robotData.pRYStick = 0.07;
     }
-    /* else if (angleLeft < -2)
-    {
-        robotData.pLYStick = 0.05 * robotData.sideRatio;
-        robotData.pRYStick = 0.05;
-    } */
+    
     else if (angleLeft > 20)
     {
         // 0.3 for now because we can
@@ -379,17 +383,51 @@ void DriveSubsystem::arc(RobotData &robotData){
         robotData.pLYStick = 0.07;
         robotData.pRYStick = 0.07 * robotData.sideRatio;
     }
-    /* else if (angleLeft > 2)
-    {
-        robotData.pLYStick = 0.05;
-        robotData.pRYStick = 0.05 * robotData.sideRatio;
-    } */
+    
     else {
         // you done gud
         robotData.pLYStick = 0;
         robotData.pRYStick = 0;
         robotData.autonStep++;
         wpi::outs() << "FINISHED ARC" << '\n';
+    } */
+
+    if (angleLeft < -1){
+        lDrive = -80 * angleLeft * robotData.sideRatio;
+        rDrive = -80 * angleLeft;
+    } else if (angleLeft > 1){
+        lDrive = 80 * angleLeft;
+        rDrive = 80 * angleLeft * robotData.sideRatio;
+    } else {
+        lDrive = 0;
+        rDrive = 0;
+        robotData.autonStep++;
+        wpi::outs() << "FINISHED ARC" << '\n';
+    }
+
+}
+
+void DriveSubsystem::turnInPlace(RobotData &robotData){
+
+    //for radius = -1
+
+    double angleLeft = robotData.desiredAngleDiff - (robotData.rawAngle - robotData.initialAngle);
+    // double angleLeft = robotData.finalAngle - robotData.rawAngle;
+    frc::SmartDashboard::PutNumber("angleLeft", angleLeft);
+
+    wpi::outs() << "turn in place" << '\n';
+
+    if (angleLeft < -1){
+        lDrive = -100 * angleLeft * robotData.sideRatio;
+        rDrive = -100 * angleLeft;
+    } else if (angleLeft > 1){
+        lDrive = 100 * angleLeft;
+        rDrive = 100 * angleLeft * robotData.sideRatio;
+    } else {
+        lDrive = 0;
+        rDrive = 0;
+        robotData.autonStep++;
+        wpi::outs() << "FINISHED TURN IN PLACE" << '\n';
     }
 
 }

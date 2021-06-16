@@ -3,8 +3,8 @@
 
 void Robot::RobotInit() {
 
-    //intake.Init();
     db.Init();
+    //intake.Init();
     //indexer.Init();
     //shooter.Init();
     //limelight.Init();
@@ -24,12 +24,12 @@ void Robot::RobotPeriodic(){
 }
 
 void Robot::AutonomousInit() {
-    //auton.Init();
+    auton.Init();
 }
 
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
-        //auton.Periodic(autonSelect_goofy, robotData);
+        auton.Periodic(autonSelect_trenchRun, robotData);
     }
 }
 
