@@ -225,11 +225,16 @@ void Diagnostics::constructMetaElements(std::string &filePath, std::string &meta
 
     time_t now = time(0);
     tm *ltm = localtime(&now);
+    char* dt = ctime(&now); // can't get this to string but whatever
     day = std::to_string(ltm->tm_mday);
     month = std::to_string(1 + ltm->tm_mon);
     year = std::to_string(1900 + ltm->tm_year);
 
     eventName = frc::DriverStation::GetInstance().GetEventName();
+    if (eventName == "")
+    {
+        eventName = "none";
+    }
     matchType = convertMatchType(frc::DriverStation::GetInstance().GetMatchType());
     alliance = convertAlliance(frc::DriverStation::GetInstance().GetAlliance());
     location = std::to_string(frc::DriverStation::GetInstance().GetLocation());
@@ -248,14 +253,14 @@ void Diagnostics::constructMetaElements(std::string &filePath, std::string &meta
     frc::SmartDashboard::PutBoolean("IsFMSAttached", frc::DriverStation::GetInstance().IsFMSAttached());
     if (frc::DriverStation::GetInstance().IsFMSAttached())
     {
-        filePath += ("Matches/" + month + "." + day + "." + year + "event: " + eventName + " type: " + matchType + " match: " + matchNum + ".txt");
+        filePath += ("Matches/" + month + "." + day + "." + year + "event" + eventName + " type" + matchType + " match" + matchNum + ".txt");
     }
     else
     {
         filePath += ("Other/" + month + "." + day + "." + year + ".txt");
     }
 
-    metaHeader += (month + "." + day + "." + year + "event: " + eventName + " type: " + matchType + " match: " + matchNum + " alliance: " + alliance + " location: " + location);
+    metaHeader += (month + "." + day + "." + year + " event: " + eventName + " type: " + matchType + " match: " + matchNum + " alliance: " + alliance + " location: " + location);
 }
 
 void Diagnostics::constructParamHeader(std::string &paramHeader)
