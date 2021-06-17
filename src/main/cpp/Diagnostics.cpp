@@ -18,6 +18,10 @@ void Diagnostics::LogInit()
     wpi::outs() << "metaHeader: " << metaHeader << '\n';
     wpi::outs() << "paramHeader: " << paramHeader << '\n';
 
+    frc::SmartDashboard::PutString("filePath", filePath);
+    frc::SmartDashboard::PutString("metaHeader", metaHeader);
+    frc::SmartDashboard::PutString("pararmHeader", paramHeader);
+
     log_file.open(filePath);
 
     log_file << metaHeader << "\n";
@@ -99,19 +103,19 @@ void Diagnostics::addLogSnippet(std::string &log, std::uint16_t param)
 
 std::string Diagnostics::convertMatchType(int param)
 {
-    std::array<std::string, 4> matchTypeStrings {"none", "prac", "qual", "elim"};
+    std::array<std::string, 4> matchTypeStrings{"none", "prac", "qual", "elim"};
     return matchTypeStrings.at(param);
 }
 
 std::string Diagnostics::convertAlliance(int param)
 {
-    std::array<std::string, 3> allianceStrings {"red", "blu", "inv"};
+    std::array<std::string, 3> allianceStrings{"red", "blu", "inv"};
     return allianceStrings.at(param);
 }
 
 std::string Diagnostics::convertSolenoidValue(int param)
 {
-    std::array<std::string, 3> valueStrings {"-1", "1", "0"};
+    std::array<std::string, 3> valueStrings{"-1", "1", "0"};
     return valueStrings.at(param);
 }
 
@@ -129,8 +133,8 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     // battery - diagnostics
     // js - robot
 
-    std::string log = "";   // local log var
-    
+    std::string log = ""; // local log var
+
     addLogSnippet(log, seconds);
     addLogSnippet(log, matchMode);
     addLogSnippet(log, pStickConnected);
@@ -143,27 +147,21 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
 
     addLogSnippet(log, robotData.robotAngle);
 
-    std::array<int, 11> mControlIDs {1, 2, 3, 4, 32, 11, 12, 23, 22, 20, 21};
+    std::array<int, 11> mControlIDs{1, 2, 3, 4, 32, 11, 12, 23, 22, 20, 21};
     for (int i = 0; i < 11; i++)
     {
         addLogSnippet(log, diagnosticsData.mControlCurrents.at(
-                mControlIDs.at(i)
-        ));
+                               mControlIDs.at(i)));
         addLogSnippet(log, diagnosticsData.mControlVoltages.at(
-                mControlIDs.at(i)
-        ));
+                               mControlIDs.at(i)));
         addLogSnippet(log, diagnosticsData.mControlPositions.at(
-                mControlIDs.at(i)
-        ));
+                               mControlIDs.at(i)));
         addLogSnippet(log, diagnosticsData.mControlVelocities.at(
-                mControlIDs.at(i)
-        ));
+                               mControlIDs.at(i)));
         addLogSnippet(log, diagnosticsData.mControlTemps.at(
-                mControlIDs.at(i)
-        ));
+                               mControlIDs.at(i)));
         addLogSnippet(log, diagnosticsData.mControlFaults.at(
-                mControlIDs.at(i)
-        ));
+                               mControlIDs.at(i)));
     }
 
     addLogSnippet(log, diagnosticsData.pdpTotalVoltage);
@@ -210,8 +208,6 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     // delete the last comma
     log.erase(log.length() - 1);
 
-
-
     return log;
 }
 
@@ -247,8 +243,9 @@ void Diagnostics::constructMetaElements(std::string &filePath, std::string &meta
     frc::SmartDashboard::PutString("matchNum", matchNum);
     frc::SmartDashboard::PutString("alliance", alliance);
     frc::SmartDashboard::PutString("location", location);
-    
+
     wpi::outs() << frc::DriverStation::GetInstance().IsFMSAttached() << '\n';
+    frc::SmartDashboard::PutBoolean("IsFMSAttached", frc::DriverStation::GetInstance().IsFMSAttached());
     if (frc::DriverStation::GetInstance().IsFMSAttached())
     {
         filePath += ("Matches/" + month + "." + day + "." + year + "event: " + eventName + " type: " + matchType + " match: " + matchNum + ".txt");
@@ -264,13 +261,13 @@ void Diagnostics::constructMetaElements(std::string &filePath, std::string &meta
 void Diagnostics::constructParamHeader(std::string &paramHeader)
 {
     paramHeader +=
-    (
-        "param" "Header"
-        /* "seconds, "
+        ("param"
+         "Header"
+         /* "seconds, "
         "matchMode, "
         "pStickConnected, "
         "sStickCOnnected, "
         "batteryVoltage, "
         ", " */
-    );
+        );
 }
