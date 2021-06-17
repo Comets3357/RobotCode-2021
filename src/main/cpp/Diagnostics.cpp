@@ -8,7 +8,7 @@ void Diagnostics::LogInit()
 
     // create file
     std::string filePath;
-    if (bool usingUSB = true)
+    if (bool usingUSB = false)
     {
         filePath = "/media/sda/Diagnostics/Logs/";
     }
@@ -215,6 +215,7 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
 
     // delete the last comma
     log.erase(log.length() - 1);
+    log += "\n";
 
     return log;
 }
