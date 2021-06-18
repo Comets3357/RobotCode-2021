@@ -278,14 +278,149 @@ void Diagnostics::constructMetaElements(std::string &filePath, std::string &meta
 
 void Diagnostics::constructParamHeader(std::string &paramHeader)
 {
-    paramHeader +=
-        ("param"
-         "Header"
-         /* "seconds, "
+    {paramHeader +=
+        (/* "param"
+         "Header" */
+        
+        "seconds, "
         "matchMode, "
         "pStickConnected, "
         "sStickCOnnected, "
         "batteryVoltage, "
-        ", " */
-        );
+        "accelX, "
+        "accelY, "
+        "accelZ, "
+        "robotAngle, "
+
+        "mControl1Current, "
+        "mControl1Voltage, "
+        "mControl1Position, "
+        "mControl1Velocity, "
+        "mControl1Temp, "
+        "mControl1Faults, "
+
+        "mControl2Current, "
+        "mControl2Voltage, "
+        "mControl2Position, "
+        "mControl2Velocity, "
+        "mControl2Temp, "
+        "mControl2Faults, "
+
+        "mControl3Current, "
+        "mControl3Voltage, "
+        "mControl3Position, "
+        "mControl3Velocity, "
+        "mControl3Temp, "
+        "mControl3Faults, "
+
+        "mControl4Current, "
+        "mControl4Voltage, "
+        "mControl4Position, "
+        "mControl4Velocity, "
+        "mControl4Temp, "
+        "mControl4Faults, "
+
+        "mControl32Current, "
+        "mControl32Voltage, "
+        "mControl32Position, "
+        "mControl32Velocity, "
+        "mControl32Temp, "
+        "mControl32Faults, "
+
+        "mControl11Current, "
+        "mControl11Voltage, "
+        "mControl11Position, "
+        "mControl11Velocity, "
+        "mControl11Temp, "
+        "mControl11Faults, "
+
+        "mControl12Current, "
+        "mControl12Coltage, "
+        "mControl12Cosition, "
+        "mControl12Celocity, "
+        "mControl12Cemp, "
+        "mControl12Caults, "
+
+        "mControl23Current, "
+        "mControl23Voltage, "
+        "mControl23Position, "
+        "mControl23Velocity, "
+        "mControl23Temp, "
+        "mControl23Faults, "
+
+        "mControl22Current, "
+        "mControl22Voltage, "
+        "mControl22Position, "
+        "mControl22Velocity, "
+        "mControl22Temp, "
+        "mControl22Faults, "
+
+        "mControl20Current, "
+        "mControl20Voltage, "
+        "mControl20Position, "
+        "mControl20Velocity, "
+        "mControl20Temp, "
+        "mControl20Faults, "
+
+        "mControl21Current, "
+        "mControl21Voltage, "
+        "mControl21Position, "
+        "mControl21Velocity, "
+        "mControl21Temp, "
+        "mControl21Faults, "
+
+        "pdpTotalVoltage, "
+        "pdpTotalCurrent, "
+        "pdpTotalPower, "
+        "pdpTotalEnergy, "
+        "pdpTemp, "
+
+        "pdp0Current, "
+        "pdp1Current, "
+        "pdp2Current, "
+        "pdp3Current, "
+        "pdp4Current, "
+        "pdp5Current, "
+        "pdp6Current, "
+        "pdp7Current, "
+        "pdp8Current, "
+        "pdp9Current, "
+        "pdp10Current, "
+        "pdp11Current, "
+        "pdp12Current, "
+        "pdp13Current, "
+        "pdp14Current, "
+        "pdp15Current, "
+
+        "compEnabled, "
+        "compPressureSwitchVal, "
+        "compCurrent, "
+        "compCurrentHighFault, "
+        "compShortedFault, "
+        "compNotConnectedFault, "
+
+        "solenoidOneValue, "
+
+        "turretLSwitch, "
+        "hoodLSwitch, "
+
+        "validTarget, "
+
+        "pLYStick, "
+        "pRYStick, "
+        "pABtn, "
+        "pLShoulderBtn, "
+
+        "sLYStick, "
+        "sRYStick, "
+        "sABtn, "
+        "sBBtn, "
+        "sXBtn, "
+        "sYBtn, "
+        "sLBumper, "
+        "sRBumper, "
+        "sRCenterBtn, "
+        "sDPad, "
+        
+        );}
 }
