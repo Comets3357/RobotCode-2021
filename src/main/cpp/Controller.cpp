@@ -55,6 +55,14 @@ bool Controller::getShiftFactor(){
     }
 }
 
+bool Controller::limelightMode(bool shift){
+    if (secondary.GetRawButtonPressed(8) && shift){
+        limelightOn = !limelightOn;
+    }
+
+    return limelightOn;
+}
+
 bool Controller::shootingMode(int pov){
     //probably definitely wrong pov button index
     if(secondary.GetPOV(1) == pov){
@@ -104,6 +112,7 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
     robotData.shootingMode = shootingMode(robotData.shootingBtn);
+    robotData.limelightOn = limelightMode(robotData.shift);
 
 
 

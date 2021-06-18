@@ -48,8 +48,8 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     }else{
 
         if(robotData.sABtn){ //when intaking balls, spin the indexer
-            setOmniWheel(0.1);
-            setCenterSpindle(0.075);
+            setOmniWheel(0.15);
+            setCenterSpindle(0.1);
         }else {
             setOmniWheel(0);
             setCenterSpindle(0);
@@ -65,9 +65,12 @@ void IndexerSubsystem::manualMode(RobotData &robotData){
 
     //if you're using the shift button reverse the indexer
     if(robotData.shift){
-        if(robotData.sABtn){
-            setCenterSpindle(-0.1);
-            setOmniWheel(-0.1);
+        if(robotData.sXBtn){
+            setCenterSpindle(-0.2);
+            setOmniWheel(0.2);
+        }else if(robotData.sABtn){
+            setCenterSpindle(-0.2);
+            setOmniWheel(-0.2);
         } else {
             setOmniWheel(0);
             setCenterSpindle(0);
@@ -75,8 +78,8 @@ void IndexerSubsystem::manualMode(RobotData &robotData){
     //otherwise run the indexer
     }else{
        if(robotData.sABtn){
-            setCenterSpindle(0.1);
-            setOmniWheel(0.1);
+            setCenterSpindle(0.2);
+            setOmniWheel(0.2);
         } else {
             setOmniWheel(0);
             setCenterSpindle(0);

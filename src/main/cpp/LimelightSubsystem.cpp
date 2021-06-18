@@ -50,18 +50,21 @@ double LimelightSubsystem::getVerticalOffset(){
  */
 int LimelightSubsystem::getPipeline(double verticalOffset){
 
-    int pipeline = 0;
+    int pipeline;
     if(verticalOffset > 14){
         pipeline = 1;
-    }else if(verticalOffset > 11){
+    }else if(verticalOffset > 9){
         pipeline = 2;
     }else if(verticalOffset > 6){
         pipeline = 3;
-    }else if(verticalOffset <= 6){
+    }else if(verticalOffset > 1){
         pipeline = 4;
     }else{
-        pipeline = 0;
+        pipeline = 1;
+
     }
+
+    //basically if you can see the target turn on the limelight otherwise don't
 
     return pipeline;
 }
@@ -75,15 +78,25 @@ void LimelightSubsystem::Periodic(RobotData &robotData){
     robotData.yOffset = getVerticalOffset();
     robotData.calcHoodPos = calcHoodPOS(robotData.yOffset);
 
-    //if the button to shoot is pressed, turn on the limelight led
-    if(robotData.shootingMode){
-        table->PutNumber("pipeline", getPipeline(robotData.yOffset)); //set the pipeline based on y offset
+    if(robotData.manualMode){
+        if(robotData.limelightOn){
+            table->PutNumber("pipeline", getPipeline(robotData.yOffset));        
+        }else{
+            table->PutNumber("pipeline", 0);
+        }
     }else{
-        table->PutNumber("pipeline",0); //set the limelight to off
+        table->PutNumber("pipeline", getPipeline(robotData.yOffset));        
 
     }
 
+    
 
+    //if the button to shoot is pressed, turn on the limelight led
+    // if(robotData.shootingMode){
+    //     table->PutNumber("pipeline", getPipeline(robotData.yOffset)); //set the pipeline based on y offset
+    // }else{
+    //     table->PutNumber("pipeline",0); //set the limelight to off
+    // }
 
 }
 

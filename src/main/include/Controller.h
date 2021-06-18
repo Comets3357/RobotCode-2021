@@ -23,6 +23,7 @@ private:
     bool getShiftFactor();
     bool shootingMode(int pov);
     bool getManual();
+    bool limelightMode(bool shift);
 
 
     bool getButton(int js, int index);
@@ -37,6 +38,7 @@ private:
 
     //this is necessary actually for the getManual() function
     bool inManualMode = false;
+    bool limelightOn = false;
 
 
 }; 
