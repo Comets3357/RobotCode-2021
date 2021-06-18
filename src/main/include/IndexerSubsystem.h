@@ -13,7 +13,7 @@ class IndexerSubsystem {
     
     public:
         void Init();
-        void Periodic(RobotData &robotData);
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
         void Disabled();
 
 
@@ -23,6 +23,8 @@ class IndexerSubsystem {
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
         
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
         double getSpinnerVel();
 
@@ -41,5 +43,7 @@ class IndexerSubsystem {
 //encoders:
         rev::CANEncoder centerSpindlePOS = centerSpindle.GetEncoder();
         rev::CANPIDController centerSpindle_pidController = centerSpindle.GetPIDController();
+
+        rev::CANEncoder omniWheelPOS = omniWheel.GetEncoder();
  
 };

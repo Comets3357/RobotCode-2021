@@ -2,16 +2,20 @@
 
 #include <frc/TimedRobot.h>
 #include <rev/CANSparkMax.h>
+#include <frc/BuiltInAccelerometer.h>
+#include <frc/PowerDistributionPanel.h>
 #include <adi/ADIS16448_IMU.h>
+#include <frc/Compressor.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 
 class DriveSubsystem {
     
     public: 
         void Init();
-        void Periodic(RobotData &robotData);
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
         void Disabled();
 
     private:
@@ -23,11 +27,14 @@ class DriveSubsystem {
         bool climbMode = false;
 
         void updateData(RobotData &robotData);
+        void updateGyro(RobotData &robotData);
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         void teleopControl(RobotData &robotData); // converts js inputs to desire velocity
         void setVelocity(RobotData &robotData);
 
         void courseCorrectedDrive(RobotData &robotData); // was only used for pid testing
+
 
         void potato(RobotData &robotData);
         void initDriveForward(RobotData &robotData);
@@ -40,6 +47,7 @@ class DriveSubsystem {
 
 //motors:
         static const int leftLeadDeviceID = 1, leftFollowDeviceID = 2, rightLeadDeviceID = 3, rightFollowDeviceID = 4;
+        
         rev::CANSparkMax dbLM{leftLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
         rev::CANSparkMax dbRM{rightLeadDeviceID, rev::CANSparkMax::MotorType::kBrushless};
         rev::CANSparkMax dbLS{leftFollowDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -51,8 +59,16 @@ class DriveSubsystem {
         rev::CANPIDController dbRMPID = dbRM.GetPIDController();
         rev::CANPIDController dbLMPID = dbLM.GetPIDController();
         
+// accelerometer
+        frc::BuiltInAccelerometer accelerometer{};
+
+// PDP
+        frc::PowerDistributionPanel pdp{0};
 
 //gyro:
         frc::ADIS16448_IMU gyro{};
+
+// compressor
+        frc::Compressor compressor{0};
 
 }; 

@@ -5,6 +5,8 @@
 #include <rev/CANSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
 
+#include "Diagnostics.h"
+
 
 class LimelightSubsystem : public frc2::SubsystemBase {
     

@@ -55,7 +55,7 @@ void DriveSubsystem::Init()
 
 }
 
-void DriveSubsystem::Periodic(RobotData &robotData)
+void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData)
 {
     updateData(robotData);
 
@@ -96,7 +96,7 @@ void DriveSubsystem::Periodic(RobotData &robotData)
         break;
     }
 
-    
+    updateDiagnostics(diagnosticsData);
 }
 
 void DriveSubsystem::Disabled()
@@ -135,10 +135,7 @@ void DriveSubsystem::updateData(RobotData &robotData)
     // frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
 }
 
-// driving functions:
-
-// adjusts for the deadzone and converts joystick input to velocity values for PID
-void DriveSubsystem::teleopControl(RobotData &robotData)
+void DriveSubsystem::setDrive(double lDrive, double rDrive)
 {
     double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
     double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
@@ -313,4 +310,58 @@ void DriveSubsystem::turnInPlace(RobotData &robotData)
         // wpi::outs() << "FINISHED TURN IN PLACE" << '\n';
     }
 
+}
+
+void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    // accelerometer
+    diagnosticsData.accelX = accelerometer.GetX();
+    diagnosticsData.accelY = accelerometer.GetY();
+    diagnosticsData.accelZ = accelerometer.GetZ();
+
+    // pdp
+    diagnosticsData.pdpTotalVoltage = pdp.GetVoltage();
+    diagnosticsData.pdpTotalCurrent = pdp.GetTotalCurrent();
+    diagnosticsData.pdpTotalPower = pdp.GetTotalPower();
+    diagnosticsData.pdpTotalEnergy = pdp.GetTotalEnergy();
+    diagnosticsData.pdpTemp = pdp.GetTemperature();
+    for (int i = 0; i < 16; i++)
+    {
+        diagnosticsData.pdpCurrents.at(i) = pdp.GetCurrent(i);
+    }
+
+    // compressor
+    diagnosticsData.compEnabled = compressor.Enabled();
+    diagnosticsData.compPressureSwitchVal = compressor.GetPressureSwitchValue();
+    diagnosticsData.compCurrent = compressor.GetCompressorCurrent();
+
+    diagnosticsData.compCurrentHighFault = compressor.GetCompressorCurrentTooHighFault();
+    diagnosticsData.compShortedFault = compressor.GetCompressorShortedFault();
+    diagnosticsData.compNotConnectedFault = compressor.GetCompressorNotConnectedFault();
+
+    // db motor controllers
+    diagnosticsData.mControlCurrents.at(leftLeadDeviceID) = dbLM.GetOutputCurrent();
+    diagnosticsData.mControlCurrents.at(rightLeadDeviceID) = dbRM.GetOutputCurrent();
+    diagnosticsData.mControlCurrents.at(leftFollowDeviceID) = dbLS.GetOutputCurrent();
+    diagnosticsData.mControlCurrents.at(rightFollowDeviceID) = dbRS.GetOutputCurrent();
+
+    diagnosticsData.mControlVoltages.at(leftLeadDeviceID) = dbLM.GetBusVoltage();
+    diagnosticsData.mControlVoltages.at(rightLeadDeviceID) = dbRM.GetBusVoltage();
+    diagnosticsData.mControlVoltages.at(leftFollowDeviceID) = dbLS.GetBusVoltage();
+    diagnosticsData.mControlVoltages.at(rightFollowDeviceID) = dbRS.GetBusVoltage();
+
+    diagnosticsData.mControlTemps.at(leftLeadDeviceID) = dbLM.GetMotorTemperature();
+    diagnosticsData.mControlTemps.at(rightLeadDeviceID) = dbRM.GetMotorTemperature();
+    diagnosticsData.mControlTemps.at(leftFollowDeviceID) = dbLS.GetMotorTemperature();
+    diagnosticsData.mControlTemps.at(rightFollowDeviceID) = dbRS.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(leftLeadDeviceID) = dbLMEncoder.GetPosition();
+    diagnosticsData.mControlPositions.at(rightLeadDeviceID) = dbRMEncoder.GetPosition();
+    diagnosticsData.mControlVelocities.at(leftLeadDeviceID) = dbLMEncoder.GetVelocity();
+    diagnosticsData.mControlVelocities.at(rightLeadDeviceID) = dbRMEncoder.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(leftLeadDeviceID) = dbLM.GetFaults();
+    diagnosticsData.mControlFaults.at(rightLeadDeviceID) = dbRM.GetFaults();
+    diagnosticsData.mControlFaults.at(leftFollowDeviceID) = dbLS.GetFaults();
+    diagnosticsData.mControlFaults.at(rightFollowDeviceID) = dbRS.GetFaults();
 }

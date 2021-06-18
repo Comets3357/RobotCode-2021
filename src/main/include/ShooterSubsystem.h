@@ -5,6 +5,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 
 class ShooterSubsystem {
@@ -12,8 +13,9 @@ class ShooterSubsystem {
     public:
 
         void Init();
-        void Periodic(RobotData &robotData);
         void Disabled();
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        
 
     private:
 
@@ -35,6 +37,8 @@ class ShooterSubsystem {
         void setWheel(double power);
         void setHoodPos(double pos);
         void setTurretPos(double pos);
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         bool shooting = false;
 

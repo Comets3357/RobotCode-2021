@@ -15,9 +15,12 @@
 #include "ShooterSubsystem.h"
 #include "Controller.h"
 #include "LimelightSubsystem.h"
+#include "Auton.h"
+#include "Diagnostics.h"
 #include "ControlpanelSubsystem.h"
 
 #include "RobotData.h"
+
 
 
 
@@ -33,6 +36,8 @@ class Robot : public frc::TimedRobot {
       void AutonomousPeriodic() override;
       void TeleopPeriodic() override;
       void DisabledInit() override;
+      void TestInit() override;
+      void TestPeriodic() override;
 
   private:
       DriveSubsystem db{};
@@ -44,6 +49,8 @@ class Robot : public frc::TimedRobot {
 
       Controller control{};
       Auton auton{};
+      Diagnostics diagnostics{};
+      DiagnosticsData diagnosticsData{};
       RobotData robotData{};
 
       
