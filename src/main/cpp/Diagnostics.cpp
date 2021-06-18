@@ -423,4 +423,5 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "sDPad, "
         
         );}
+    paramHeader.erase(paramHeader.length() - 1);
 }
