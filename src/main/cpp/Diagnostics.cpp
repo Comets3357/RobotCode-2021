@@ -16,23 +16,13 @@ void Diagnostics::LogInit()
     {
         filePath = "/home/lvuser/Diagnostics/Logs/";
     }
-    std::string metaHeader = "";
-    constructMetaElements(filePath, metaHeader);
+    constructMetaElements(filePath);
 
     std::string paramHeader = "";
     constructParamHeader(paramHeader);
 
-    wpi::outs() << "filePath: " << filePath << '\n';
-    wpi::outs() << "metaHeader: " << metaHeader << '\n';
-    wpi::outs() << "paramHeader: " << paramHeader << '\n';
-
-    frc::SmartDashboard::PutString("filePath", filePath);
-    frc::SmartDashboard::PutString("metaHeader", metaHeader);
-    frc::SmartDashboard::PutString("pararmHeader", paramHeader);
-
     log_file.open(filePath);
 
-    log_file << metaHeader << "\n";
     log_file << paramHeader << "\n";
 }
 
@@ -50,8 +40,6 @@ void Diagnostics::LogPeriodic(RobotData &robotData, DiagnosticsData &diagnostics
     }
 
     setLogValues();
-    wpi::outs() << appendLogValues(robotData, diagnosticsData) << '\n';
-    frc::SmartDashboard::PutString("appendLogValues", appendLogValues(robotData, diagnosticsData));
     log_file << appendLogValues(robotData, diagnosticsData);
 }
 
@@ -213,14 +201,15 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, robotData.sRCenterBtn);
     addLogSnippet(log, robotData.sDPad);
 
-    // delete the last comma
+    // delete the last comma and space
+    log.erase(log.length() - 1);
     log.erase(log.length() - 1);
     log += "\n";
 
     return log;
 }
 
-void Diagnostics::constructMetaElements(std::string &filePath, std::string &metaHeader)
+void Diagnostics::constructMetaElements(std::string &filePath)
 {
     // set defaults/errors
     std::string day = "-1";
@@ -251,21 +240,10 @@ void Diagnostics::constructMetaElements(std::string &filePath, std::string &meta
     location = std::to_string(frc::DriverStation::GetInstance().GetLocation());
     matchNum = std::to_string(frc::DriverStation::GetInstance().GetMatchNumber());
 
-    frc::SmartDashboard::PutString("day", day);
-    frc::SmartDashboard::PutString("month", month);
-    frc::SmartDashboard::PutString("year", year);
-    frc::SmartDashboard::PutString("eventName", eventName);
-    frc::SmartDashboard::PutString("matchType", matchType);
-    frc::SmartDashboard::PutString("matchNum", matchNum);
-    frc::SmartDashboard::PutString("alliance", alliance);
-    frc::SmartDashboard::PutString("location", location);
-
-    wpi::outs() << frc::DriverStation::GetInstance().IsFMSAttached() << '\n';
-    frc::SmartDashboard::PutBoolean("IsFMSAttached", frc::DriverStation::GetInstance().IsFMSAttached());
     if (frc::DriverStation::GetInstance().IsFMSAttached())
     {
         // filePath += ("Matches/" + month + "." + day + "." + year + "event" + eventName + " type" + matchType + " match" + matchNum + ".txt");
-        filePath += ("Matches/" + dt2 + " " + eventName + " " + matchType + " match " + matchNum + ".txt");
+        filePath += ("Matches/" + dt2 + " " + eventName + " " + matchType + " " + alliance + " " + location + " match " + matchNum + ".txt");
     }
     else
     {
@@ -273,7 +251,7 @@ void Diagnostics::constructMetaElements(std::string &filePath, std::string &meta
         filePath += ("Other/" + dt2 + ".txt");
     }
 
-    metaHeader += (month + "." + day + "." + year + " event: " + eventName + " type: " + matchType + " match: " + matchNum + " alliance: " + alliance + " location: " + location);
+    // metaHeader += (month + "." + day + "." + year + " event: " + eventName + " type: " + matchType + " match: " + matchNum + " alliance: " + alliance + " location: " + location);
 }
 
 void Diagnostics::constructParamHeader(std::string &paramHeader)
@@ -423,5 +401,8 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "sDPad, "
         
         );}
+
+    // twice because there's a comma and space
+    paramHeader.erase(paramHeader.length() - 1);
     paramHeader.erase(paramHeader.length() - 1);
 }

@@ -60,7 +60,7 @@ public:
     void TestPeriodic(DiagnosticsData &diagnosticsData);
 
 private:
-    void constructMetaElements(std::string &filePath, std::string &metaHeader);
+    void constructMetaElements(std::string &filePath);
     void constructParamHeader(std::string &paramHeader);
     void setLogValues();
     std::string appendLogValues(RobotData &robotData, DiagnosticsData &diagnosticsData);
