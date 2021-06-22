@@ -118,8 +118,7 @@ struct RobotData
 
     // auton stuff
     int autonStep  = 0;
-
-    // AutonSelect autonSelect{autonSelect_potato}; // don't think we need this unless a subsystem needs access
+    AutonSelect autonSelect;    // only for diagnostics purposes; do not use
     DriveMode driveMode{driveMode_teleop};  // should have a default?
 
     //turn

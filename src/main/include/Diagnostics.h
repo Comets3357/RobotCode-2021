@@ -7,7 +7,7 @@
 #include <frc/Timer.h>
 #include <frc/TimedRobot.h>
 #include <frc/DriverStation.h>
-#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
 
 #include "RobotData.h"
 
@@ -45,7 +45,7 @@ struct DiagnosticsData
         compNotConnectedFault{false};
 
     // solenoids
-    frc::DoubleSolenoid::Value solenoidOneValue{frc::DoubleSolenoid::Value::kOff};
+    bool solenoidOneValue{false};
 
     // limit switches
     bool turretLSwitch{false}, hoodLSwitch{false};
@@ -74,6 +74,8 @@ private:
     std::string convertMatchType(int param);
     std::string convertAlliance(int param);
     std::string convertSolenoidValue(int param);
+    std::string convertAutonSelect(int param);
+    std::string convertDriveMode(int param);
 
     std::ofstream log_file;
 

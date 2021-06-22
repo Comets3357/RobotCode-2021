@@ -27,7 +27,6 @@ class DriveSubsystem {
         bool climbMode = false;
 
         void updateData(RobotData &robotData);
-        void updateGyro(RobotData &robotData);
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         void teleopControl(RobotData &robotData); // converts js inputs to desire velocity

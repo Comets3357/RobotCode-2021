@@ -109,11 +109,31 @@ std::string Diagnostics::convertAlliance(int param)
     return allianceStrings.at(param);
 }
 
-std::string Diagnostics::convertSolenoidValue(int param)
+std::string Diagnostics::convertAutonSelect(int param)
+{
+    std::array<std::string, 6> autonSelectStrings
+    {
+        "potato", "exitInitLine", "shootAndDrive", "shootAndCollectBalls",
+        "trenchRun", "goofy"
+    };
+    return autonSelectStrings.at(param);
+}
+
+std::string Diagnostics::convertDriveMode(int param)
+{
+    std::array<std::string, 6> driveModeStrings
+    {
+        "teleop", "potato", "initDriveForward", "driveForward",
+        "arc", "initArc"
+    };
+    return driveModeStrings.at(param);
+}
+
+/* std::string Diagnostics::convertSolenoidValue(int param)
 {
     std::array<std::string, 3> valueStrings{"-1", "1", "0"};
     return valueStrings.at(param);
-}
+} */
 
 std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &diagnosticsData)
 {
@@ -128,6 +148,7 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     // limelight - robot
     // battery - diagnostics
     // js - robot
+    // auton - robot
 
     std::string log = ""; // local log var
 
@@ -178,7 +199,7 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, diagnosticsData.compShortedFault);
     addLogSnippet(log, diagnosticsData.compNotConnectedFault);
 
-    addLogSnippet(log, convertSolenoidValue(diagnosticsData.solenoidOneValue));
+    addLogSnippet(log, diagnosticsData.solenoidOneValue);
 
     addLogSnippet(log, diagnosticsData.turretLSwitch);
     addLogSnippet(log, diagnosticsData.hoodLSwitch);
@@ -200,6 +221,10 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, robotData.sRBumper);
     addLogSnippet(log, robotData.sRCenterBtn);
     addLogSnippet(log, robotData.sDPad);
+
+    addLogSnippet(log, convertAutonSelect(robotData.autonSelect));
+    addLogSnippet(log, robotData.autonStep);
+    addLogSnippet(log, convertDriveMode(robotData.driveMode));
 
     // delete the last comma and space
     log.erase(log.length() - 1);
@@ -399,6 +424,10 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "sRBumper, "
         "sRCenterBtn, "
         "sDPad, "
+
+        "autonSelect, "
+        "autonStep, "
+        "driveMode, "
         
         );}
 

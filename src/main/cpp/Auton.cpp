@@ -183,6 +183,9 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         robotData.driveMode = driveMode_potato;
         break;
     }
+
+    // only for updating diagnostics
+    robotData.autonSelect = autonSelect;
 }
 
 

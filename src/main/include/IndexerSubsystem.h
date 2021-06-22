@@ -6,6 +6,7 @@
 #include <frc/shuffleboard/Shuffleboard.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 #include <frc/shuffleboard/Shuffleboard.h>
 
 

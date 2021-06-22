@@ -22,6 +22,7 @@ void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostic
     } else {
         semiAutoMode(robotData);
     }
+    //setPiston(true);
 
     updateDiagnostics(diagnosticsData);
 }

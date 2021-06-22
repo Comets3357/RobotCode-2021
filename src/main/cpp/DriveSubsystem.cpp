@@ -135,7 +135,10 @@ void DriveSubsystem::updateData(RobotData &robotData)
     // frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
 }
 
-void DriveSubsystem::setDrive(double lDrive, double rDrive)
+// driving functions:
+
+// adjusts for the deadzone and converts joystick input to velocity values for PID
+void DriveSubsystem::teleopControl(RobotData &robotData)
 {
     double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
     double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
