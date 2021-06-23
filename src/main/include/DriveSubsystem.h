@@ -54,6 +54,8 @@ class DriveSubsystem {
 
         rev::CANEncoder dbRMEncoder = dbRM.GetEncoder();
         rev::CANEncoder dbLMEncoder = dbLM.GetEncoder();
+        rev::CANEncoder dbRSEncoder = dbRS.GetEncoder();
+        rev::CANEncoder dbLSEncoder = dbLS.GetEncoder();
 
         rev::CANPIDController dbRMPID = dbRM.GetPIDController();
         rev::CANPIDController dbLMPID = dbLM.GetPIDController();

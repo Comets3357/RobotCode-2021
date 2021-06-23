@@ -67,7 +67,7 @@ class ShooterSubsystem {
         rev::CANEncoder shooterWheelSPOS = shooterWheelS.GetEncoder();
 
 //limit switches;
-        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
         rev::CANDigitalInput hoodReverseLimit = shooterHood.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
 
 //PIDs;

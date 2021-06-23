@@ -206,6 +206,9 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
 
     addLogSnippet(log, robotData.validTarget);
 
+    addLogSnippet(log, robotData.manualMode);
+    addLogSnippet(log, robotData.shift);
+
     addLogSnippet(log, robotData.pLYStick);
     addLogSnippet(log, robotData.pRYStick);
     addLogSnippet(log, robotData.pABtn);
@@ -338,11 +341,11 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "mControl11Faults, "
 
         "mControl12Current, "
-        "mControl12Coltage, "
-        "mControl12Cosition, "
-        "mControl12Celocity, "
-        "mControl12Cemp, "
-        "mControl12Caults, "
+        "mControl12Voltage, "
+        "mControl12Position, "
+        "mControl12Velocity, "
+        "mControl12Temp, "
+        "mControl12Faults, "
 
         "mControl23Current, "
         "mControl23Voltage, "
@@ -408,6 +411,9 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "hoodLSwitch, "
 
         "validTarget, "
+
+        "manualMode, "
+        "shift, "
 
         "pLYStick, "
         "pRYStick, "

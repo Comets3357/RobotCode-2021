@@ -360,8 +360,13 @@ void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 
     diagnosticsData.mControlPositions.at(leftLeadDeviceID) = dbLMEncoder.GetPosition();
     diagnosticsData.mControlPositions.at(rightLeadDeviceID) = dbRMEncoder.GetPosition();
+    diagnosticsData.mControlPositions.at(leftFollowDeviceID) = dbLSEncoder.GetPosition();
+    diagnosticsData.mControlPositions.at(rightFollowDeviceID) = dbRSEncoder.GetPosition();
+
     diagnosticsData.mControlVelocities.at(leftLeadDeviceID) = dbLMEncoder.GetVelocity();
     diagnosticsData.mControlVelocities.at(rightLeadDeviceID) = dbRMEncoder.GetVelocity();
+    diagnosticsData.mControlVelocities.at(leftFollowDeviceID) = dbLSEncoder.GetVelocity();
+    diagnosticsData.mControlVelocities.at(rightFollowDeviceID) = dbRSEncoder.GetVelocity();
 
     diagnosticsData.mControlFaults.at(leftLeadDeviceID) = dbLM.GetFaults();
     diagnosticsData.mControlFaults.at(rightLeadDeviceID) = dbRM.GetFaults();
