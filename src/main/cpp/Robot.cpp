@@ -10,6 +10,7 @@ void Robot::RobotInit()
     limelight.Init();
     diagnostics.LogInit();
     controlpanel.Init();
+    climb.Init();
 
 }
 
@@ -24,6 +25,7 @@ void Robot::RobotPeriodic()
         limelight.Periodic(robotData);
         diagnostics.LogPeriodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
+        climb.Periodic(robotData);
     }
 }
 
