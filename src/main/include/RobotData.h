@@ -35,7 +35,7 @@ struct RobotData
     bool manualMode = false;
     bool shift; //shift for more button options
     bool shootingMode;
-    bool climbMode = true;
+    bool climbMode = false;
     bool limelightOn;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
@@ -118,8 +118,10 @@ struct RobotData
     //greater angle means clockwise
     double rawAngle;
     double robotAngle; // mod by 360
-    double angleLeft;
+    double robotTiltAngle;
 
+
+    double angleLeft;
 
     // auton stuff
     int autonStep  = 0;

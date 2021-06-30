@@ -117,12 +117,15 @@ void DriveSubsystem::updateData(RobotData &robotData)
     robotData.currentRDBPos = dbRMEncoder.GetPosition();
     robotData.currentLDBPos = dbLMEncoder.GetPosition();
 
-    gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
+
+    // gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
 
     //this is the direction that the robot is facing
     //add negative sign for comp bot, remove for test db
-    robotData.rawAngle = gyro.GetAngle();
-    double tempRobotAngle = gyro.GetAngle();
+    // robotData.rawAngle = gyro.GetAngle();
+    // double tempRobotAngle = gyro.GetAngle();
+    robotData.rawAngle = gyro.GetGyroAngleZ();
+    double tempRobotAngle = gyro.GetGyroAngleZ();
 
     //calculates the non continuous angle
     while(tempRobotAngle >= 360){
