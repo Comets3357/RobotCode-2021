@@ -18,8 +18,8 @@ void Robot::RobotPeriodic(){
         db.Periodic(robotData);
         intake.Periodic(robotData);
         indexer.Periodic(robotData);
-        shooter.Periodic(robotData);
         limelight.Periodic(robotData);
+        shooter.Periodic(robotData);
         controlpanel.Periodic(robotData);
     }
 }

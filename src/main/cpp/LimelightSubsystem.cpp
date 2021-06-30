@@ -18,7 +18,21 @@ void LimelightSubsystem::Init(){}
  */
 double LimelightSubsystem::calcHoodPOS(double verticalOffset){ 
     double x = verticalOffset;
-    return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293);
+    if(verticalOffset == 0){
+        return 0;
+    }else{
+        return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) +2;
+    }
+}
+
+/**
+ * calculates turret position needed 
+ * @param horOffset vertical offset from the target from limelight in degrees
+ * @return desired encoder position of Shooter Hood
+ */
+double LimelightSubsystem::calcTurretPOS(double horOffset){ 
+    double x = horOffset;
+    return (x*0.144034);
 }
 
 /**
@@ -35,6 +49,11 @@ double LimelightSubsystem::getHorizontalOffset(){
 double LimelightSubsystem::getVerticalOffset(){
     std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the table
     return table->GetNumber("ty",0.0);
+}
+
+int LimelightSubsystem::getTarget(){
+    std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the table
+    return table->GetNumber("tv",0.0);
 }
 
 
@@ -71,12 +90,15 @@ int LimelightSubsystem::getPipeline(double verticalOffset){
 
 
 void LimelightSubsystem::Periodic(RobotData &robotData){
+
    
    std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the networktable
 
     robotData.xOffset = getHorizontalOffset();
     robotData.yOffset = getVerticalOffset();
+    robotData.targetValue = getTarget();
     robotData.calcHoodPos = calcHoodPOS(robotData.yOffset);
+    robotData.calcTurretPos = calcTurretPOS(robotData.xOffset);
 
     if(robotData.manualMode){
         if(robotData.limelightOn){
@@ -85,9 +107,20 @@ void LimelightSubsystem::Periodic(RobotData &robotData){
             table->PutNumber("pipeline", 0);
         }
     }else{
-        table->PutNumber("pipeline", getPipeline(robotData.yOffset));        
+        if(robotData.shootingMode){
+            table->PutNumber("pipeline", getPipeline(robotData.yOffset)); //set the pipeline based on y offset
+            frc::SmartDashboard::PutBoolean("shooting", true);
 
+        }else{
+            table->PutNumber("pipeline",0); //set the limelight to off
+            frc::SmartDashboard::PutBoolean("shooting", false);
+
+        }
     }
+
+    frc::SmartDashboard::PutBoolean("manual", robotData.manualMode);
+
+    //robotData.sDPad == robotData.shootingBtn
 
     
 

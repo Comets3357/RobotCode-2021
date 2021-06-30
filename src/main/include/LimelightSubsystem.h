@@ -15,7 +15,9 @@ class LimelightSubsystem : public frc2::SubsystemBase {
 
         double getHorizontalOffset();
         double getVerticalOffset();
+        int getTarget();
         double calcHoodPOS(double verticalOffset);
+        double calcTurretPOS(double horOffset);
         int getPipeline(double verticalOffset);
 
     private:   

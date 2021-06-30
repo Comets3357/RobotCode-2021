@@ -31,18 +31,20 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     //if shooting
     if(shootPOV == robotData.shootingBtn){
 
-        //set indexer to set spe
-    
-        //retrieve data from shooter for when shooting wheel is up to speed
-        if(robotData.readyShoot){
-            setCenterSpindle(0.47);
+        //set indexer to set speed
+        if(robotData.targetValue != 0){
+            //retrieve data from shooter for when shooting wheel is up to speed
+            if(robotData.readyShoot){
+                setCenterSpindle(0.47);
 
-            //reverse direction for omniwheel to bring balls into shooter
-            setOmniWheel(-0.7);
-        }else{  
-            setOmniWheel(0.3);
-            setCenterSpindle(0.47);
-        }
+                //reverse direction for omniwheel to bring balls into shooter
+                setOmniWheel(-0.7);
+            }else{  
+                setOmniWheel(0.3);
+                setCenterSpindle(0.47);
+            }
+        }   
+        
 
 
     }else{
@@ -65,9 +67,9 @@ void IndexerSubsystem::manualMode(RobotData &robotData){
 
     //if you're using the shift button reverse the indexer
     if(robotData.shift){
-        if(robotData.sXBtn){
-            setCenterSpindle(-0.2);
-            setOmniWheel(0.2);
+        if(robotData.sLTrigger){
+            setCenterSpindle(-robotData.sRTrigger);
+            setOmniWheel(robotData.sRTrigger);
         }else if(robotData.sABtn){
             setCenterSpindle(-0.2);
             setOmniWheel(-0.2);
@@ -76,14 +78,9 @@ void IndexerSubsystem::manualMode(RobotData &robotData){
             setCenterSpindle(0);
         }
     //otherwise run the indexer
-    }else{
-       if(robotData.sABtn){
-            setCenterSpindle(0.2);
-            setOmniWheel(0.2);
-        } else {
-            setOmniWheel(0);
-            setCenterSpindle(0);
-        } 
+    }else{ 
+        setCenterSpindle(robotData.sRTrigger);
+        setOmniWheel(robotData.sRTrigger);
     }
     
 }
