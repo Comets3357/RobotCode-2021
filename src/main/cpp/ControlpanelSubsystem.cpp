@@ -40,7 +40,7 @@ void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
 }
 
 void ControlpanelSubsystem::manualMode(RobotData &robotData){ 
-    if(robotData.shift && robotData.sRBumper){
+    if(robotData.sDPad == 180){
         cpManipulator.Set(0.2);
     }
 }

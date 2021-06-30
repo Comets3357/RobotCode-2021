@@ -96,7 +96,7 @@ struct RobotData
     double hoodPosition;
     double turretPosition;
     double flywheelVelocity;
-    static const int shootingBtn = 90;
+    static const int shootingBtn = 0;
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
 
@@ -108,8 +108,10 @@ struct RobotData
     //limelight data
     double xOffset;
     double yOffset;
+    int targetValue;
     double calcHoodPos;
     bool validTarget;
+    double calcTurretPos;
     int pipeline; //for LED power
 
     //gyro data

@@ -64,7 +64,7 @@ bool Controller::limelightMode(bool shift){
 
 bool Controller::shootingMode(int pov){
     //probably definitely wrong pov button index
-    if(secondary.GetPOV(1) == pov){
+    if(secondary.GetPOV(0) == pov){
         return true;
     }else{
         return false;

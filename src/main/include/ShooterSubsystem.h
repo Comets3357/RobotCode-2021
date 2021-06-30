@@ -31,7 +31,7 @@ class ShooterSubsystem {
         bool getTurretLimitSwitch();
         bool getHoodLimitSwitch();
 
-        void setShooterPID(rev::CANPIDController motor, double p, double i, double d, double ff);
+        void setShooterPID(rev::CANPIDController motor, int pidSlot, double p, double i, double d, double ff);
         void setHood(double power);
         void setTurret(double power);
         void setWheel(double power);

@@ -15,18 +15,19 @@ void Robot::RobotInit()
 
 }
 
-void Robot::RobotPeriodic()
-{
-    if (IsEnabled())
-    {
-        db.Periodic(robotData, diagnosticsData);
-        intake.Periodic(robotData, diagnosticsData);
-        indexer.Periodic(robotData, diagnosticsData);
-        shooter.Periodic(robotData, diagnosticsData);
+
+
+void Robot::RobotPeriodic(){
+    if (!IsDisabled()) {
+        db.Periodic(robotData);
+        intake.Periodic(robotData);
+        indexer.Periodic(robotData);
         limelight.Periodic(robotData);
         // diagnostics.LogPeriodic(robotData, diagnosticsData);
         // controlpanel.Periodic(robotData);
         // climb.Periodic(robotData);
+        shooter.Periodic(robotData);
+        controlpanel.Periodic(robotData);
     }
 }
 

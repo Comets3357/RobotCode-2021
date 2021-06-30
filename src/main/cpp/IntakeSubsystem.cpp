@@ -55,7 +55,7 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
     } else {
         //Intake balls
-        if(robotData.sABtn){
+        if(robotData.sRTrigger){
             if(!getPiston()){ //if the piston is up put it down
                 setPiston(true);
             }
@@ -90,20 +90,17 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
 
     //if the shift is pressed reverse the intake roller
     if(robotData.shift){
-        if(robotData.sYBtn){
-            setIntakeRollers(-pow);
+        if(robotData.sRTrigger){
+            setIntakeRollers(robotData.sRTrigger*-pow);
         } else {
             setIntakeRollers(0);
         }
 
     //else run the intake roller
     }else{
-        if(robotData.sYBtn){
-            setIntakeRollers(pow);
-        } else {
-            setIntakeRollers(0);
-        }
-        if(robotData.sXBtn){ //if the piston is extended take it in, if its in take it out
+        setIntakeRollers(robotData.sRTrigger);
+
+        if(robotData.sRBumper){ //if the piston is extended take it in, if its in take it out
             setPiston(!getPiston());
         }
     }
