@@ -18,7 +18,7 @@ void LimelightSubsystem::Init(){}
  */
 double LimelightSubsystem::calcHoodPOS(double verticalOffset){ 
     double x = verticalOffset;
-    return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293);
+    return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293)+3;
 }
 
 /**

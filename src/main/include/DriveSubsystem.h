@@ -36,10 +36,10 @@ class DriveSubsystem {
 
 
         void potato(RobotData &robotData);
-        void initDriveForward(RobotData &robotData);
-        void driveForward(RobotData &robotData);
+        void initDriveStraight(RobotData &robotData);
+        void driveStraight(RobotData &robotData);
         void initArc(RobotData &robotData);
-        //void arc(RobotData &robotData); // DOES NOT WORK
+        void arc(RobotData &robotData); // DOES NOT WORK
         void turnInPlace(RobotData &robotData);
         
 

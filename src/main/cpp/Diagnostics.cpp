@@ -123,7 +123,7 @@ std::string Diagnostics::convertDriveMode(int param)
 {
     std::array<std::string, 6> driveModeStrings
     {
-        "teleop", "potato", "initDriveForward", "driveForward",
+        "teleop", "potato", "initDriveStraight", "driveStraight",
         "arc", "initArc"
     };
     return driveModeStrings.at(param);

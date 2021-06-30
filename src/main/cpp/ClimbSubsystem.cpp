@@ -251,8 +251,8 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutNumber("RVol",  climbArmR.GetOutputCurrent());
     frc::SmartDashboard::PutNumber("LVol",  climbArmL.GetOutputCurrent());
 
-    frc::SmartDashboard::PutNumber("getX",  imu.GetGyroAngleX());
-    frc::SmartDashboard::PutNumber("getY",  imu.GetGyroAngleY());
+    // frc::SmartDashboard::PutNumber("getX",  imu.GetGyroAngleX());
+    // frc::SmartDashboard::PutNumber("getY",  imu.GetGyroAngleY());
 
     if (robotData.sXBtn){
         climbArmR.Set(0);//i dont know the exact numbers yet

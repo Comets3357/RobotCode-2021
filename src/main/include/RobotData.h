@@ -8,6 +8,7 @@ enum AutonSelect
     autonSelect_shootAndDrive,
     autonSelect_shootAndCollectBalls, // pretty much the same as trench run
     autonSelect_trenchRun,
+    autonSelect_stealBallsAndShoot,
     autonSelect_goofy // temporary
 };
 
@@ -16,8 +17,8 @@ enum DriveMode
 {
     driveMode_teleop,
     driveMode_potato,
-    driveMode_initDriveForward,
-    driveMode_driveForward,
+    driveMode_initDriveStraight,
+    driveMode_driveStraight,
     driveMode_arc,
     driveMode_initArc
 };
@@ -114,6 +115,7 @@ struct RobotData
     //greater angle means clockwise
     double rawAngle;
     double robotAngle; // mod by 360
+    double angleLeft;
 
 
     // auton stuff

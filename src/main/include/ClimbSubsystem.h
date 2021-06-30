@@ -49,5 +49,5 @@ class ClimbSubsystem {
         frc::Solenoid solenoidLockR{4};
         frc::Solenoid solenoidLockL{2};
 
-        frc::ADIS16448_IMU imu{};
+        //frc::ADIS16448_IMU imu{};
 };

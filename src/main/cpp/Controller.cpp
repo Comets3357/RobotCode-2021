@@ -2,11 +2,7 @@
 #include "Controller.h"
 #include <frc/Timer.h>
 
-
 #include <frc/smartdashboard/SmartDashboard.h>
-
-
-
 
 void Controller::Init(RobotData &robotData){
 
@@ -41,8 +37,6 @@ void Controller::Init(RobotData &robotData){
 }
 
 void Controller::Auton(RobotData &robotData){
-    
-
 }
 
 

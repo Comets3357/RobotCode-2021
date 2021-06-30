@@ -10,6 +10,7 @@ void IntakeSubsystem::Init(){
     rollers.SetInverted(true);
     rollers.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     rollers.SetSmartCurrentLimit(45);
+    setIntakeRollers(0);
     setPiston(false);
     setIntakeRollers(0);
 

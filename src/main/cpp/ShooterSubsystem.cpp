@@ -131,6 +131,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
     } else {  //not shooting
 
+        //spins up flywheel beforehand
         if(robotData.sBBtn){
             shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
         }else{
@@ -277,8 +278,8 @@ void ShooterSubsystem::setShooterPID(rev::CANPIDController motor, double p, doub
 
 }
 
-void ShooterSubsystem::Disabled(){
-    setHood(0);
-    setTurret(0);
-    setWheel(0);
-}
+// void ShooterSubsystem::Disabled(){
+//     setHood(0);
+//     setTurret(0);
+//     setWheel(0);
+// }
