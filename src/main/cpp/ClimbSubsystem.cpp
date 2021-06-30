@@ -103,68 +103,69 @@ void ClimbSubsystem::Init(){
     climbArmL.SetSmartCurrentLimit(45);
     climbArmL.Set(0);
     
+    imu.Reset();
 }
 
 void ClimbSubsystem::Periodic(RobotData &robotData){
 
-/*
-IMPORTANT
-when arm motors are set a negative value it is not safe for the ratchet to be enabled
-*/
-    // if (robotData.pABtn){
-    //     solenoidArmL.Set(true);
-    //     solenoidArmR.Set(true);
-    // }
-
-    // if (robotData.pBBtn){
-    //     solenoidArmR.Set(false);
-    //     solenoidArmL.Set(false);
-    // }
-    
-
-
 
     frc::SmartDashboard::PutNumber("Rrpm",  climbArmRPos.GetPosition());
     frc::SmartDashboard::PutNumber("Lrpm",  climbArmLPos.GetPosition());
-    //climbArmL.Set(robotData.pLYStick*0.3);
-    //climbArmR.Set(robotData.pRYStick*0.3);
+
     if(robotData.manualMode){
-        manualMode(robotData);
+        if (robotData.climbMode){
+            startingPhase = 0;
+            manualMode(robotData);
+        }
     } else {
-        semiAutoMode(robotData);
+        if (robotData.climbMode){
+            semiAutoMode(robotData);
+        }
     }
 }
 
 void ClimbSubsystem::manualMode(RobotData &robotData){
-    if (robotData.sLBumper){
-        solenoidLockL.Set(true);
-        solenoidLockR.Set(true);
-    }
     if (robotData.sRBumper){
-        solenoidLockL.Set(false);
-        solenoidLockR.Set(false);
-    }
+        if (solenoidLockL.Get() && lockToggle == true) {
+            lockToggle = false;
+            solenoidLockL.Set(false);
+            solenoidLockR.Set(false);
+        } else if (!solenoidLockL.Get() && lockToggle == true) {
+            lockToggle = false;
+            solenoidLockL.Set(true);
 
-    if (robotData.pLBumper){
-        climbArmLPos.SetPosition(0);
-        climbArmRPos.SetPosition(0);
-    }
-
-    if (robotData.pLBumper){
-        climbArmLPos.SetPosition(0);
-        climbArmRPos.SetPosition(0);
-    }
-    if (robotData.sRYStick > 0.1 || robotData.sRYStick < -0.1) {
-        
-        climbArmR.Set(robotData.sRYStick*0.3);
+            solenoidLockR.Set(true);
+        }
     } else {
-        climbArmR.Set(0);
+
+        lockToggle = true;
     }
+
     if (robotData.sLYStick > 0.1 || robotData.sLYStick < -0.1) {
-        
+        if (climbArmLPos.GetPosition() < -10) {
+            solenoidArmL.Set(false);
+        } else {
+            solenoidArmL.Set(true);
+        }
         climbArmL.Set(robotData.sLYStick*0.3);
+        if (climbArmLPos.GetPosition() > 5) {
+            climbArmL.Set(0);
+        }
     } else {
         climbArmL.Set(0);
+    }
+    if (robotData.sRYStick > 0.1 || robotData.sRYStick < -0.1) {
+        if (climbArmRPos.GetPosition() < -10) {
+            solenoidArmR.Set(false);
+        } else {
+            solenoidArmR.Set(true);
+        }
+        climbArmR.Set(robotData.sRYStick*0.3);
+        if (climbArmRPos.GetPosition() > 5) {
+            climbArmR.Set(0);
+        }
+    } else {
+        climbArmR.Set(0);
     }
 }
 
@@ -174,14 +175,14 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
     
     // Climb inititation
 
-    if(robotData.sABtn){
+    if(robotData.sRBumper){
         if (!initiationRunning){
-            solenoidLockL.Set(true);
-            solenoidLockR.Set(true);
-        
-            
             initiationRunning = true;
         }
+    }
+
+    if (robotData.sDPad == 0) {
+        startingPhase = 0;
     }
 
     if (initiationRunning && !initiated) {
@@ -205,6 +206,8 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
                     climbArmL.Set(0);
                 }
             } else {
+                solenoidLockR.Set(false);
+                solenoidLockL.Set(false);
                 climbArmR.Set(0);
                 climbArmL.Set(0);
                 initiated = true;
@@ -230,21 +233,16 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
             solenoidArmL.Set(true);
             initiated = false;
             initiationRunning = false;
-            solenoidLockL.Set(false);
-            solenoidLockR.Set(false);
             timer = 0;
         }
     }
 
     // Climb start
 
-    if (robotData.sBBtn && startingPhase == 0) {
-        climbArmR.Set(0.15);
-        climbArmL.Set(0.15);//i dont know the exact numbers yet
-        //climbArmL.Set(0.2);//i dont know the exact numbers yet
+    if (robotData.sYBtn && startingPhase == 0) {
         
-        voltageTargetL = climbArmL.GetBusVoltage();
-        voltageTargetR = climbArmR.GetBusVoltage();
+        solenoidLockL.Set(false);
+        solenoidLockR.Set(false);
         startingPhase = 1;
     }
 
@@ -254,61 +252,54 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutNumber("getX",  imu.GetGyroAngleX());
     frc::SmartDashboard::PutNumber("getY",  imu.GetGyroAngleY());
 
-    if (robotData.sXBtn){
-        climbArmR.Set(0);//i dont know the exact numbers yet
-        climbArmL.Set(0);//i dont know the exact numbers yet
-        //startingPhase = 2;
-    }
-
+   
     if (startingPhase == 1) {
-        if (climbArmR.GetOutputCurrent() > 40){//i dont know the exact numbers yet
+        if (climbArmLPos.GetPosition() < -30 || climbArmRPos.GetPosition() < -30){
+            if (imu.GetGyroAngleX() < 4 && imu.GetGyroAngleX() > -4){//dont know gyro axis or offset
+                climbArmR.Set(0.3);
+                climbArmL.Set(0.3);
+            } else if (imu.GetGyroAngleX() > 4){
+                climbArmR.Set(0);
+                climbArmL.Set(0.3);
+            } else if (imu.GetGyroAngleX() < -4){
+                climbArmR.Set(0.3);
+                climbArmL.Set(0);
+            }
+        } else{
             climbArmR.Set(0);
-        } else if (climbArmL.GetOutputCurrent() > 40){//i dont know the exact numbers yet
             climbArmL.Set(0);
+            startingPhase = 2;
         }
-        if (climbArmL.GetOutputCurrent() > 30 && climbArmR.GetOutputCurrent() > 30){
-            climbArmL.Set(0);
+    } else if (startingPhase == 2){
+        if (imu.GetGyroAngleX() < 4 && imu.GetGyroAngleX() > -4){
             climbArmR.Set(0);
+            climbArmL.Set(0);
+        } else if (imu.GetGyroAngleX() > 4){
+            startingPhase = 3;
+            timer = 0;
+        } else if (imu.GetGyroAngleX() < -4){
+            startingPhase = 3;
+            timer = 0;
         }
-        if (climbArmR.Get() == 0 && climbArmL.Get() == 0) {
-            startingPhase = 0;
+    } else if (startingPhase == 3){
+
+        solenoidLockR.Set(true);
+        climbArmR.Set(0.2);
+        timer += 1;
+        if (timer > 10) {
+            climbArmR.Set(0);
+            climbArmL.Set(0);
+            if (imu.GetGyroAngleX() > 4){
+                climbArmR.Set(-0.2);//i dont know the exact numbers yet
+            } else if (imu.GetGyroAngleX() < -4){
+                climbArmR.Set(0.5);//i dont know the exact numbers yet
+            } else {
+                startingPhase = 2;
+                climbArmR.Set(0);//i dont know the exact numbers yet
+                climbArmL.Set(0);//i dont know the exact numbers yet
+                solenoidLockR.Set(false);
+            }
         }
     }
-    // } else if (startingPhase == 2) {
-    //     if (climbArmLPos.GetPosition() > 500 || climbArmRPos.GetPosition() > 500){
-    //         if (imu.GetGyroAngleZ() < 10 && imu.GetGyroAngleZ() > -10){//dont know gyro axis or offset
-    //             climbArmR.Set(-0.1);//i dont know the exact numbers yet
-    //             climbArmL.Set(-0.1);//i dont know the exact numbers yet
-    //         } else if (imu.GetGyroAngleZ() > 10){
-    //             climbArmR.Set(0);//i dont know the exact numbers yet
-    //             climbArmL.Set(-0.1);//i dont know the exact numbers yet
-    //         } else if (imu.GetGyroAngleZ() < -10){
-    //             climbArmR.Set(-0.1);//i dont know the exact numbers yet
-    //             climbArmL.Set(0);//i dont know the exact numbers yet
-    //         }
-    //     } else {
-    //         startingPhase = 3;
-    //     }
-    // } else if (startingPhase == 3) {
-    //     if (imu.GetGyroAngleZ() < 10 && imu.GetGyroAngleZ() > -10){//dont know gyro axis or offset
-    //         climbArmR.Set(0);
-    //         climbArmL.Set(0);
-    //         solenoidLockL.Set(false);
-    //         solenoidLockR.Set(false);
-    //         startingPhase = 4;
-    //     } else if (imu.GetGyroAngleZ() > 10){
-    //             climbArmR.Set(0.05);//i dont know the exact numbers yet
-    //             climbArmL.Set(-0.05);//i dont know the exact numbers yet
-    //         } else if (imu.GetGyroAngleZ() < -10){
-    //             climbArmR.Set(-0.05);//i dont know the exact numbers yet
-    //             climbArmL.Set(0.05);//i dont know the exact numbers yet
-    //         }
-    // }
-
-    // Climb control panel
-
-    // if (robotData.sABtn){
-    //     climbArmL.Set(true);
-    // }
 
 }
