@@ -10,12 +10,13 @@ void IntakeSubsystem::Init(){
     rollers.SetInverted(true);
     rollers.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     rollers.SetSmartCurrentLimit(45);
+    setIntakeRollers(0);
     setPiston(false);
     setIntakeRollers(0);
 
 }
 
-void IntakeSubsystem::Periodic(RobotData &robotData){
+void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     //decide if in manual mode or auto mode
     if(robotData.manualMode){
         manualMode(robotData);
@@ -23,6 +24,8 @@ void IntakeSubsystem::Periodic(RobotData &robotData){
         semiAutoMode(robotData);
     }
     //setPiston(true);
+
+    updateDiagnostics(diagnosticsData);
 }
 
 
@@ -137,4 +140,20 @@ void IntakeSubsystem::Disabled(){
 }
 
 
+void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * solenoidOne
+     * intake rollers 32
+     */
+    diagnosticsData.solenoidOneValue = solenoidOne.Get();
 
+    diagnosticsData.mControlCurrents.at(32) = rollers.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(32) = rollers.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(32) = rollers.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(32) = rollersEncoder.GetPosition();
+    diagnosticsData.mControlVelocities.at(32) = rollersEncoder.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(32) = rollers.GetFaults();
+}

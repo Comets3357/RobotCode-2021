@@ -15,12 +15,14 @@ void IndexerSubsystem::Init(){
 }
 
 
-void IndexerSubsystem::Periodic(RobotData &robotData){
+void IndexerSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     if(robotData.manualMode){
         manualMode(robotData);
     } else {
         semiAutoMode(robotData);
     }
+
+    updateDiagnostics(diagnosticsData);
 
 }
 
@@ -109,3 +111,31 @@ void IndexerSubsystem::Disabled(){
 
 
 
+void IndexerSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * center spindle/kick 11
+     * omni wheel 12
+     * 
+     * center spindle encoder
+     * omni wheel encoder
+     */
+
+    diagnosticsData.mControlCurrents.at(11) = centerSpindle.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(11) = centerSpindle.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(11) = centerSpindle.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(11) = centerSpindlePOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(11) = centerSpindlePOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(11) = centerSpindle.GetFaults();
+
+    diagnosticsData.mControlCurrents.at(12) = omniWheel.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(12) = omniWheel.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(12) = omniWheel.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(12) = omniWheelPOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(12) = omniWheelPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(12) = omniWheel.GetFaults();
+}

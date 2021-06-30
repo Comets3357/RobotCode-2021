@@ -8,6 +8,7 @@ enum AutonSelect
     autonSelect_shootAndDrive,
     autonSelect_shootAndCollectBalls, // pretty much the same as trench run
     autonSelect_trenchRun,
+    autonSelect_stealBallsAndShoot,
     autonSelect_goofy // temporary
 };
 
@@ -16,8 +17,8 @@ enum DriveMode
 {
     driveMode_teleop,
     driveMode_potato,
-    driveMode_initDriveForward,
-    driveMode_driveForward,
+    driveMode_initDriveStraight,
+    driveMode_driveStraight,
     driveMode_arc,
     driveMode_initArc
 };
@@ -39,6 +40,10 @@ struct RobotData
     //L = left, R = right, p = primary, s = secondary, Btn = button
 
     //primary
+
+    // this will have merge conflict with climb's pLShoulderBtn
+    bool pLShoulderBtn;
+
     double pLXStick;
     double pLYStick = 0;
     double pRXStick;
@@ -49,7 +54,7 @@ struct RobotData
     double pLTrigger;
     double pRTrigger;
     bool pLBumper;
-    bool pRtBumper;
+    bool pRBumper;
 
     bool pXBtn;
     bool pYBtn;
@@ -104,6 +109,7 @@ struct RobotData
     double yOffset;
     int targetValue;
     double calcHoodPos;
+    bool validTarget;
     double calcTurretPos;
     int pipeline; //for LED power
 
@@ -111,12 +117,12 @@ struct RobotData
     //greater angle means clockwise
     double rawAngle;
     double robotAngle; // mod by 360
+    double angleLeft;
 
 
     // auton stuff
     int autonStep  = 0;
-
-    // AutonSelect autonSelect{autonSelect_potato}; // don't think we need this unless a subsystem needs access
+    AutonSelect autonSelect;    // only for diagnostics purposes; do not use
     DriveMode driveMode{driveMode_teleop};  // should have a default?
 
     //turn

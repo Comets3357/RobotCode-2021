@@ -5,6 +5,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 
 class ShooterSubsystem {
@@ -12,8 +13,9 @@ class ShooterSubsystem {
     public:
 
         void Init();
-        void Periodic(RobotData &robotData);
         void Disabled();
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        
 
     private:
 
@@ -35,6 +37,8 @@ class ShooterSubsystem {
         void setWheel(double power);
         void setHoodPos(double pos);
         void setTurretPos(double pos);
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         bool shooting = false;
 
@@ -63,7 +67,7 @@ class ShooterSubsystem {
         rev::CANEncoder shooterWheelSPOS = shooterWheelS.GetEncoder();
 
 //limit switches;
-        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
         rev::CANDigitalInput hoodReverseLimit = shooterHood.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
 
 //PIDs;

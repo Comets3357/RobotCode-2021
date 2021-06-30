@@ -123,7 +123,13 @@ void LimelightSubsystem::Periodic(RobotData &robotData){
     //robotData.sDPad == robotData.shootingBtn
 
     
+    //prints all the values to dashboard:
+    frc::SmartDashboard::PutNumber("tx",  table->GetNumber("tx",0.0)); //horizontal offset
+    frc::SmartDashboard::PutNumber("ty",  table->GetNumber("ty",0.0)); //vertical offset
+    frc::SmartDashboard::PutNumber("ts",  table->GetNumber("ts",0.0)); //skew offset
+    frc::SmartDashboard::PutNumber("tv",  table->GetNumber("tv",0.0)); //valid target
 
+    robotData.validTarget = table->GetNumber("tv", 0.0);
     //if the button to shoot is pressed, turn on the limelight led
     // if(robotData.shootingMode){
     //     table->PutNumber("pipeline", getPipeline(robotData.yOffset)); //set the pipeline based on y offset
@@ -132,7 +138,3 @@ void LimelightSubsystem::Periodic(RobotData &robotData){
     // }
 
 }
-
-
-
-

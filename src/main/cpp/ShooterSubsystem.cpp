@@ -63,7 +63,7 @@ void ShooterSubsystem::Init(){
     }
 }
 
-void ShooterSubsystem::Periodic(RobotData &robotData){
+void ShooterSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
 
     
     // if(getTurretLimitSwitch()){
@@ -85,6 +85,8 @@ void ShooterSubsystem::Periodic(RobotData &robotData){
     } else {
         semiAutoMode(robotData);
     }
+
+    updateDiagnostics(diagnosticsData);
 
 }
 
@@ -145,6 +147,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
 
 
+        //spins up flywheel beforehand
         if(robotData.sBBtn){
             shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
         }else{
@@ -235,6 +238,63 @@ double ShooterSubsystem::getWheelVel(){
     return shooterWheelMPOS.GetVelocity();
 }
 
+
+
+void ShooterSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * turret rotate 23
+     * hood 22
+     * shooter m 20
+     * shooter s 21
+     * 
+     * limit switches
+     */
+
+    diagnosticsData.mControlCurrents.at(23) = shooterTurret.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(23) = shooterTurret.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(23) = shooterTurret.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(23) = shooterTurretPOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(23) = shooterTurretPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(23) = shooterTurret.GetFaults();
+
+
+    diagnosticsData.mControlCurrents.at(22) = shooterHood.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(22) = shooterHood.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(22) = shooterHood.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(22) = shooterHoodPOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(22) = shooterHoodPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(22) = shooterHood.GetFaults();
+
+
+    diagnosticsData.mControlCurrents.at(20) = shooterWheelM.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(20) = shooterWheelM.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(20) = shooterWheelM.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(20) = shooterWheelMPOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(20) = shooterWheelMPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(20) = shooterWheelM.GetFaults();
+
+
+    diagnosticsData.mControlCurrents.at(21) = shooterWheelS.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(21) = shooterWheelS.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(21) = shooterWheelS.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(21) = shooterWheelSPOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(21) = shooterWheelSPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(21) = shooterWheelS.GetFaults();
+
+
+    diagnosticsData.turretLSwitch = getTurretLimitSwitch();
+    diagnosticsData.hoodLSwitch = getHoodLimitSwitch();
+}
+
 /**
  * Sets all the PID values for specific motor
  * @param motor name of the PID controller
@@ -247,8 +307,8 @@ void ShooterSubsystem::setShooterPID(rev::CANPIDController motor, int pidSlot, d
 
 }
 
-void ShooterSubsystem::Disabled(){
-    setHood(0);
-    setTurret(0);
-    setWheel(0);
-}
+// void ShooterSubsystem::Disabled(){
+//     setHood(0);
+//     setTurret(0);
+//     setWheel(0);
+// }
