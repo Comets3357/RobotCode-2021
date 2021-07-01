@@ -36,7 +36,6 @@ struct RobotData
     bool shift; //shift for more button options
     bool shootingMode;
     bool climbMode = false;
-    bool limelightOn;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
 
@@ -99,6 +98,7 @@ struct RobotData
     static const int shootingBtn = 0;
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
+    int roughAim;
 
     //drive base
     double Ldrive;
