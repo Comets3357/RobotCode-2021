@@ -10,7 +10,7 @@ void Robot::RobotInit()
     shooter.Init();
     limelight.Init();
     diagnostics.LogInit();
-    // controlpanel.Init();
+    controlpanel.Init();
     climb.Init();
 
 }
@@ -24,7 +24,7 @@ void Robot::RobotPeriodic(){
         indexer.Periodic(robotData, diagnosticsData);
         limelight.Periodic(robotData);
         diagnostics.LogPeriodic(robotData, diagnosticsData);
-        // controlpanel.Periodic(robotData);
+        controlpanel.Periodic(robotData);
         climb.Periodic(robotData);
         shooter.Periodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
@@ -61,14 +61,14 @@ void Robot::DisabledInit()
 
 void Robot::TestInit()
 {
-    //diagnostics.TestInit();
+    diagnostics.TestInit();
 }
 
 void Robot::TestPeriodic()
 {
     if (IsEnabled())
     {
-        //diagnostics.TestPeriodic(diagnosticsData);
+        diagnostics.TestPeriodic(diagnosticsData);
     }
 }
 

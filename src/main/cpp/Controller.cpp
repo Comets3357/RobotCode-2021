@@ -71,9 +71,13 @@ bool Controller::shootingMode(int pov){
     }
 }
 
-// bool Controller::climbMode(){
+bool Controller::climbMode(RobotData &robotData){
+    if (secondary.GetRawButtonPressed(8)){
+        robotData.climbMode = !robotData.climbMode;
+    }
 
-// }
+    return robotData.climbMode;
+}
 
 bool Controller::getManual(){
     if (secondary.GetRawButtonPressed(8)){
