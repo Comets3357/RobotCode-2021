@@ -111,6 +111,7 @@ struct RobotData
     int targetValue;
     double calcHoodPos;
     bool validTarget;
+    bool isZero = false;
     double calcTurretPos;
     int pipeline; //for LED power
 

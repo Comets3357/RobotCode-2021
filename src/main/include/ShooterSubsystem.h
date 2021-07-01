@@ -45,6 +45,7 @@ class ShooterSubsystem {
         int secondaryPOVArrayInput;
         int turretSequence = 0;
         int shootPOV;
+        double turretSnapshot = 0;
 
         bool intakeEncoderPositionZero;
 

@@ -51,7 +51,7 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
 
     }else{
 
-        if(robotData.sABtn){ //when intaking balls, spin the indexer
+        if(robotData.sRTrigger){ //when intaking balls, spin the indexer
             setOmniWheel(0.15);
             setCenterSpindle(0.1);
         }else {
@@ -81,8 +81,8 @@ void IndexerSubsystem::manualMode(RobotData &robotData){
         }
     //otherwise run the indexer
     }else{ 
-        setCenterSpindle(robotData.sRTrigger);
-        setOmniWheel(robotData.sRTrigger);
+        setCenterSpindle(robotData.sLTrigger);
+        setOmniWheel(robotData.sLTrigger);
     }
     
 }

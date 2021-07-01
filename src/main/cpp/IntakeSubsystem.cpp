@@ -43,6 +43,8 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
         pow = -0.6;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
         pow = -0.5;
+    }else{
+        pow = -0.4;
     }
 
     frc::SmartDashboard::PutNumber("speed", pow);
@@ -60,6 +62,8 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
                 setPiston(true);
             }
             setIntakeRollers(pow);
+        }else if(robotData.sLTrigger){
+            setIntakeRollers(robotData.sLTrigger);
         }else{
             if(getPiston()){ //if the piston is down put it up
                 setPiston(false);
@@ -67,6 +71,8 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
             setIntakeRollers(0);
         }
 
+        
+    
 
     }
 
@@ -138,6 +144,7 @@ void IntakeSubsystem::Disabled(){
     setIntakeRollers(0);
     setPiston(false);
 }
+
 
 
 void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
