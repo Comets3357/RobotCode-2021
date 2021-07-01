@@ -135,6 +135,8 @@ void DriveSubsystem::updateData(RobotData &robotData)
         tempRobotAngle += 360;
     }
     robotData.robotAngle = tempRobotAngle;
+    
+    robotData.robotTiltAngle = gyro.GetGyroAngleX();
 
     // frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
 }
