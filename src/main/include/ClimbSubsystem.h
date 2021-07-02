@@ -2,7 +2,6 @@
 
 #include <rev/CANSparkMax.h>
 #include <frc/Solenoid.h>
-#include <adi/ADIS16448_IMU.h>
 
 #include "RobotData.h"
 
@@ -52,6 +51,4 @@ class ClimbSubsystem {
 
         frc::Solenoid solenoidLockR{2};
         frc::Solenoid solenoidLockL{4};
-
-        // frc::ADIS16448_IMU imu{};
 };

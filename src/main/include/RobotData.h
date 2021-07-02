@@ -8,7 +8,8 @@ enum AutonSelect
     autonSelect_shootAndDrive,
     autonSelect_shootAndCollectBalls, // pretty much the same as trench run
     autonSelect_trenchRun,
-    autonSelect_stealBallsAndShoot,
+    autonSelect_stealBallsAndShootFar,
+    autonSelect_stealBallsAndShootClose,
     autonSelect_goofy // temporary
 };
 

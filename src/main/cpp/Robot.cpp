@@ -5,11 +5,10 @@ void Robot::RobotInit()
 {
     intake.Init();
     db.Init();
-    intake.Init();
     indexer.Init();
     shooter.Init();
     limelight.Init();
-    diagnostics.LogInit();
+    // diagnostics.LogInit();
     controlpanel.Init();
     climb.Init();
 
@@ -22,12 +21,12 @@ void Robot::RobotPeriodic(){
         db.Periodic(robotData, diagnosticsData);
         intake.Periodic(robotData, diagnosticsData);
         indexer.Periodic(robotData, diagnosticsData);
+        shooter.Periodic(robotData, diagnosticsData);
         limelight.Periodic(robotData);
-        diagnostics.LogPeriodic(robotData, diagnosticsData);
+        // diagnostics.LogPeriodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
         climb.Periodic(robotData);
-        shooter.Periodic(robotData, diagnosticsData);
-        controlpanel.Periodic(robotData);
+        
     }
 }
 
@@ -41,7 +40,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
         wpi::outs() << "running auton";
-        auton.Periodic(autonSelect_goofy, robotData);
+        auton.Periodic(autonSelect_stealBallsAndShootClose, robotData);
     }
 }
 
@@ -54,21 +53,21 @@ void Robot::TeleopPeriodic()
 void Robot::DisabledInit()
 {
     db.Disabled();
-    // indexer.Disabled();
-    // intake.Disabled();
+    indexer.Disabled();
+    intake.Disabled();
     // shooter.Disabled();
 }
 
 void Robot::TestInit()
 {
-    diagnostics.TestInit();
+    // diagnostics.TestInit();
 }
 
 void Robot::TestPeriodic()
 {
     if (IsEnabled())
     {
-        diagnostics.TestPeriodic(diagnosticsData);
+        // diagnostics.TestPeriodic(diagnosticsData);
     }
 }
 
