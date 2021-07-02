@@ -54,14 +54,6 @@ bool Controller::getShiftFactor(){
     }
 }
 
-bool Controller::limelightMode(bool shift){
-    if (secondary.GetRawButtonPressed(8) && shift){
-        limelightOn = !limelightOn;
-    }
-
-    return limelightOn;
-}
-
 bool Controller::shootingMode(int pov){
     //probably definitely wrong pov button index
     if(secondary.GetPOV(0) == pov){
@@ -69,6 +61,17 @@ bool Controller::shootingMode(int pov){
     }else{
         return false;
     }
+}
+
+int Controller::roughShooting(){
+    if(secondary.GetPOV(0) == 90){
+        return 1;
+    }else if(secondary.GetPOV(0) == 270){
+        return -1;
+    }else{
+        return 0;
+    }
+    
 }
 
 bool Controller::climbMode(RobotData &robotData){
@@ -115,7 +118,6 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
     robotData.shootingMode = shootingMode(robotData.shootingBtn);
-    robotData.limelightOn = limelightMode(robotData.shift);
 
 
 
@@ -150,5 +152,7 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.sYBtn = getButton(1, 4); // controls intake in auto
     robotData.sLBumper = getButton(1, 5); // controls indexer in auto
     robotData.sRBumper = getButton(1, 6); // manual
+
+    robotData.roughAim = roughShooting();
 
 }
