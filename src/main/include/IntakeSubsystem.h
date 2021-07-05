@@ -2,7 +2,7 @@
 
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
-#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
 
 #include "RobotData.h"
 #include "Diagnostics.h"
@@ -14,15 +14,19 @@ class IntakeSubsystem {
 
         void Init();
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        void Disabled();
+
 
     private:
 
         int shootPOV;
         
-        void setIntakeRollers(double power);
+        void setIntakeRollers(double avgDrive);
         void setPiston(bool direction);
+        bool getPiston();
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
+    
 
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
@@ -35,15 +39,10 @@ class IntakeSubsystem {
 
         int shiftFactor = 1;
 
-
         static const int intakeRollersID = 32;
         rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
         rev::CANEncoder rollersEncoder = rollers.GetEncoder();
 
-        frc::DoubleSolenoid solenoidOne{1, 2};
-        
-
-       /*  rev::CANPIDController intakePivot_pidController = intakePivot.GetPIDController();
-        rev::CANPIDController wheels_pidController = wheels.GetPIDController(); */
+        frc::Solenoid solenoidOne{0};
 
 };

@@ -11,6 +11,8 @@ class Controller {
 public:
 
     void Periodic(RobotData &robotData);
+    void Init(RobotData &robotData);
+    void Auton(RobotData &robotData);
 
 
 private:
@@ -18,9 +20,10 @@ private:
     void updateTeleopData(RobotData &robotData);
 
 
-    int getShiftFactor();
-    bool shootingMode();
+    bool getShiftFactor();
+    bool shootingMode(int pov);
     bool getManual();
+    bool limelightMode(bool shift);
 
 
     bool getButton(int js, int index);
@@ -35,6 +38,7 @@ private:
 
     //this is necessary actually for the getManual() function
     bool inManualMode = false;
+    bool limelightOn = false;
 
 
 }; 

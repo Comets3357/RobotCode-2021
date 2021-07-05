@@ -17,15 +17,7 @@ class ShooterSubsystem {
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
         
 
-        //pass limelight and indexer values through
-        /* bool turretInRange(LimelightSubsystem &limelight); //function definition
-        bool hoodInRange(LimelightSubsystem &limelight);
-        void setShooterFlyWheel(double power); */
-        
-
     private:
-
-        int shootPOV;
 
         void updateData(RobotData &robotData);
         void semiAutoMode(RobotData &robotData);
@@ -39,6 +31,7 @@ class ShooterSubsystem {
         bool getTurretLimitSwitch();
         bool getHoodLimitSwitch();
 
+        void setShooterPID(rev::CANPIDController motor, double p, double i, double d, double ff);
         void setHood(double power);
         void setTurret(double power);
         void setWheel(double power);
@@ -50,21 +43,15 @@ class ShooterSubsystem {
         bool shooting = false;
 
         int secondaryPOVArrayInput;
-        bool intakeEncoderPositionZero;
-        double manualIntakePivotInput;
         int turretSequence = 0;
-        //double whereShooterMoves;
-        /* double fkP = 0.0007, fkI = 0, fkD = 0, fkIz = 0.0002, fkFF = 0, fkMaxOutput = 1, fkMinOutput = -1;
-        double kkP = 0.00035, kkI = 0, kkD = 0, kkIz = 0.0002, kkFF = 0, kkMaxOutput = 1, kkMinOutput = -1;
-        double tkP = 0.05, tkI = 0, tkD = 0, tkIz = 0, tkFF = 0, tkMaxOutput = 1, tkMinOutput = -1;
-        double hkP = 0.04, hkI = 0, hkD = 0, hkIz = 0, hkFF = 0, hkMaxOutput = 1, hkMinOutput = -1;
- */
+        int shootPOV;
 
-        //tried to start an encoder to get the position of the pivot
+        bool intakeEncoderPositionZero;
+
         static const int shooterWheelMID = 21;
         static const int shooterWheelSID = 20;
         static const int shooterHoodID = 22;
-        static const int shooterTurretID = 25;
+        static const int shooterTurretID = 23;
 
 
 //motors:
@@ -80,8 +67,17 @@ class ShooterSubsystem {
         rev::CANEncoder shooterWheelSPOS = shooterWheelS.GetEncoder();
 
 //limit switches;
-        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
         rev::CANDigitalInput hoodReverseLimit = shooterHood.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+
+//PIDs;
+        rev::CANPIDController shooterWheelMPID = shooterWheelM.GetPIDController();
+        rev::CANPIDController shooterWheelSPID = shooterWheelS.GetPIDController();
+        rev::CANPIDController shooterHoodPID = shooterHood.GetPIDController();
+        rev::CANPIDController shooterTurretPID= shooterTurret.GetPIDController();
+
+
+
 
         /* rev::CANPIDController shooterFlywheelM_pidController = shooterFlywheelM.GetPIDController();
         rev::CANPIDController shooterFlywheelS_pidController = shooterFlywheelS.GetPIDController();
@@ -90,6 +86,7 @@ class ShooterSubsystem {
         rev::CANPIDController shooterKick_pidController = shooterKick.GetPIDController(); */
     
         
+
 
 
 };

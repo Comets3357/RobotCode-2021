@@ -5,6 +5,9 @@ enum AutonSelect
 {
     autonSelect_potato,
     autonSelect_exitInitLine,
+    autonSelect_shootAndDrive,
+    autonSelect_shootAndCollectBalls, // pretty much the same as trench run
+    autonSelect_trenchRun,
     autonSelect_goofy // temporary
 };
 
@@ -28,11 +31,13 @@ struct RobotData
 
     //controller data
 
-    bool manualMode;
-    int shift;
+    bool manualMode = false;
+    bool shift; //shift for more button options
     bool shootingMode;
+    bool limelightOn;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
+
     //primary
 
     // this will have merge conflict with climb's pLShoulderBtn
@@ -89,14 +94,21 @@ struct RobotData
     double hoodPosition;
     double turretPosition;
     double flywheelVelocity;
-    bool readyShoot = false;
-    bool isZero = false;
+    static const int shootingBtn = 90;
+    int targetVelocity = 0;
+    bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
+
+    //drive base
+    double Ldrive;
+    double Rdrive;
+
 
     //limelight data
     double xOffset;
     double yOffset;
     double calcHoodPos;
     bool validTarget;
+    int pipeline; //for LED power
 
     //gyro data
     //greater angle means clockwise
@@ -106,8 +118,7 @@ struct RobotData
 
     // auton stuff
     int autonStep  = 0;
-
-    // AutonSelect autonSelect{autonSelect_potato}; // don't think we need this unless a subsystem needs access
+    AutonSelect autonSelect;    // only for diagnostics purposes; do not use
     DriveMode driveMode{driveMode_teleop};  // should have a default?
 
     //turn

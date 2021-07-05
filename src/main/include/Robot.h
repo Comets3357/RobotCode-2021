@@ -8,6 +8,7 @@
 #include <frc/Timer.h>
 
 //Header files from us
+#include "Auton.h"
 #include "IntakeSubsystem.h"
 #include "DriveSubsystem.h"
 #include "IndexerSubsystem.h"
@@ -16,6 +17,8 @@
 #include "LimelightSubsystem.h"
 #include "Auton.h"
 #include "Diagnostics.h"
+#include "ControlpanelSubsystem.h"
+
 #include "RobotData.h"
 
 
@@ -42,6 +45,7 @@ class Robot : public frc::TimedRobot {
       IndexerSubsystem indexer{};
       IntakeSubsystem intake{};
       LimelightSubsystem limelight{};
+      ControlpanelSubsystem controlpanel{};
 
       Controller control{};
       Auton auton{};

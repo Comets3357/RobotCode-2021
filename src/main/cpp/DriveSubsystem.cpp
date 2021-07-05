@@ -1,9 +1,8 @@
 #include "Robot.h"
-#include "DriveSubsystem.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
-
-void DriveSubsystem::Init(){
+void DriveSubsystem::Init()
+{
 
     dbLM.RestoreFactoryDefaults();
     dbRM.RestoreFactoryDefaults();
@@ -11,8 +10,6 @@ void DriveSubsystem::Init(){
     dbLS.RestoreFactoryDefaults();
     dbRS.RestoreFactoryDefaults();
 
-
-    //we inverted the right side and set motors to follow each other
     dbLM.SetInverted(true);
     dbRM.SetInverted(false);
 
@@ -30,6 +27,21 @@ void DriveSubsystem::Init(){
     dbLM.Set(0);
     dbRM.Set(0);
 
+    //used for pid testing
+    //rev::CANSparkMaxLowLevel::EnableExternalUSBControl(true);
+
+    dbLMPID.SetP(0.00027);
+    dbLMPID.SetI(0);
+    dbLMPID.SetD(0.008);
+    dbLMPID.SetFF(0.00019);
+
+    dbRMPID.SetP(0.00027);
+    dbRMPID.SetI(0);
+    dbRMPID.SetD(0.008);
+    dbRMPID.SetFF(0.00019);
+
+
+    //again, used for pid testing
     dbLM.BurnFlash();
     dbRM.BurnFlash();
     dbLS.BurnFlash();
@@ -46,176 +58,197 @@ void DriveSubsystem::Init(){
 void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData)
 {
     updateData(robotData);
-    frc::SmartDashboard::PutNumber("driveMode", robotData.driveMode);
 
-    // wpi::outs() << robotData.robotAngle << '\n';
-    /* 
-    wpi::outs() << "\nGetGyroAngleZ" <<gyro.GetGyroAngleZ();
-    wpi::outs() << "\nGetAngle"<< gyro.GetAngle();
-    wpi::outs() << "\nGetYawAxis"<< gyro.GetYawAxis(); */
-
-    frc::SmartDashboard::PutNumber("GetGyroAngleZ", gyro.GetGyroAngleZ());
-    frc::SmartDashboard::PutNumber("getAngle", gyro.GetAngle());
+    // frc::SmartDashboard::PutNumber("driveMode", robotData.driveMode);
+    // frc::SmartDashboard::PutNumber("GetGyroAngleZ", gyro.GetGyroAngleZ());
+    // frc::SmartDashboard::PutNumber("getAngle", gyro.GetAngle());
 
 
-
-
+    //determines how the drivebase will be controlled
     switch (robotData.driveMode)
     {
     case driveMode_teleop:
+        teleopControl(robotData);
         break;
     case driveMode_potato:
         potato(robotData);
+        setVelocity(robotData);
         break;
     case driveMode_initDriveForward:
         initDriveForward(robotData);
+        setVelocity(robotData);
         break;
     case driveMode_driveForward:
-        driveForward(robotData);
         break;
+        driveForward(robotData);
+        setVelocity(robotData);
     case driveMode_initArc:
         initArc(robotData);
+        setVelocity(robotData);
         break;
     case driveMode_arc:
-        arc(robotData);
+        // arc(robotData);
+        // setVelocity(robotData);
         break;
     default:
         potato(robotData);
+        setVelocity(robotData);
         break;
     }
-
-    // teleop and multiple auton driveModes will use this
-    //slows down the speed to 0.3 of the total
-    lDrive = robotData.pLYStick * .3;
-    rDrive = robotData.pRYStick * .3;
-
-    //setting the motor speed, tank drive
-    setDrive(lDrive, rDrive);
-
 
     updateDiagnostics(diagnosticsData);
 }
 
-
-
-
-void DriveSubsystem::Disabled(){
-    setDrive(0, 0);
+void DriveSubsystem::Disabled()
+{
+    dbLM.Set(0);
+    dbRM.Set(0);
     dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
 }
 
 
 
-/** 
- * updates encoder and gyro values
- * @param robotData the struct in which these values are stored
- */ 
+// updates encoder and gyro values
 void DriveSubsystem::updateData(RobotData &robotData)
 {
-    //add back encoders at some point
+    //add back wheel encoders at some point
     robotData.currentRDBPos = dbRMEncoder.GetPosition();
     robotData.currentLDBPos = dbLMEncoder.GetPosition();
 
-
-
     gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
+
     //this is the direction that the robot is facing
+    //add negative sign for comp bot, remove for test db
     robotData.rawAngle = -gyro.GetAngle();
     double tempRobotAngle = -gyro.GetAngle();
-
 
     //calculates the non continuous angle
     while(tempRobotAngle >= 360){
         tempRobotAngle -= 360;
     }
-
     while(tempRobotAngle <= 0){
         tempRobotAngle += 360;
     }
-
     robotData.robotAngle = tempRobotAngle;
-    frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
+
+    // frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
 }
 
+// driving functions:
 
-void DriveSubsystem::setDrive(double lDrive, double rDrive)
+// adjusts for the deadzone and converts joystick input to velocity values for PID
+void DriveSubsystem::teleopControl(RobotData &robotData)
 {
+    double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
+    double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
+
+    robotData.Rdrive = (frontBack + leftRight);
+    robotData.Ldrive = (frontBack - leftRight);
+    
+    //deadzone NOT needed for drone controller
+    if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
+        lDrive = (frontBack - leftRight);
+    } else {
+       lDrive = 0;
+    }
+    if(robotData.pRYStick <= -.08 || robotData.pRYStick >= .08){
+        rDrive = (frontBack + leftRight);
+    } else {
+       rDrive = 0;
+    }
+
+    //set as percent vbus
     dbLM.Set(lDrive);
     dbRM.Set(rDrive);
+
 }
 
+// sets the drive base velocity for auton
+void DriveSubsystem::setVelocity(RobotData &robotData)
+{
+        dbLMPID.SetReference(lDrive, rev::ControlType::kVelocity);
+        dbRMPID.SetReference(rDrive, rev::ControlType::kVelocity);    
+}
+
+// this function is currently written so that the robot tries to stay at an angle of zero
+// was only used for pid testing
+void DriveSubsystem::courseCorrectedDrive(RobotData &robotData)
+{
+    //if left is behind right / if robotAngle (non continuous) is between 180 and 360
+        //give speed to left side 
+        double setPoint;
+        if(robotData.robotAngle > 180){
+            setPoint = (360-robotData.robotAngle) * 30;
+        } else {
+            setPoint = 0;
+        }
+        dbLMPID.SetReference(setPoint, rev::ControlType::kVelocity);
+}
 
 
 
 // auton functions:
 
+//sets drive velocity values to 0
 void DriveSubsystem::potato(RobotData &robotData)
 {
-    robotData.pLYStick = 0;
-    robotData.pRYStick = 0;
+    lDrive = 0;
+    rDrive = 0;
 
 }
 
+//initializes the driveForward process
+//you need to set a desired distance beforehand
 void DriveSubsystem::initDriveForward(RobotData &robotData)
 {
     robotData.initialLDBPos = robotData.currentLDBPos;
     robotData.initialRDBPos = robotData.currentRDBPos;
-    wpi::outs() << "initDriveForward" << '\n';
+
+    //wpi::outs() << "initDriveForward" << '\n';
+    // frc::SmartDashboard::PutNumber("initialLDBPos", robotData.initialLDBPos);
+    // frc::SmartDashboard::PutNumber("initialRDBPos", robotData.initialLDBPos);
+
     robotData.autonStep++;
 }
 
+//drives the robot forwards. the intake is the front of the robot
 void DriveSubsystem::driveForward(RobotData &robotData)
 {
-    wpi::outs() << "driveForward" << '\n';
-    // get current orientation of bot
-
-
-    // pid for velocity
-
+    // wpi::outs() << "driveForward" << '\n';
     double avgCurrentPos = (robotData.currentLDBPos + robotData.currentRDBPos) / 2;
-    frc::SmartDashboard::PutNumber("avgCurrentPos", avgCurrentPos);
+    // frc::SmartDashboard::PutNumber("avgCurrentPos", avgCurrentPos);
 
     double lDistLeft = robotData.desiredDBDist - (robotData.currentLDBPos - robotData.initialLDBPos);
     double rDistLeft = robotData.desiredDBDist - (robotData.currentRDBPos - robotData.initialRDBPos);
 
-    frc::SmartDashboard::PutNumber("currentLDBPos", robotData.currentLDBPos);
-    frc::SmartDashboard::PutNumber("currentRDBPos", robotData.currentRDBPos);
+    // frc::SmartDashboard::PutNumber("currentLDBPos", robotData.currentLDBPos);
+    // frc::SmartDashboard::PutNumber("currentRDBPos", robotData.currentRDBPos);
+    // frc::SmartDashboard::PutNumber("lDistLeft", lDistLeft);
+    // frc::SmartDashboard::PutNumber("rDistLeft", rDistLeft);
 
-    frc::SmartDashboard::PutNumber("initialLDBPos", robotData.initialLDBPos);
-    frc::SmartDashboard::PutNumber("initialRDBPos", robotData.initialLDBPos);
 
-    frc::SmartDashboard::PutNumber("lDistLeft", lDistLeft);
-    frc::SmartDashboard::PutNumber("rDistLeft", rDistLeft);
-
-    if (lDistLeft > (robotData.desiredDBDist * 0.2)) {
-        robotData.pLYStick = 0.5;
+    if (lDistLeft > 0) {
+        if(lDistLeft * 170 < 5000){
+            lDrive = lDistLeft * 170;
+        } else {
+            lDrive = 5000;
+        }
+    } else {
+        lDrive = 0;
     }
-    else if (lDistLeft > (robotData.desiredDBDist * 0.1)) {
-        robotData.pLYStick = 0.4;
-    }
-    else if (lDistLeft > (robotData.desiredDBDist * 0.03)) {
-        robotData.pLYStick = 0.2;
-    }
-    else {
-        robotData.pLYStick = 0;
-    }
-
-    if (rDistLeft > (robotData.desiredDBDist * 0.2)) {
-        robotData.pRYStick = 0.5;
-    }
-    else if (rDistLeft > (robotData.desiredDBDist * 0.1)) {
-        robotData.pRYStick = 0.4;
-    }
-    else if (rDistLeft > (robotData.desiredDBDist * 0.03)) {
-        robotData.pRYStick = 0.2;
-    }
-    else {
-        robotData.pRYStick = 0;
+    if (rDistLeft > 0){
+        if(rDistLeft * 170 < 5000){
+            rDrive = rDistLeft * 170;
+        } else {
+            rDrive = 5000;
+        }
+    } else {
+        rDrive = 0;
     }
 
-    if (lDistLeft <= (robotData.desiredDBDist * 0.03) && (rDistLeft <= (robotData.desiredDBDist * 0.03))) {
-        wpi::outs() << "FINISHED DRIVE_FORWARD" << '\n';
+    if (lDistLeft <= .5 && (rDistLeft <= .5)) {
+        // wpi::outs() << "FINISHED DRIVE_FORWARD" << '\n';
         robotData.autonStep++;
     }
 }
@@ -226,63 +259,58 @@ void DriveSubsystem::initArc(RobotData &robotData)
     robotData.initialAngle = robotData.rawAngle;
     // sideRatio is the factor to determine the smaller side
     robotData.sideRatio = robotData.arcRadius / (robotData.arcRadius + 2);
-    frc::SmartDashboard::PutNumber("finalAngle", robotData.finalAngle);
-    frc::SmartDashboard::PutNumber("sideRatio", robotData.sideRatio);
-    wpi::outs() << "initArc" << '\n';
+    // frc::SmartDashboard::PutNumber("finalAngle", robotData.finalAngle);
+    // frc::SmartDashboard::PutNumber("sideRatio", robotData.sideRatio);
+    // wpi::outs() << "initArc" << '\n';
     robotData.autonStep++;
 }
 
-/**
- * makes the robot turn a desired angle
- * @param robotData struct from which you are retrieving necessary data
- */ 
-void DriveSubsystem::arc(RobotData &robotData){
+// THIS DOES NOT WORK
+/* void DriveSubsystem::arc(RobotData &robotData)
+{
     //when called record initial angle. calculate final angle by adding the robotData.desiredAngleDiff to it. 
 
     double angleLeft = robotData.desiredAngleDiff - (robotData.rawAngle - robotData.initialAngle);
-    // double angleLeft = robotData.finalAngle - robotData.rawAngle;
-    frc::SmartDashboard::PutNumber("angleLeft", angleLeft);
 
-    wpi::outs() << "arc" << '\n';
-    
-    if (angleLeft < -10)
-    {
-        // 0.3 for now because we can
-        robotData.pLYStick = 0.55 * robotData.sideRatio;
-        robotData.pRYStick = 0.55;
-    }
-    else if (angleLeft < -1)
-    {
-        robotData.pLYStick = 0.1 * robotData.sideRatio;
-        robotData.pRYStick = 0.1;
-    }
-    /* else if (angleLeft < -2)
-    {
-        robotData.pLYStick = 0.05 * robotData.sideRatio;
-        robotData.pRYStick = 0.05;
-    } */
-    else if (angleLeft > 10)
-    {
-        // 0.3 for now because we can
-        robotData.pLYStick = 0.55;
-        robotData.pRYStick = 0.55 * robotData.sideRatio;
-    }
-    else if (angleLeft > 1)
-    {
-        robotData.pLYStick = 0.1;
-        robotData.pRYStick = 0.1 * robotData.sideRatio;
-    }
-    /* else if (angleLeft > 2)
-    {
-        robotData.pLYStick = 0.05;
-        robotData.pRYStick = 0.05 * robotData.sideRatio;
-    } */
-    else {
-        // you done gud
-        robotData.pLYStick = 0;
-        robotData.pRYStick = 0;
+    // frc::SmartDashboard::PutNumber("angleLeft", angleLeft);
+    // wpi::outs() << "arc" << '\n';
+
+    if (angleLeft < -1){
+        lDrive = -80 * angleLeft * robotData.sideRatio;
+        rDrive = -80 * angleLeft;
+    } else if (angleLeft > 1){
+        lDrive = 80 * angleLeft;
+        rDrive = 80 * angleLeft * robotData.sideRatio;
+    } else {
+        lDrive = 0;
+        rDrive = 0;
         robotData.autonStep++;
         wpi::outs() << "FINISHED ARC" << '\n';
+    }
+
+} */
+
+// turns the robot in place around its center
+void DriveSubsystem::turnInPlace(RobotData &robotData)
+{
+
+    //for radius = -1 in arc pretty much
+    double angleLeft = robotData.desiredAngleDiff - (robotData.rawAngle - robotData.initialAngle);
+
+    // frc::SmartDashboard::PutNumber("angleLeft", angleLeft);
+    // wpi::outs() << "turn in place" << '\n';
+
+    if (angleLeft < -1){
+        lDrive = -100 * angleLeft * robotData.sideRatio;
+        rDrive = -100 * angleLeft;
+    } else if (angleLeft > 1){
+        lDrive = 100 * angleLeft;
+        rDrive = 100 * angleLeft * robotData.sideRatio;
+    } else {
+        lDrive = 0;
+        rDrive = 0;
+        robotData.autonStep++;
+        // wpi::outs() << "FINISHED TURN IN PLACE" << '\n';
     }
 
 }
@@ -332,8 +360,13 @@ void DriveSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 
     diagnosticsData.mControlPositions.at(leftLeadDeviceID) = dbLMEncoder.GetPosition();
     diagnosticsData.mControlPositions.at(rightLeadDeviceID) = dbRMEncoder.GetPosition();
+    diagnosticsData.mControlPositions.at(leftFollowDeviceID) = dbLSEncoder.GetPosition();
+    diagnosticsData.mControlPositions.at(rightFollowDeviceID) = dbRSEncoder.GetPosition();
+
     diagnosticsData.mControlVelocities.at(leftLeadDeviceID) = dbLMEncoder.GetVelocity();
     diagnosticsData.mControlVelocities.at(rightLeadDeviceID) = dbRMEncoder.GetVelocity();
+    diagnosticsData.mControlVelocities.at(leftFollowDeviceID) = dbLSEncoder.GetVelocity();
+    diagnosticsData.mControlVelocities.at(rightFollowDeviceID) = dbRSEncoder.GetVelocity();
 
     diagnosticsData.mControlFaults.at(leftLeadDeviceID) = dbLM.GetFaults();
     diagnosticsData.mControlFaults.at(rightLeadDeviceID) = dbRM.GetFaults();

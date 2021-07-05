@@ -1,24 +1,71 @@
 #include "Robot.h"
 #include "Controller.h"
+#include <frc/Timer.h>
+
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
-void Controller::Periodic(RobotData &robotData){
-    updateTeleopData(robotData);
+
+
+void Controller::Init(RobotData &robotData){
+
+    //stuff for auton
+    //timer.Reset();
+
+    //initializing struct values
+    robotData.pLYStick = 0;
+    robotData.pRYStick = 0;
+
+    robotData.sDPad = -1; 
+
+    robotData.sLYStick = 0; 
+    robotData.sRYStick = 0; 
+
+    robotData.sLTrigger = 0; 
+    robotData.sRTrigger = 0; 
+
+
+    robotData.sABtn = false; 
+    robotData.sBBtn = false; 
+    robotData.sXBtn = false; 
+    robotData.sYBtn = false; 
+    robotData.sLBumper = false; 
+    robotData.sRBumper = false;
+    
 }
 
-int Controller::getShiftFactor(){
-    if (secondary.GetRawButton(5)){
-        return -1;
+void Controller::Auton(RobotData &robotData){
+    
+
+}
+
+
+
+void Controller::Periodic(RobotData &robotData){
+    updateTeleopData(robotData);
+    frc::SmartDashboard::PutBoolean("Manual mode", robotData.manualMode);
+}
+
+bool Controller::getShiftFactor(){
+    if(secondary.GetRawButton(5)){
+        return true;
     } else {
-        return 1;
+        return false;
     }
 }
 
-bool Controller::shootingMode(){
+bool Controller::limelightMode(bool shift){
+    if (secondary.GetRawButtonPressed(8) && shift){
+        limelightOn = !limelightOn;
+    }
+
+    return limelightOn;
+}
+
+bool Controller::shootingMode(int pov){
     //probably definitely wrong pov button index
-    if(secondary.GetPOV(1) == 0||secondary.GetPOV(1) == 90||secondary.GetPOV(1) == 180||secondary.GetPOV(1) == 270){
+    if(secondary.GetPOV(1) == pov){
         return true;
     }else{
         return false;
@@ -64,7 +111,8 @@ double Controller::getAxis(int js, int index){
 void Controller::updateTeleopData(RobotData &robotData){
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
-    robotData.shootingMode = shootingMode();
+    robotData.shootingMode = shootingMode(robotData.shootingBtn);
+    robotData.limelightOn = limelightMode(robotData.shift);
 
 
 

@@ -9,6 +9,8 @@ void Robot::RobotInit()
     shooter.Init();
     limelight.Init();
     diagnostics.LogInit();
+    controlpanel.Init();
+
 }
 
 void Robot::RobotPeriodic()
@@ -21,6 +23,7 @@ void Robot::RobotPeriodic()
         shooter.Periodic(robotData, diagnosticsData);
         limelight.Periodic(robotData);
         diagnostics.LogPeriodic(robotData, diagnosticsData);
+        controlpanel.Periodic(robotData);
     }
 }
 
@@ -29,22 +32,24 @@ void Robot::AutonomousInit()
     auton.Init();
 }
 
-void Robot::AutonomousPeriodic()
-{
-    if (IsEnabled())
-    {
-        auton.Periodic(autonSelect_goofy, robotData);
+void Robot::AutonomousPeriodic() {
+    if (!IsDisabled()) {
+        auton.Periodic(autonSelect_trenchRun, robotData);
     }
 }
 
 void Robot::TeleopPeriodic()
 {
     control.Periodic(robotData);
+    robotData.driveMode = driveMode_teleop;
 }
 
 void Robot::DisabledInit()
 {
     db.Disabled();
+    indexer.Disabled();
+    intake.Disabled();
+    shooter.Disabled();
 }
 
 void Robot::TestInit()
@@ -59,6 +64,7 @@ void Robot::TestPeriodic()
         diagnostics.TestPeriodic(diagnosticsData);
     }
 }
+
 
 #ifndef RUNNING_FRC_TESTS
 int main()
