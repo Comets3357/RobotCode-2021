@@ -3,13 +3,14 @@
 // auton mode
 enum AutonSelect
 {
-    autonSelect_potato,
-    autonSelect_exitInitLine,
-    autonSelect_shootAndDrive,
-    autonSelect_shootAndCollectBalls, // pretty much the same as trench run
-    autonSelect_trenchRun,
-    autonSelect_stealBallsAndShoot,
-    autonSelect_goofy // temporary
+    autonSelect_potato, //0
+    autonSelect_exitInitLine, //1
+    autonSelect_shootAndDrive, //2
+    autonSelect_shootAndCollectBalls, // pretty much the same as trench run //3
+    autonSelect_trenchRun, //4
+    autonSelect_stealBallsAndShootFar, //5
+    autonSelect_stealBallsAndShootClose, //6
+    autonSelect_goofy // temporary //7
 };
 
 // this is for drivebase auton

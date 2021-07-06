@@ -49,7 +49,6 @@ void DriveSubsystem::Init()
 
     //gyro
     gyro.Calibrate();
-    gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
     
 
 
@@ -173,8 +172,8 @@ void DriveSubsystem::teleopControl(RobotData &robotData)
 // sets the drive base velocity for auton
 void DriveSubsystem::setVelocity(RobotData &robotData)
 {
-        dbLMPID.SetReference(lDrive, rev::ControlType::kVelocity);
-        dbRMPID.SetReference(rDrive, rev::ControlType::kVelocity);    
+    dbLMPID.SetReference(lDrive, rev::ControlType::kVelocity);
+    dbRMPID.SetReference(rDrive, rev::ControlType::kVelocity);    
 }
 
 // this function is currently written so that the robot tries to stay at an angle of zero
@@ -211,6 +210,9 @@ void DriveSubsystem::initDriveStraight(RobotData &robotData)
     robotData.initialLDBPos = robotData.currentLDBPos;
     robotData.initialRDBPos = robotData.currentRDBPos;
 
+    robotData.initialAngle = robotData.rawAngle; //for course correction
+    
+
     //wpi::outs() << "initDriveStraight" << '\n';
     // frc::SmartDashboard::PutNumber("initialLDBPos", robotData.initialLDBPos);
     // frc::SmartDashboard::PutNumber("initialRDBPos", robotData.initialLDBPos);
@@ -228,48 +230,11 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
     double lDistLeft = robotData.desiredDBDist - (robotData.currentLDBPos - robotData.initialLDBPos);
     double rDistLeft = robotData.desiredDBDist - (robotData.currentRDBPos - robotData.initialRDBPos);
 
-    frc::SmartDashboard::PutNumber("currentLDBPos", robotData.currentLDBPos);
-    frc::SmartDashboard::PutNumber("currentRDBPos", robotData.currentRDBPos);
+    // frc::SmartDashboard::PutNumber("currentLDBPos", robotData.currentLDBPos);
+    // frc::SmartDashboard::PutNumber("currentRDBPos", robotData.currentRDBPos);
     frc::SmartDashboard::PutNumber("lDistLeft", lDistLeft);
     frc::SmartDashboard::PutNumber("rDistLeft", rDistLeft);
 
-
-    // if (lDistLeft != 0) {
-    //     if(lDistLeft > 0){
-    //         if(lDistLeft * 170 < 5000){
-    //             lDrive = lDistLeft * 170;
-    //         } else {
-    //             lDrive = 5000;
-    //         } 
-    //     }
-    //     if(lDistLeft < 0){
-    //         if(lDistLeft * 170 > -5000){
-    //             lDrive = lDistLeft * 170;
-    //         } else {
-    //             lDrive = -5000;
-    //         } 
-    //     }
-    // } else {
-    //     lDrive = 0;
-    // }
-    // if (rDistLeft != 0) {
-    //     if(rDistLeft > 0){
-    //         if(rDistLeft * 170 < 5000){
-    //             lDrive = rDistLeft * 170;
-    //         } else {
-    //             rDrive = 5000;
-    //         } 
-    //     }
-    //     if(rDistLeft < 0){
-    //         if(rDistLeft * 170 > -5000){
-    //             rDrive = rDistLeft * 170;
-    //         } else {
-    //             rDrive = -5000;
-    //         } 
-    //     }
-    // } else {
-    //     rDrive = 0;
-    // }
 
     if (robotData.desiredDBDist > 0){
         if(lDistLeft > 0){
@@ -291,6 +256,8 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
         } else {
             rDrive = 0;
         }
+
+        courseCorrection(true, robotData);
 
         if (lDistLeft <= .5 && rDistLeft <= .5) {
             robotData.autonStep++;
@@ -316,19 +283,15 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
             rDrive = 0;
         }
 
+        courseCorrection(false, robotData);
+
         if (lDistLeft >= -.5 && rDistLeft >= -.5) {
             robotData.autonStep++;
         }
     }
 
 
-    // if (robotData.desiredDBDist > 0){
-    //     if (lDistLeft <= .5 && rDistLeft <= .5) {
-    //         robotData.autonStep++;
-    //     }
-    // } else if (lDistLeft >= -.5 && rDistLeft >= -.5) {
-    //     robotData.autonStep++;
-    // }
+    
 }
 
 // you need to set a desiredAngleDiff and arcRadius beforehand
@@ -375,25 +338,40 @@ void DriveSubsystem::turnInPlace(RobotData &robotData)
     //for radius = -1 in arc pretty much
     robotData.angleLeft = robotData.desiredAngleDiff - (robotData.rawAngle - robotData.initialAngle);
 
-    
-    
+    frc::SmartDashboard::PutNumber("current angle", robotData.rawAngle);
+    frc::SmartDashboard::PutNumber("angleLeft", robotData.angleLeft);
 
     if (robotData.angleLeft > 1){
-        lDrive = -50 * robotData.angleLeft * robotData.sideRatio;
-        rDrive = -50 * robotData.angleLeft;
-        frc::SmartDashboard::PutNumber("current angle", robotData.rawAngle);
-        frc::SmartDashboard::PutNumber("angleLeft1", robotData.angleLeft);
+        lDrive = -90 * robotData.angleLeft * robotData.sideRatio;
+        rDrive = -90 * robotData.angleLeft;
         wpi::outs() << "turn in place" << '\n';
     } else if (robotData.angleLeft < -1){
-        lDrive = 50 * robotData.angleLeft;
-        rDrive = 50 * robotData.angleLeft * robotData.sideRatio;
-        frc::SmartDashboard::PutNumber("angleLeft2", robotData.angleLeft);
+        lDrive = 90 * robotData.angleLeft;
+        rDrive = 90 * robotData.angleLeft * robotData.sideRatio;
         wpi::outs() << "turn in place" << '\n';
     } else {
         lDrive = 0;
         rDrive = 0;
         robotData.autonStep++;
         // wpi::outs() << "FINISHED TURN IN PLACE" << '\n';
+    }
+
+}
+
+void DriveSubsystem::courseCorrection(bool isForward, RobotData &robotData){
+
+    if(isForward){
+        if(robotData.rawAngle > robotData.initialAngle){
+            lDrive *= .9;
+        } else if (robotData.rawAngle < robotData.initialAngle) {
+            rDrive *= .9;
+        }
+    } else {
+        if(robotData.rawAngle > robotData.initialAngle){
+            rDrive *= .9;
+        } else if (robotData.rawAngle < robotData.initialAngle) {
+            lDrive *= .9;
+        }
     }
 
 }
