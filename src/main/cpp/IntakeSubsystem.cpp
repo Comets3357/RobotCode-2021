@@ -18,10 +18,15 @@ void IntakeSubsystem::Init(){
 
 void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     //decide if in manual mode or auto mode
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setIntakeRollers(0);
+        setPiston(false);
     }
 
     updateDiagnostics(diagnosticsData);
@@ -97,7 +102,7 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
 
     //else trigger controls roller power
     }else{
-        setIntakeRollers(robotData.sRTrigger);
+        setIntakeRollers(-robotData.sRTrigger);
 
         //r bumper controls pistons
         if(robotData.sRBumper){ 

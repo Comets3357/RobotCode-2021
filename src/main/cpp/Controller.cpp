@@ -75,7 +75,7 @@ int Controller::roughShooting(){
 }
 
 bool Controller::climbMode(RobotData &robotData){
-    if (secondary.GetRawButtonPressed(8)){
+    if (secondary.GetRawButtonPressed(7)){
         robotData.climbMode = !robotData.climbMode;
     }
 
@@ -118,6 +118,7 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
     robotData.shootingMode = shootingMode(robotData.shootingBtn);
+    climbMode(robotData);
 
 
 

@@ -75,10 +75,16 @@ void ShooterSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosti
 
     updateData(robotData);
 
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setHood(0);
+        setTurret(0);
+        setWheel(0);
     }
 
     updateDiagnostics(diagnosticsData);
@@ -192,6 +198,7 @@ void ShooterSubsystem::manualMode(RobotData &robotData){
         //spins the flywheel up beforehand
         shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
     }else{
+        setWheel(0);
         setHood(robotData.sRYStick*.1);
     }
 

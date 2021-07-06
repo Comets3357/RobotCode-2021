@@ -14,11 +14,17 @@ void IndexerSubsystem::Init(){
 
 
 void IndexerSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setOmniWheel(0);
+        setCenterSpindle(0);
     }
+    
 
     updateDiagnostics(diagnosticsData);
 
@@ -100,7 +106,7 @@ double IndexerSubsystem::getSpinnerVel(){
 void IndexerSubsystem::Disabled(){
     setOmniWheel(0);
     setCenterSpindle(0);
-    
+
 }
 
 

@@ -102,6 +102,9 @@ void ClimbSubsystem::Init(){
     climbArmL.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     climbArmL.SetSmartCurrentLimit(45);
     climbArmL.Set(0);
+
+    startingPhase = 0;
+    
     
     // imu.Reset();
 }
@@ -112,15 +115,23 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
     frc::SmartDashboard::PutNumber("Rrpm",  climbArmRPos.GetPosition());
     frc::SmartDashboard::PutNumber("Lrpm",  climbArmLPos.GetPosition());
 
+    
+
     if(robotData.manualMode){
+        if(robotData.sXBtn){
+            climbArmLPos.SetPosition(0);
+            climbArmRPos.SetPosition(0);
+        }
         if (robotData.climbMode){
             startingPhase = 0;
             manualMode(robotData);
         }
+        manualMode(robotData);
     } else {
         if (robotData.climbMode){
             semiAutoMode(robotData);
         }
+        semiAutoMode(robotData);
     }
 }
 
@@ -146,10 +157,10 @@ void ClimbSubsystem::manualMode(RobotData &robotData){
         } else {
             solenoidArmL.Set(true);
         }
-        climbArmL.Set(robotData.sLYStick*0.3);
-        if (climbArmLPos.GetPosition() > 5) {
-            climbArmL.Set(0);
-        }
+        climbArmL.Set(robotData.sLYStick*-0.3);
+        // if (climbArmLPos.GetPosition() > 5) {
+        //     climbArmL.Set(0);
+        // }
     } else {
         climbArmL.Set(0);
     }
@@ -159,10 +170,10 @@ void ClimbSubsystem::manualMode(RobotData &robotData){
         } else {
             solenoidArmR.Set(true);
         }
-        climbArmR.Set(robotData.sRYStick*0.3);
-        if (climbArmRPos.GetPosition() > 5) {
-            climbArmR.Set(0);
-        }
+        climbArmR.Set(robotData.sRYStick*-0.3);
+        // if (climbArmRPos.GetPosition() > 5) {
+        //     climbArmR.Set(0);
+        // }
     } else {
         climbArmR.Set(0);
     }
@@ -188,15 +199,15 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
         climbArmR.Set(0.2);
         climbArmL.Set(0.2);
         if (timer > 20){
-            if (climbArmRPos.GetPosition() > -72 || climbArmLPos.GetPosition() > -72) {//i dont know the exact numbers yet
+            if (climbArmRPos.GetPosition() > -80 || climbArmLPos.GetPosition() > -80) {//i dont know the exact numbers yet
                 solenoidArmR.Set(false);
                 solenoidArmL.Set(false);
-                if (climbArmRPos.GetPosition() > -72) {
+                if (climbArmRPos.GetPosition() > -80) {
                     climbArmR.Set(-0.3);
                 } else {
                     climbArmR.Set(0);
                 }
-                if (climbArmLPos.GetPosition() > -72) {
+                if (climbArmLPos.GetPosition() > -80) {
                     climbArmL.Set(-0.3);
                 } else {
                     climbArmL.Set(0);
