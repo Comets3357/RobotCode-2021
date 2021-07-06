@@ -31,7 +31,7 @@ void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostic
 void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
     //sets the speed of the intake roller based on how fast the robot is driving 
-    double pow = -0.4;
+    double pow = -0.8;
     if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
         pow = -0.8;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){

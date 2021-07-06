@@ -49,7 +49,6 @@ void DriveSubsystem::Init()
 
     //gyro
     gyro.Calibrate();
-    //gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
     
 
 
@@ -173,8 +172,8 @@ void DriveSubsystem::teleopControl(RobotData &robotData)
 // sets the drive base velocity for auton
 void DriveSubsystem::setVelocity(RobotData &robotData)
 {
-        dbLMPID.SetReference(lDrive, rev::ControlType::kVelocity);
-        dbRMPID.SetReference(rDrive, rev::ControlType::kVelocity);    
+    dbLMPID.SetReference(lDrive, rev::ControlType::kVelocity);
+    dbRMPID.SetReference(rDrive, rev::ControlType::kVelocity);    
 }
 
 // this function is currently written so that the robot tries to stay at an angle of zero
@@ -231,8 +230,8 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
     double lDistLeft = robotData.desiredDBDist - (robotData.currentLDBPos - robotData.initialLDBPos);
     double rDistLeft = robotData.desiredDBDist - (robotData.currentRDBPos - robotData.initialRDBPos);
 
-    frc::SmartDashboard::PutNumber("currentLDBPos", robotData.currentLDBPos);
-    frc::SmartDashboard::PutNumber("currentRDBPos", robotData.currentRDBPos);
+    // frc::SmartDashboard::PutNumber("currentLDBPos", robotData.currentLDBPos);
+    // frc::SmartDashboard::PutNumber("currentRDBPos", robotData.currentRDBPos);
     frc::SmartDashboard::PutNumber("lDistLeft", lDistLeft);
     frc::SmartDashboard::PutNumber("rDistLeft", rDistLeft);
 
@@ -339,19 +338,16 @@ void DriveSubsystem::turnInPlace(RobotData &robotData)
     //for radius = -1 in arc pretty much
     robotData.angleLeft = robotData.desiredAngleDiff - (robotData.rawAngle - robotData.initialAngle);
 
-    
-    
+    frc::SmartDashboard::PutNumber("current angle", robotData.rawAngle);
+    frc::SmartDashboard::PutNumber("angleLeft", robotData.angleLeft);
 
     if (robotData.angleLeft > 1){
         lDrive = -90 * robotData.angleLeft * robotData.sideRatio;
         rDrive = -90 * robotData.angleLeft;
-        frc::SmartDashboard::PutNumber("current angle", robotData.rawAngle);
-        frc::SmartDashboard::PutNumber("angleLeft1", robotData.angleLeft);
         wpi::outs() << "turn in place" << '\n';
     } else if (robotData.angleLeft < -1){
         lDrive = 90 * robotData.angleLeft;
         rDrive = 90 * robotData.angleLeft * robotData.sideRatio;
-        frc::SmartDashboard::PutNumber("angleLeft2", robotData.angleLeft);
         wpi::outs() << "turn in place" << '\n';
     } else {
         lDrive = 0;
