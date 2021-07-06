@@ -232,9 +232,9 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, robotData.sRCenterBtn);
     addLogSnippet(log, robotData.sDPad);
 
-    addLogSnippet(log, convertAutonSelect(robotData.autonSelect));
+    addLogSnippet(log, "not updated" /* convertAutonSelect(robotData.autonSelect) */);
     addLogSnippet(log, robotData.autonStep);
-    addLogSnippet(log, convertDriveMode(robotData.driveMode));
+    addLogSnippet(log, "not udpdated" /* convertDriveMode(robotData.driveMode) */);
 
     addLogSnippet(log, robotData.climbMode);
 

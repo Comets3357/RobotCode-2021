@@ -37,9 +37,11 @@ struct DiagnosticsData
     // compressor
     bool
         compEnabled{false},
-        compPressureSwitchVal{false},
-        compCurrent{false},
+        compPressureSwitchVal{false};
 
+    double compCurrent{-1.0};
+
+    bool
         compCurrentHighFault{false},
         compShortedFault{false},
         compNotConnectedFault{false};
