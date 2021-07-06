@@ -45,7 +45,12 @@ struct DiagnosticsData
         compNotConnectedFault{false};
 
     // solenoids
-    bool solenoidOneValue{false};
+    bool
+        solenoidOneValue{false},
+        solenoidArmL{false},
+        solenoidArmR{false},
+        solenoidLockL{false},
+        solenoidLockR{false};
 
     // limit switches
     bool turretLSwitch{false}, hoodLSwitch{false};

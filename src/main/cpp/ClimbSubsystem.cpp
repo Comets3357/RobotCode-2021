@@ -106,7 +106,7 @@ void ClimbSubsystem::Init(){
     // imu.Reset();
 }
 
-void ClimbSubsystem::Periodic(RobotData &robotData){
+void ClimbSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
 
 
     frc::SmartDashboard::PutNumber("Rrpm",  climbArmRPos.GetPosition());
@@ -122,7 +122,19 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
             semiAutoMode(robotData);
         }
     }
+
+    updateDiagnostics(diagnosticsData);
 }
+
+
+void ClimbSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    diagnosticsData.solenoidArmL = solenoidArmL.Get();
+    diagnosticsData.solenoidArmR = solenoidArmR.Get();
+    diagnosticsData.solenoidLockL = solenoidLockL.Get();
+    diagnosticsData.solenoidLockR = solenoidLockL.Get();
+}
+
 
 void ClimbSubsystem::manualMode(RobotData &robotData){
     if (robotData.sRBumper){

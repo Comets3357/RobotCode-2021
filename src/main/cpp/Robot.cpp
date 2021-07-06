@@ -8,7 +8,7 @@ void Robot::RobotInit()
     indexer.Init();
     shooter.Init();
     limelight.Init();
-    // diagnostics.LogInit();
+    diagnostics.LogInit();
     controlpanel.Init();
     climb.Init();
 
@@ -25,7 +25,7 @@ void Robot::RobotPeriodic(){
         limelight.Periodic(robotData);
         // diagnostics.LogPeriodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
-        climb.Periodic(robotData);
+        climb.Periodic(robotData, diagnosticsData);
         
     }
 }

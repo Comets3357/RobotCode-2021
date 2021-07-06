@@ -121,6 +121,7 @@ struct RobotData
     double rawAngle;
     double robotAngle; // mod by 360
     double robotTiltAngle;
+    double robotYAngle;
 
 
     double angleLeft;
