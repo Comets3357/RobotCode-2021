@@ -18,6 +18,7 @@
 #include "Auton.h"
 #include "Diagnostics.h"
 #include "ControlpanelSubsystem.h"
+#include "ClimbSubsystem.h"
 
 #include "RobotData.h"
 
@@ -46,6 +47,7 @@ class Robot : public frc::TimedRobot {
       IntakeSubsystem intake{};
       LimelightSubsystem limelight{};
       ControlpanelSubsystem controlpanel{};
+      ClimbSubsystem climb{};
 
       Controller control{};
       Auton auton{};

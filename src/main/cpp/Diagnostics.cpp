@@ -123,7 +123,7 @@ std::string Diagnostics::convertDriveMode(int param)
 {
     std::array<std::string, 6> driveModeStrings
     {
-        "teleop", "potato", "initDriveForward", "driveForward",
+        "teleop", "potato", "initDriveStraight", "driveStraight",
         "arc", "initArc"
     };
     return driveModeStrings.at(param);
@@ -151,6 +151,7 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     // auton - robot
 
     std::string log = ""; // local log var
+    log.reserve(1200);  // temp byte count for reserver
 
     addLogSnippet(log, seconds);
     addLogSnippet(log, matchMode);
@@ -163,6 +164,8 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, diagnosticsData.accelZ);
 
     addLogSnippet(log, robotData.robotAngle);
+    addLogSnippet(log, robotData.robotTiltAngle);
+    addLogSnippet(log, robotData.robotYAngle);
 
     std::array<int, 11> mControlIDs{1, 2, 3, 4, 32, 11, 12, 23, 22, 20, 21};
     for (int i = 0; i < 11; i++)
@@ -200,6 +203,10 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, diagnosticsData.compNotConnectedFault);
 
     addLogSnippet(log, diagnosticsData.solenoidOneValue);
+    addLogSnippet(log, diagnosticsData.solenoidArmL);
+    addLogSnippet(log, diagnosticsData.solenoidArmR);
+    addLogSnippet(log, diagnosticsData.solenoidLockL);
+    addLogSnippet(log, diagnosticsData.solenoidLockR);
 
     addLogSnippet(log, diagnosticsData.turretLSwitch);
     addLogSnippet(log, diagnosticsData.hoodLSwitch);
@@ -225,9 +232,11 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, robotData.sRCenterBtn);
     addLogSnippet(log, robotData.sDPad);
 
-    addLogSnippet(log, convertAutonSelect(robotData.autonSelect));
+    addLogSnippet(log, "not updated" /* convertAutonSelect(robotData.autonSelect) */);
     addLogSnippet(log, robotData.autonStep);
-    addLogSnippet(log, convertDriveMode(robotData.driveMode));
+    addLogSnippet(log, "not udpdated" /* convertDriveMode(robotData.driveMode) */);
+
+    addLogSnippet(log, robotData.climbMode);
 
     // delete the last comma and space
     log.erase(log.length() - 1);
@@ -296,7 +305,9 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "accelX, "
         "accelY, "
         "accelZ, "
-        "robotAngle, "
+        "gyroYaw, "
+        "gyroTilt, "
+        "gyroPitch, "
 
         "mControl1Current, "
         "mControl1Voltage, "
@@ -406,6 +417,10 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "compNotConnectedFault, "
 
         "solenoidOneValue, "
+        "solenoidArmL, "
+        "solenoidArmR, "
+        "solenoidLockL, "
+        "solenoidLockR, "
 
         "turretLSwitch, "
         "hoodLSwitch, "
@@ -434,6 +449,8 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "autonSelect, "
         "autonStep, "
         "driveMode, "
+
+        "climbMode, "
         
         );}
 

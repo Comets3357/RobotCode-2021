@@ -10,6 +10,7 @@ void IntakeSubsystem::Init(){
     rollers.SetInverted(true);
     rollers.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     rollers.SetSmartCurrentLimit(45);
+    setIntakeRollers(0);
     setPiston(false);
     setIntakeRollers(0);
 
@@ -22,7 +23,6 @@ void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostic
     } else {
         semiAutoMode(robotData);
     }
-    //setPiston(true);
 
     updateDiagnostics(diagnosticsData);
 }
@@ -30,10 +30,8 @@ void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostic
 
 void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
-    shootPOV = robotData.sDPad;
-
-    double pow = -0.4;
-
+    //sets the speed of the intake roller based on how fast the robot is driving 
+    double pow = -0.8;
     if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
         pow = -0.8;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
@@ -42,40 +40,40 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
         pow = -0.6;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
         pow = -0.5;
+    }else{
+        pow = -0.4;
     }
 
     frc::SmartDashboard::PutNumber("speed", pow);
 
 
     //if in shooting mode then you want manual control of the intake
-    if (shootPOV == robotData.shootingBtn){
+    if (robotData.shootingMode){
         //setPiston(true);
         manualMode(robotData);
 
     } else {
         //Intake balls
-        if(robotData.sABtn){
+        if(robotData.sRTrigger){ //runs intake
             if(!getPiston()){ //if the piston is up put it down
                 setPiston(true);
             }
             setIntakeRollers(pow);
-        }else{
+        }else if(robotData.sLTrigger){ //runs intake backwards
+            setIntakeRollers(robotData.sLTrigger);
+        }else{ 
             if(getPiston()){ //if the piston is down put it up
                 setPiston(false);
             }
             setIntakeRollers(0);
         }
-
-
     }
-
-    
 }
 
 void IntakeSubsystem::manualMode(RobotData &robotData){
 
+    //sets the speed of the intake roller based on how fast the robot is driving 
     double pow = -0.4;
-
     if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
         pow = -0.8;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
@@ -84,25 +82,25 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
         pow = -0.6;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
         pow = -0.5;
+    }else{
+        pow = -0.4;
     }
 
 
-    //if the shift is pressed reverse the intake roller
+    //if shift trigger run intake rollers opposite with trigger power
     if(robotData.shift){
-        if(robotData.sYBtn){
-            setIntakeRollers(-pow);
+        if(robotData.sRTrigger){
+            setIntakeRollers(robotData.sRTrigger*-pow);
         } else {
             setIntakeRollers(0);
         }
 
-    //else run the intake roller
+    //else trigger controls roller power
     }else{
-        if(robotData.sYBtn){
-            setIntakeRollers(pow);
-        } else {
-            setIntakeRollers(0);
-        }
-        if(robotData.sXBtn){ //if the piston is extended take it in, if its in take it out
+        setIntakeRollers(robotData.sRTrigger);
+
+        //r bumper controls pistons
+        if(robotData.sRBumper){ 
             setPiston(!getPiston());
         }
     }
@@ -112,9 +110,8 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
 }
 
 /**
- * @param direction true is retracted and false is extended
+ * @param direction false is retracted and true is extended
  */
-
 void IntakeSubsystem::setPiston(bool direction){  
     if (direction){
         solenoidOne.Set(true);
@@ -140,6 +137,7 @@ void IntakeSubsystem::Disabled(){
     setIntakeRollers(0);
     setPiston(false);
 }
+
 
 
 void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)

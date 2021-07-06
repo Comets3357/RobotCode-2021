@@ -23,13 +23,14 @@ private:
     bool getShiftFactor();
     bool shootingMode(int pov);
     bool getManual();
+    int roughShooting();
     bool limelightMode(bool shift);
 
 
     bool getButton(int js, int index);
     int getPOV(int js, int index);
     double getAxis(int js, int index);
-    // bool climbMode();
+    bool climbMode(RobotData &robotData);
 
 
     frc::Joystick secondary{1};

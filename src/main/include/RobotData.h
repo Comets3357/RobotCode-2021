@@ -3,12 +3,14 @@
 // auton mode
 enum AutonSelect
 {
-    autonSelect_potato,
-    autonSelect_exitInitLine,
-    autonSelect_shootAndDrive,
-    autonSelect_shootAndCollectBalls, // pretty much the same as trench run
-    autonSelect_trenchRun,
-    autonSelect_goofy // temporary
+    autonSelect_potato, //0
+    autonSelect_exitInitLine, //1
+    autonSelect_shootAndDrive, //2
+    autonSelect_shootAndCollectBalls, // pretty much the same as trench run //3
+    autonSelect_trenchRun, //4
+    autonSelect_stealBallsAndShootFar, //5
+    autonSelect_stealBallsAndShootClose, //6
+    autonSelect_goofy // temporary //7
 };
 
 // this is for drivebase auton
@@ -16,8 +18,8 @@ enum DriveMode
 {
     driveMode_teleop,
     driveMode_potato,
-    driveMode_initDriveForward,
-    driveMode_driveForward,
+    driveMode_initDriveStraight,
+    driveMode_driveStraight,
     driveMode_arc,
     driveMode_initArc
 };
@@ -34,7 +36,7 @@ struct RobotData
     bool manualMode = false;
     bool shift; //shift for more button options
     bool shootingMode;
-    bool limelightOn;
+    bool climbMode = false;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
 
@@ -53,7 +55,7 @@ struct RobotData
     double pLTrigger;
     double pRTrigger;
     bool pLBumper;
-    bool pRtBumper;
+    bool pRBumper;
 
     bool pXBtn;
     bool pYBtn;
@@ -94,9 +96,10 @@ struct RobotData
     double hoodPosition;
     double turretPosition;
     double flywheelVelocity;
-    static const int shootingBtn = 90;
+    static const int shootingBtn = 0;
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
+    int roughAim;
 
     //drive base
     double Ldrive;
@@ -106,15 +109,22 @@ struct RobotData
     //limelight data
     double xOffset;
     double yOffset;
+    int targetValue;
     double calcHoodPos;
     bool validTarget;
+    bool isZero = false;
+    double calcTurretPos;
     int pipeline; //for LED power
 
     //gyro data
     //greater angle means clockwise
     double rawAngle;
     double robotAngle; // mod by 360
+    double robotTiltAngle;
+    double robotYAngle;
 
+
+    double angleLeft;
 
     // auton stuff
     int autonStep  = 0;
