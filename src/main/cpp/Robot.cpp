@@ -40,7 +40,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
         wpi::outs() << "running auton";
-        auton.Periodic(autonSelect_trenchRun, robotData);
+        auton.Periodic(autonSelect_stealBallsAndShootFar, robotData);
     }
 }
 
