@@ -40,9 +40,9 @@ void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
 }
 
 void ControlpanelSubsystem::manualMode(RobotData &robotData){ 
-    if(robotData.sDPad == 180){
-        cpManipulator.Set(0.2);
-    }
+    // if(){
+    //     cpManipulator.Set(0.2);
+    // }
 }
 
 void ControlpanelSubsystem::Disabled(){

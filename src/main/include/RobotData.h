@@ -92,6 +92,7 @@ struct RobotData
     int sDPad = -1;
 
 
+
     //shooter data
     double hoodPosition;
     double turretPosition;
@@ -100,6 +101,7 @@ struct RobotData
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
     int roughAim;
+    int roughHood;
 
     //drive base
     double Ldrive;

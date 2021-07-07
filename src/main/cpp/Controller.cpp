@@ -1,7 +1,7 @@
 #include "Robot.h"
 #include "Controller.h"
 #include <frc/Timer.h>
-
+#include <frc/DriverStation.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Controller::Init(RobotData &robotData){
@@ -56,7 +56,7 @@ bool Controller::getShiftFactor(){
 
 bool Controller::shootingMode(int pov){
     //probably definitely wrong pov button index
-    if(secondary.GetPOV(0) == pov){
+    if(secondary.GetRawButton(3)){
         return true;
     }else{
         return false;
@@ -71,7 +71,16 @@ int Controller::roughShooting(){
     }else{
         return 0;
     }
-    
+}
+
+int Controller::roughHood(){
+    static int pow = 0;
+    if(secondary.GetPOV(0) == 0){
+        pow += 1;
+    }else if(secondary.GetPOV(0) == 180){
+        pow -= 1;
+    }
+    return pow;
 }
 
 bool Controller::climbMode(RobotData &robotData){
@@ -124,8 +133,16 @@ void Controller::updateTeleopData(RobotData &robotData){
 
 
     //used for driving
-    robotData.pLYStick = -getAxis(0, 1);
-    robotData.pRYStick = -getAxis(0, 5);
+    if(frc::DriverStation::GetInstance().GetJoystickName(0) == "FrSky Taranis Joystick"){
+        robotData.pLYStick = getAxis(0, 0);
+        robotData.pRYStick = getAxis(0, 2);
+    }else{
+        robotData.pLYStick = -getAxis(0, 1);
+        robotData.pRYStick = -getAxis(0, 5);
+    }
+    
+
+
 
     robotData.pABtn = getButton(0,1);
     robotData.pBBtn = getButton(0,2);
@@ -155,5 +172,6 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.sRBumper = getButton(1, 6); // manual
 
     robotData.roughAim = roughShooting();
+    robotData.roughHood = roughHood();
 
 }

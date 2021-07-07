@@ -28,6 +28,7 @@ class ShooterSubsystem {
         double getTurretPos();
         double getWheelPos();
         double getWheelVel();
+        double getHoodOffset();
         bool getTurretLimitSwitch();
         bool getHoodLimitSwitch();
 
@@ -37,6 +38,7 @@ class ShooterSubsystem {
         void setWheel(double power);
         void setHoodPos(double pos);
         void setTurretPos(double pos);
+
 
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
         

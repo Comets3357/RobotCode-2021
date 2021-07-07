@@ -104,6 +104,8 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutNumber("x", robotData.xOffset);
     frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
     frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
+    frc::SmartDashboard::PutNumber("calc hood", robotData.calcHoodPos);
+
     frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
     frc::SmartDashboard::PutBoolean("turret limit", getTurretLimitSwitch());
 
@@ -136,9 +138,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
                 robotData.readyShoot = false;
             }
 
-        }
-        //robotData.isZero = false;
-        
+        }        
 
     } else {  //not shooting
 
@@ -160,7 +160,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
             setTurretPos(0);
             robotData.isZero = true;
         }else if(!robotData.isZero){
-            setTurret(0.1);
+            setTurret(0.15);
         }else if(robotData.isZero){
             //set the turret to face forward
             //adding the two left/right pov buttons to turn the turret left/right
@@ -188,13 +188,6 @@ void ShooterSubsystem::manualMode(RobotData &robotData){
     setTurret(robotData.sLYStick*.1);
 
     if(robotData.sBBtn){
-        //zeros hood using limitswitch
-        // setHood(-0.1);     
-        // if(getHoodLimitSwitch()){
-        //     setHoodPos(0);
-        //     setHood(0);
-        // }
-
         //spins the flywheel up beforehand
         shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
     }else{
@@ -242,6 +235,8 @@ void ShooterSubsystem::setWheel(double power){
 double ShooterSubsystem::getWheelVel(){
     return shooterWheelMPOS.GetVelocity();
 }
+
+
 
 
 
