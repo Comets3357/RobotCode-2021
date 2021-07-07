@@ -52,7 +52,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         case 0:
             robotData.manualMode = false;
             startDelay(4.5, robotData);
-            robotData.sDPad = 90;
+            robotData.shootingMode = true;
             robotData.driveMode = driveMode_potato;
             robotData.autonStep++;
             break;
@@ -63,7 +63,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             break;
         case 2:
             //turn shooter off before driving away
-            robotData.sDPad = -1;
+            robotData.shootingMode = false;
             robotData.driveMode = driveMode_potato;
             robotData.autonStep++;
             break;
@@ -87,7 +87,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         {
         case 0:
             startDelay(7, robotData);
-            robotData.sDPad = 90;
+            robotData.shootingMode = true;
             robotData.autonStep++;
             break;
         case 1:
@@ -96,7 +96,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             break;
         case 2:
             //turn shooter off before driving away
-            robotData.sDPad = -1;
+            robotData.shootingMode = false;
             robotData.autonStep++;
             break;
         case 3:
@@ -105,11 +105,11 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             break;
         case 4:
             //bring intake down and indexer into intaking mode while driving
-            robotData.sABtn = true;
+            robotData.sRTrigger = true;
             robotData.driveMode = driveMode_driveStraight;
             break;
         default:
-            robotData.sABtn = false;
+            robotData.sRTrigger = false;
             robotData.driveMode = driveMode_potato;
             break;
         }
@@ -186,18 +186,217 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         break; 
 
     case autonSelect_stealBallsAndShootFar:
+        // switch (robotData.autonStep)
+        // {
+        // case 0:
+        //     //spin up flywheel
+        //     robotData.sDPad = -1;
+        //     robotData.sBBtn = true;
+        //     //intake and indexer in intaking mode 
+        //     robotData.sRTrigger = true;
+        //     //start delay to give time to intake
+        //     startDelay(1.5, robotData);
+        //     //init drive forward
+        //     robotData.desiredDBDist = 33;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 1:
+        //     //wait for intake to come down
+        //     robotData.driveMode = driveMode_potato;
+        //     checkDelay(robotData);
+        //     break;
+        // case 2:
+        //     //drive forward to grab two balls
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     //spin up flywheel
+        //     robotData.sDPad = -1;
+        //     robotData.sBBtn = true;
+        //     //intake and indexer in intaking mode 
+        //     robotData.sRTrigger = true;
+        //     //move on when two balls have been collected (in encoder values)
+        //     break;
+        // case 3:
+        //     // bring intake up
+        //     robotData.sRTrigger = false;
+        //     //drive
+        //     robotData.desiredDBDist = -15;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 4:
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     break;
+        // case 5:
+        //     // turn
+        //     robotData.desiredAngleDiff = 90;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 6:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 7:
+        //     robotData.desiredDBDist = -70;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 8:
+        //     //spin up flywheel
+        //     robotData.sDPad = -1;
+        //     robotData.sBBtn = true;
+        //     // drive
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     break;
+        // case 9:
+        //     robotData.desiredAngleDiff = -90;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 10:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 11:
+        //     //start delay and go into shooting mode
+        //     startDelay(4.5, robotData);
+        //     robotData.sBBtn = false; //spin up flywheel button
+        //     robotData.sDPad = 90; //shooting button
+        //     robotData.driveMode = driveMode_potato;
+        //     robotData.autonStep++;
+        //     break;
+        // case 12:
+        //     //check delay, shoot
+        //     checkDelay(robotData);
+        //     robotData.sDPad = 90;
+        //     robotData.driveMode = driveMode_potato;
+        //     break;
+        // default:
+        //     // robotData.sABtn = false;
+        //     robotData.driveMode = driveMode_potato;
+        //     break;
+        // }
+
+        // switch (robotData.autonStep)
+        // {
+        // case 0:
+        //     //spin up flywheel
+        //     robotData.shootingMode = false;
+        //     robotData.sBBtn = true;
+        //     //intake and indexer in intaking mode 
+        //     robotData.sRTrigger = true;
+        //     //start delay to give time to intake
+        //     startDelay(1, robotData);
+        //     //init drive forward
+        //     robotData.desiredDBDist = 18;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 1:
+        //     //wait for intake to come down
+        //     robotData.driveMode = driveMode_potato;
+        //     checkDelay(robotData);
+        //     break;
+        // case 2:
+        //     //drive forward to grab two balls
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     //spin up flywheel
+        //     robotData.sBBtn = true;
+        //     //intake and indexer in intaking mode 
+        //     robotData.sRTrigger = true;
+        //     //move on when two balls have been collected (in encoder values)
+        //     break;
+        // case 3:
+        //     //turn to 45 degrees
+        //     robotData.desiredAngleDiff = 53 - robotData.rawAngle;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 4:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 5:
+        //     //drive to intake balls
+        //     robotData.desiredDBDist = 50;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 6:
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     break;
+        // case 7:
+        //     //turn to 0 degrees
+        //     robotData.desiredAngleDiff = 0 - robotData.rawAngle;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 8:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 9:
+        //     // bring intake up
+        //     robotData.sRTrigger = false;
+        //     //drive
+        //     robotData.desiredDBDist = -15;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 10:
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     break;
+        // case 11:
+        //     // turn
+        //     robotData.desiredAngleDiff = 90 - robotData.rawAngle;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 12:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 13:
+        //     robotData.desiredDBDist = -70;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 14:
+        //     //spin up flywheel
+        //     robotData.shootingMode = -1;
+        //     robotData.sBBtn = true;
+        //     // drive
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     break;
+        // case 15:
+        //     robotData.desiredAngleDiff = -90;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 16:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 17:
+        //     //start delay and go into shooting mode
+        //     startDelay(4.5, robotData);
+        //     robotData.sBBtn = false; //spin up flywheel button
+        //     robotData.shootingMode = true; //shooting button
+        //     robotData.driveMode = driveMode_potato;
+        //     robotData.autonStep++;
+        //     break;
+        // case 18:
+        //     //check delay, shoot
+        //     checkDelay(robotData);
+        //     robotData.shootingMode = true;
+        //     robotData.driveMode = driveMode_potato;
+        //     break;
+        // default:
+        //     robotData.driveMode = driveMode_potato;
+        //     break;
+        // }
+
+
         switch (robotData.autonStep)
         {
         case 0:
             //spin up flywheel
-            robotData.sDPad = -1;
+            robotData.shootingMode = false;
             robotData.sBBtn = true;
             //intake and indexer in intaking mode 
             robotData.sRTrigger = true;
-            //start delay to give time to intake
-            startDelay(1.5, robotData);
+            //start delay to give time for intake to drop
+            startDelay(.7, robotData);
             //init drive forward
-            robotData.desiredDBDist = 33;
+            robotData.desiredDBDist = 65;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
         case 1:
@@ -209,7 +408,6 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             //drive forward to grab two balls
             robotData.driveMode = driveMode_driveStraight;
             //spin up flywheel
-            robotData.sDPad = -1;
             robotData.sBBtn = true;
             //intake and indexer in intaking mode 
             robotData.sRTrigger = true;
@@ -219,15 +417,14 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             // bring intake up
             robotData.sRTrigger = false;
             //drive
-            robotData.desiredDBDist = -15;
+            robotData.desiredDBDist = -30;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
         case 4:
             robotData.driveMode = driveMode_driveStraight;
             break;
         case 5:
-            // turn
-            robotData.desiredAngleDiff = 90;
+            robotData.desiredAngleDiff = 45;
             robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initArc;
             break;
@@ -235,17 +432,14 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_arc;
             break;
         case 7:
-            robotData.desiredDBDist = -70;
+            robotData.desiredDBDist = -35;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
         case 8:
-            //spin up flywheel
-            robotData.sDPad = -1;
-            robotData.sBBtn = true;
-            // drive
             robotData.driveMode = driveMode_driveStraight;
             break;
         case 9:
+            // turn
             robotData.desiredAngleDiff = -90;
             robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initArc;
@@ -254,40 +448,126 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_arc;
             break;
         case 11:
-            //start delay and go into shooting mode
             startDelay(4.5, robotData);
             robotData.sBBtn = false; //spin up flywheel button
-            robotData.sDPad = 90; //shooting button
+            robotData.shootingMode = true; //shooting button
             robotData.driveMode = driveMode_potato;
             robotData.autonStep++;
             break;
         case 12:
-            //check delay, shoot
             checkDelay(robotData);
-            robotData.sDPad = 90;
+            robotData.shootingMode = true;
             robotData.driveMode = driveMode_potato;
             break;
+
         default:
-            // robotData.sABtn = false;
             robotData.driveMode = driveMode_potato;
             break;
         }
         break;
 
-    // used for testing
     case autonSelect_stealBallsAndShootClose:
+        // switch (robotData.autonStep)
+        // {
+        // case 0:
+        //     //spin up flywheel
+        //     robotData.sDPad = -1;
+        //     robotData.sBBtn = true;
+        //     //intake and indexer in intaking mode 
+        //     robotData.sABtn = true;
+        //     //start delay to give time to intake
+        //     startDelay(1.5, robotData);
+        //     //init drive forward
+        //     robotData.desiredDBDist = 33;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 1:
+        //     //wait for intake to come down
+        //     robotData.driveMode = driveMode_potato;
+        //     checkDelay(robotData);
+        //     break;
+        // case 2:
+        //     //drive forward to grab two balls
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     //spin up flywheel
+        //     robotData.sDPad = -1;
+        //     robotData.sBBtn = true;
+        //     //intake and indexer in intaking mode 
+        //     robotData.sABtn = true;
+        //     //move on when two balls have been collected (in encoder values)
+        //     break;
+        // case 3:
+        //     // not intaking balls anymore
+        //     robotData.sABtn = false;
+        //     //drive
+        //     robotData.desiredDBDist = -60;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 4:
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     break;
+        // case 5:
+        //     // turn
+        //     robotData.desiredAngleDiff = 90;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 6:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 7:
+        //     robotData.desiredDBDist = -70;
+        //     robotData.driveMode = driveMode_initDriveStraight;
+        //     break;
+        // case 8:
+        //     // spin up flywheel
+        //     // robotData.sDPad = -1;
+        //     robotData.sBBtn = true;
+        //     // drive
+        //     robotData.driveMode = driveMode_driveStraight;
+        //     break;
+        // case 9:
+        //     robotData.desiredAngleDiff = -90;
+        //     robotData.arcRadius = -1;
+        //     robotData.driveMode = driveMode_initArc;
+        //     break;
+        // case 10:
+        //     robotData.driveMode = driveMode_arc;
+        //     break;
+        // case 11:
+        //     //start delay and go into shooting mode
+        //     startDelay(4.5, robotData);
+        //     robotData.sBBtn = false;
+        //     robotData.sDPad = 90;
+        //     //intake in shooting mode/not collecting balls
+        //     //robotData.sABtn = false; 
+        //     robotData.driveMode = driveMode_potato;
+        //     robotData.autonStep++;
+        //     break;
+        // case 12:
+        //     //check delay, shoot
+        //     checkDelay(robotData);
+        //     robotData.sDPad = 90;
+        //     robotData.driveMode = driveMode_potato;
+        //     break;
+        
+        // default:
+        //     // robotData.sABtn = false;
+        //     robotData.driveMode = driveMode_potato;
+        //     break;
+        // }
         switch (robotData.autonStep)
         {
         case 0:
             //spin up flywheel
-            robotData.sDPad = -1;
+            robotData.shootingMode = false;
             robotData.sBBtn = true;
             //intake and indexer in intaking mode 
-            robotData.sABtn = true;
+            robotData.sRTrigger = true;
             //start delay to give time to intake
-            startDelay(1.5, robotData);
+            startDelay(1, robotData);
             //init drive forward
-            robotData.desiredDBDist = 33;
+            robotData.desiredDBDist = 25;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
         case 1:
@@ -299,69 +579,90 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             //drive forward to grab two balls
             robotData.driveMode = driveMode_driveStraight;
             //spin up flywheel
-            robotData.sDPad = -1;
             robotData.sBBtn = true;
             //intake and indexer in intaking mode 
-            robotData.sABtn = true;
+            robotData.sRTrigger = true;
             //move on when two balls have been collected (in encoder values)
             break;
         case 3:
-            // not intaking balls anymore
-            robotData.sABtn = false;
+            //turn to 45 degrees
+            robotData.desiredAngleDiff = 45 - robotData.rawAngle;
+            robotData.arcRadius = -1;
+            robotData.driveMode = driveMode_initArc;
+            break;
+        case 4:
+            robotData.driveMode = driveMode_arc;
+            break;
+        case 5:
+            //drive to intake balls
+            robotData.desiredDBDist = 10;
+            robotData.driveMode = driveMode_initDriveStraight;
+            break;
+        case 6:
+            robotData.driveMode = driveMode_driveStraight;
+            break;
+        case 7:
+            //turn to 0 degrees
+            robotData.desiredAngleDiff = 0 - robotData.rawAngle;
+            robotData.arcRadius = -1;
+            robotData.driveMode = driveMode_initArc;
+            break;
+        case 8:
+            robotData.driveMode = driveMode_arc;
+            break;
+        case 9:
+            // bring intake up
+            robotData.sRTrigger = false;
             //drive
             robotData.desiredDBDist = -60;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
-        case 4:
+        case 10:
             robotData.driveMode = driveMode_driveStraight;
             break;
-        case 5:
+        case 11:
             // turn
-            robotData.desiredAngleDiff = 90;
+            robotData.desiredAngleDiff = 90 - robotData.rawAngle;
             robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initArc;
             break;
-        case 6:
+        case 12:
             robotData.driveMode = driveMode_arc;
             break;
-        case 7:
+        case 13:
             robotData.desiredDBDist = -70;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
-        case 8:
-            // spin up flywheel
-            // robotData.sDPad = -1;
+        case 14:
+            //spin up flywheel
+            robotData.shootingMode = -1;
             robotData.sBBtn = true;
             // drive
             robotData.driveMode = driveMode_driveStraight;
             break;
-        case 9:
+        case 15:
             robotData.desiredAngleDiff = -90;
             robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initArc;
             break;
-        case 10:
+        case 16:
             robotData.driveMode = driveMode_arc;
             break;
-        case 11:
+        case 17:
             //start delay and go into shooting mode
             startDelay(4.5, robotData);
-            robotData.sBBtn = false;
-            robotData.sDPad = 90;
-            //intake in shooting mode/not collecting balls
-            //robotData.sABtn = false; 
+            robotData.sBBtn = false; //spin up flywheel button
+            robotData.shootingMode = true; //shooting button
             robotData.driveMode = driveMode_potato;
             robotData.autonStep++;
             break;
-        case 12:
+        case 18:
             //check delay, shoot
             checkDelay(robotData);
-            robotData.sDPad = 90;
+            robotData.shootingMode = true;
             robotData.driveMode = driveMode_potato;
             break;
-        
         default:
-            // robotData.sABtn = false;
             robotData.driveMode = driveMode_potato;
             break;
         }

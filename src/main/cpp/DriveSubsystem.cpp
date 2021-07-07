@@ -137,7 +137,7 @@ void DriveSubsystem::updateData(RobotData &robotData)
     
     robotData.robotTiltAngle = gyro.GetGyroAngleX();
 
-    // frc::SmartDashboard::PutNumber("robotAngle", robotData.robotAngle);
+    frc::SmartDashboard::PutNumber("CURRENT RAW ANGLE", robotData.rawAngle);
 }
 
 // driving functions:
@@ -342,12 +342,12 @@ void DriveSubsystem::turnInPlace(RobotData &robotData)
     frc::SmartDashboard::PutNumber("angleLeft", robotData.angleLeft);
 
     if (robotData.angleLeft > 1){
-        lDrive = -90 * robotData.angleLeft * robotData.sideRatio;
-        rDrive = -90 * robotData.angleLeft;
+        lDrive = -100 * robotData.angleLeft * robotData.sideRatio;
+        rDrive = -100 * robotData.angleLeft;
         wpi::outs() << "turn in place" << '\n';
     } else if (robotData.angleLeft < -1){
-        lDrive = 90 * robotData.angleLeft;
-        rDrive = 90 * robotData.angleLeft * robotData.sideRatio;
+        lDrive = 100 * robotData.angleLeft;
+        rDrive = 100 * robotData.angleLeft * robotData.sideRatio;
         wpi::outs() << "turn in place" << '\n';
     } else {
         lDrive = 0;
@@ -358,19 +358,86 @@ void DriveSubsystem::turnInPlace(RobotData &robotData)
 
 }
 
+/** 
+ *  @param angle is the CONTINUOUS angle that you want it to go to
+ * 
+ */
+
+/* void DriveSubsystem::turnToAngle(RobotData &robotData){
+    robotData.initialAngle = robotData.rawAngle;
+    robotData.arcRadius = -1;
+    robotData.sideRatio = robotData.arcRadius / (robotData.arcRadius + 2);
+
+    robotData.desiredAngleDiff = angle - robotData.initialAngle;
+
+    turnInPlace(robotData);
+
+
+
+} */
+
 void DriveSubsystem::courseCorrection(bool isForward, RobotData &robotData){
+    
+    // if you're going forward 
+        // current angle > initial - slow down left side
+        // else slow down right side
+    // else (going back)
+        // current angle > initial - slow down right side
+        // else slow down left side
 
     if(isForward){
         if(robotData.rawAngle > robotData.initialAngle){
-            lDrive *= .9;
+
+            if(robotData.rawAngle - robotData.initialAngle > 10){
+                lDrive *= .7;
+                rDrive *= 1.1;
+            } else if(robotData.rawAngle - robotData.initialAngle > 5){
+                lDrive *= .8;
+                rDrive *= 1.05;
+            } else if (robotData.rawAngle - robotData.initialAngle > 2){
+                lDrive *= .8;
+            } else {
+                lDrive *= .9;
+            }
         } else if (robotData.rawAngle < robotData.initialAngle) {
-            rDrive *= .9;
+            if(robotData.initialAngle - robotData.rawAngle > 10){
+                rDrive *= .7;
+                lDrive *= 1.1;
+            } else if(robotData.rawAngle - robotData.initialAngle > 5){
+                rDrive *= .8;
+                lDrive *= 1.05;
+            } else if (robotData.rawAngle - robotData.initialAngle > 2){
+                rDrive *= .8;
+            } else {
+                rDrive *= .9;
+            }
         }
     } else {
         if(robotData.rawAngle > robotData.initialAngle){
-            rDrive *= .9;
+
+            if(robotData.rawAngle - robotData.initialAngle > 10){
+                rDrive *= .7;
+                lDrive *= 1.1;
+            } else if(robotData.rawAngle - robotData.initialAngle > 5){
+                rDrive *= .8;
+                lDrive *= 1.05;
+            } else if (robotData.rawAngle - robotData.initialAngle > 2){
+                rDrive *= .8;
+            } else {
+                rDrive *= .9;
+            }
         } else if (robotData.rawAngle < robotData.initialAngle) {
-            lDrive *= .9;
+            if(robotData.initialAngle - robotData.rawAngle > 10){
+                lDrive *= .7;
+                rDrive *= 1.1;
+            } else if(robotData.rawAngle - robotData.initialAngle > 5){
+                lDrive *= .8;
+                rDrive *= 1.05;
+            } else if (robotData.rawAngle - robotData.initialAngle > 2){
+                lDrive *= .8;
+            } else {
+                lDrive *= .9;
+            }
         }
     }
 

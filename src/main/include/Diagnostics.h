@@ -37,15 +37,22 @@ struct DiagnosticsData
     // compressor
     bool
         compEnabled{false},
-        compPressureSwitchVal{false},
-        compCurrent{false},
+        compPressureSwitchVal{false};
 
+    double compCurrent{-1.0};
+
+    bool
         compCurrentHighFault{false},
         compShortedFault{false},
         compNotConnectedFault{false};
 
     // solenoids
-    bool solenoidOneValue{false};
+    bool
+        solenoidOneValue{false},
+        solenoidArmL{false},
+        solenoidArmR{false},
+        solenoidLockL{false},
+        solenoidLockR{false};
 
     // limit switches
     bool turretLSwitch{false}, hoodLSwitch{false};

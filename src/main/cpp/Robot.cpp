@@ -8,7 +8,7 @@ void Robot::RobotInit()
     indexer.Init();
     shooter.Init();
     limelight.Init();
-    // diagnostics.LogInit();
+    diagnostics.LogInit();
     controlpanel.Init();
     climb.Init();
 
@@ -26,9 +26,7 @@ void Robot::RobotPeriodic(){
         limelight.Periodic(robotData);
         // diagnostics.LogPeriodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
-        shooter.Periodic(robotData, diagnosticsData);
-    
-        climb.Periodic(robotData);
+        climb.Periodic(robotData, diagnosticsData);
         
     }
 }
@@ -43,7 +41,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
         wpi::outs() << "running auton";
-        auton.Periodic(autonSelect_trenchRun, robotData);
+        auton.Periodic(autonSelect_stealBallsAndShootFar, robotData);
     }
 }
 

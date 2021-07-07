@@ -41,6 +41,7 @@ class DriveSubsystem {
         void initArc(RobotData &robotData);
         void arc(RobotData &robotData); // DOES NOT WORK
         void turnInPlace(RobotData &robotData);
+        void turnToAngle(RobotData &robotData);
 
         void courseCorrection(bool isForward, RobotData &robotData); //ACTUAL course correction
         
