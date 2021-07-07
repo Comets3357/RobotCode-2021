@@ -75,9 +75,9 @@ int Controller::roughShooting(){
 
 int Controller::roughHood(){
     static int pow = 0;
-    if(secondary.GetPOV(0) == 0){
+    if(secondary.GetPOV(0) == 180){
         pow += 1;
-    }else if(secondary.GetPOV(0) == 180){
+    }else if(secondary.GetPOV(0) == 0){
         pow -= 1;
     }
     return pow;
@@ -149,27 +149,27 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.pXBtn = getButton(0,3);
     robotData.pYBtn = getButton(0,4);
 
-    robotData.pLBumper = getButton(0, 5); // controls indexer in auto
-    robotData.pRBumper = getButton(0, 6); // manual
+    robotData.pLBumper = getButton(0, 5); 
+    robotData.pRBumper = getButton(0, 6); 
 
     //secondary controls 
         // indexes are NOT all right yet
     //robotData.sLCenterBtn = getAxis(1, 8); //only used within controller class
-    robotData.sDPad = getPOV(1, 0); //secondaryPOVArrayInput in auto
+    robotData.sDPad = getPOV(1, 0); 
 
-    robotData.sLYStick = -getAxis(1, 1); //turret control in auto
-    robotData.sRYStick = -getAxis(1, 5); //turret control in auto
+    robotData.sLYStick = -getAxis(1, 1); 
+    robotData.sRYStick = -getAxis(1, 5); 
 
-    robotData.sLTrigger = getAxis(1, 2); //manual
-    robotData.sRTrigger = getAxis(1, 3); // manual
+    robotData.sLTrigger = getAxis(1, 2); 
+    robotData.sRTrigger = getAxis(1, 3); 
 
 
-    robotData.sABtn = getButton(1, 1); //controls omni wheel indexer in auto
-    robotData.sBBtn = getButton (1, 2); // controls intake in auto
-    robotData.sXBtn = getButton(1, 3); // controls  intake in auto
-    robotData.sYBtn = getButton(1, 4); // controls intake in auto
-    robotData.sLBumper = getButton(1, 5); // controls indexer in auto
-    robotData.sRBumper = getButton(1, 6); // manual
+    robotData.sABtn = getButton(1, 1); 
+    robotData.sBBtn = getButton (1, 2); 
+    robotData.sXBtn = getButton(1, 3); 
+    robotData.sYBtn = getButton(1, 4); 
+    robotData.sLBumper = getButton(1, 5); 
+    robotData.sRBumper = getButton(1, 6); 
 
     robotData.roughAim = roughShooting();
     robotData.roughHood = roughHood();
