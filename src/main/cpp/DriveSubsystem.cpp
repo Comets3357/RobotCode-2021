@@ -123,8 +123,8 @@ void DriveSubsystem::updateData(RobotData &robotData)
     //add negative sign for comp bot, remove for test db
     // robotData.rawAngle = gyro.GetAngle();
     // double tempRobotAngle = gyro.GetAngle();
-    robotData.rawAngle = gyro.GetGyroAngleZ();
-    double tempRobotAngle = gyro.GetGyroAngleZ();
+    robotData.rawAngle = -gyro.GetGyroAngleZ();
+    double tempRobotAngle = -gyro.GetGyroAngleZ();
 
     //calculates the non continuous angle
     while(tempRobotAngle >= 360){
@@ -145,9 +145,13 @@ void DriveSubsystem::updateData(RobotData &robotData)
 // adjusts for the deadzone and converts joystick input to velocity values for PID
 void DriveSubsystem::teleopControl(RobotData &robotData)
 {
+    // converts from tank to arcade drive
     double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
     double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
 
+    // we may use arcarde drive for something in the future
+
+    // converts from arcade back to tank drive
     robotData.Rdrive = (frontBack + leftRight);
     robotData.Ldrive = (frontBack - leftRight);
     
