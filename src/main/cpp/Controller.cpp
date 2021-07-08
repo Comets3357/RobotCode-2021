@@ -46,6 +46,9 @@ void Controller::Periodic(RobotData &robotData){
     frc::SmartDashboard::PutBoolean("Manual mode", robotData.manualMode);
 }
 
+/**
+ * allows more button options and control
+ */
 bool Controller::getShiftFactor(){
     if(secondary.GetRawButton(5)){
         return true;
@@ -53,6 +56,7 @@ bool Controller::getShiftFactor(){
         return false;
     }
 }
+
 
 bool Controller::shootingMode(int pov){
     //probably definitely wrong pov button index
@@ -63,6 +67,10 @@ bool Controller::shootingMode(int pov){
     }
 }
 
+/**
+ * uses left and right POV input
+ * @return moves the turret a little to the left or right in order for the limelight to see the target
+ */
 int Controller::roughShooting(){
     if(secondary.GetPOV(0) == 90){
         return 1;
@@ -73,6 +81,10 @@ int Controller::roughShooting(){
     }
 }
 
+/**
+ * uses up and down POV input
+ * @return the offset of the hood based on controller input 
+ */
 int Controller::roughHood(){
     static int pow = 0;
     if(secondary.GetPOV(0) == 180){
@@ -124,13 +136,12 @@ double Controller::getAxis(int js, int index){
 }
 
 void Controller::updateTeleopData(RobotData &robotData){
+
+    //modes
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
     robotData.shootingMode = shootingMode(robotData.shootingBtn);
     climbMode(robotData);
-
-
-
 
     //used for driving
     if(frc::DriverStation::GetInstance().GetJoystickName(0) == "FrSky Taranis Joystick"){
@@ -141,9 +152,7 @@ void Controller::updateTeleopData(RobotData &robotData){
         robotData.pRYStick = -getAxis(0, 5);
     }
     
-
-
-
+    //primary button control
     robotData.pABtn = getButton(0,1);
     robotData.pBBtn = getButton(0,2);
     robotData.pXBtn = getButton(0,3);
@@ -171,6 +180,7 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.sLBumper = getButton(1, 5); 
     robotData.sRBumper = getButton(1, 6); 
 
+    //shooting 
     robotData.roughAim = roughShooting();
     robotData.roughHood = roughHood();
 

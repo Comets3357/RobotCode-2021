@@ -98,10 +98,10 @@ struct RobotData
     double turretPosition;
     double flywheelVelocity;
     static const int shootingBtn = 0;
-    int targetVelocity = 0;
+    int targetVelocity = 0; //changes based on where the robot is located (close to target or far)
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
-    int roughAim;
-    int roughHood;
+    int roughAim; //turret offset
+    int roughHood; //hood up and down through controller input
 
     //drive base
     double Ldrive;
