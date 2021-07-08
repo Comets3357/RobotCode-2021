@@ -23,6 +23,10 @@ class ClimbSubsystem {
 
         int timer;
 
+        bool movingLeft = false;
+
+        bool lockToggle = true;
+
     private:
 
         void semiAutoMode(RobotData &robotData);
@@ -46,8 +50,8 @@ class ClimbSubsystem {
         frc::Solenoid solenoidArmR{1};
         frc::Solenoid solenoidArmL{3};
 
-        frc::Solenoid solenoidLockR{4};
-        frc::Solenoid solenoidLockL{2};
+        frc::Solenoid solenoidLockR{2};
+        frc::Solenoid solenoidLockL{4};
 
         frc::ADIS16448_IMU imu{};
 };

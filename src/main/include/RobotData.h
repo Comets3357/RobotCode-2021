@@ -9,6 +9,7 @@ struct RobotData
     bool manualMode;
     int shift;
     bool shootingMode;
+    bool climbMode = true;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
     //primary
