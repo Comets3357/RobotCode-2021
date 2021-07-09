@@ -165,8 +165,6 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
             }
 
-            
-
             robotData.readyShoot = false;
 
             //zeros the hood after
