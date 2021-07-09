@@ -105,6 +105,9 @@ struct RobotData
     double Ldrive;
     double Rdrive;
 
+    double LdriveVel;
+    double RdriveVel;
+
 
     //limelight data
     double xOffset;
