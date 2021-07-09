@@ -113,23 +113,10 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
             }
 
         }
-        
-        
-
-        // if (getHoodPos() > 12.5){
-        //     setHood(-0.15);
-        // } else if (getHoodPos() < 10.5){
-        //     setHood(0.15);
-        // } else {
-        //     setHood(0);
-        // }
-
-        if(getHoodPos() < robotData.calcHoodPos-2){
-            setHood(0.1);
-        }else if(getHoodPos() > robotData.calcHoodPos+2){
-            setHood(-0.1);
-        }else{
-            setHood(0);
+        if (shooterWheelMPOS.GetVelocity() > 2900 && shooterWheelMPOS.GetVelocity() < 3150){
+            index.setIndexerBelt(0.3);
+        } else{
+            //index.setIndexerBelt(0);
         }
 
         if(robotData.xOffset > 5 ){
@@ -148,7 +135,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
         } else if (getWheelVel() > 1750){
             setWheel(0.77);
         } else{
-            setWheel(0.83);
+            //index.setIndexerBelt(0);
         }
 
 
