@@ -3,14 +3,13 @@
 // auton mode
 enum AutonSelect
 {
-    autonSelect_potato, //0
-    autonSelect_exitInitLine, //1
-    autonSelect_shootAndDrive, //2
-    autonSelect_shootAndCollectBalls, // pretty much the same as trench run //3
-    autonSelect_trenchRun, //4
-    autonSelect_stealBallsAndShootFar, //5
-    autonSelect_stealBallsAndShootClose, //6
-    autonSelect_goofy // temporary //7
+    autonSelect_potato,
+    autonSelect_exitInitLine,
+    autonSelect_shootAndDrive,
+    autonSelect_shootAndCollectBalls, // pretty much the same as trench run
+    autonSelect_trenchRun,
+    autonSelect_stealBallsAndShoot,
+    autonSelect_goofy // temporary
 };
 
 // this is for drivebase auton
@@ -37,6 +36,7 @@ struct RobotData
     bool shift; //shift for more button options
     bool shootingMode;
     bool climbMode = false;
+    bool limelightOn;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
 
@@ -99,7 +99,6 @@ struct RobotData
     static const int shootingBtn = 0;
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
-    int roughAim;
 
     //drive base
     double Ldrive;
@@ -115,7 +114,6 @@ struct RobotData
     int targetValue;
     double calcHoodPos;
     bool validTarget;
-    bool isZero = false;
     double calcTurretPos;
     int pipeline; //for LED power
 
@@ -124,7 +122,6 @@ struct RobotData
     double rawAngle;
     double robotAngle; // mod by 360
     double robotTiltAngle;
-    double robotYAngle;
 
 
     double angleLeft;
@@ -148,6 +145,9 @@ struct RobotData
     double currentLDBPos;
     double currentRDBPos;
     // prolly wanna check the other two encoders
+
+    //climb
+    bool climbZeroing = true;
 
 
     

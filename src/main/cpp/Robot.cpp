@@ -19,6 +19,7 @@ void Robot::RobotInit()
 void Robot::RobotPeriodic(){
     if (!IsDisabled()) {
         db.Periodic(robotData, diagnosticsData);
+        
         intake.Periodic(robotData, diagnosticsData);
         indexer.Periodic(robotData, diagnosticsData);
         shooter.Periodic(robotData, diagnosticsData);

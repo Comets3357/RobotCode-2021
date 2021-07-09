@@ -18,10 +18,15 @@ void IntakeSubsystem::Init(){
 
 void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     //decide if in manual mode or auto mode
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setIntakeRollers(0);
+        setPiston(false);
     }
 
     updateDiagnostics(diagnosticsData);
@@ -33,17 +38,17 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
     double averageDBVel = ((robotData.LdriveVel + robotData.RdriveVel) / 2);
 
     //sets the speed of the intake roller based on how fast the robot is driving 
-    double pow = -0.9;
-    if(averageDBVel > 3500){
+    double pow = -1;
+    if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
+        pow = -1;
+    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
         pow = -0.9;
-    }else if(averageDBVel > 2800){
+    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.5){
         pow = -0.8;
-    }else if(averageDBVel > 2100){
+    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
         pow = -0.7;
-    }else if(averageDBVel > 1000){
-        pow = -0.6;
     }else{
-        pow = -0.5;
+        pow = -0.6;
     }
 
     frc::SmartDashboard::PutNumber("speed", pow);
@@ -68,17 +73,17 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 void IntakeSubsystem::manualMode(RobotData &robotData){
 
     //sets the speed of the intake roller based on how fast the robot is driving 
-    double pow = -0.4;
+    double pow = -1;
     if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
-        pow = -0.8;
+        pow = -1;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
-        pow = -0.7;
+        pow = -0.9;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.5){
-        pow = -0.6;
+        pow = -0.8;
     }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
-        pow = -0.5;
+        pow = -0.7;
     }else{
-        pow = -0.4;
+        pow = -0.6;
     }
 
     //if shift trigger run intake rollers opposite with trigger power
@@ -91,16 +96,13 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
 
     //else trigger controls roller power
     }else{
-        setIntakeRollers(robotData.sRTrigger);
+        setIntakeRollers(-robotData.sRTrigger);
 
         //r bumper controls pistons
         if(robotData.sRBumper){ 
             setPiston(!getPiston());
         }
     }
-    
-   
-
 }
 
 /**
@@ -131,8 +133,6 @@ void IntakeSubsystem::Disabled(){
     setIntakeRollers(0);
     setPiston(false);
 }
-
-
 
 void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 {

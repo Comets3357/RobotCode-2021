@@ -14,11 +14,17 @@ void IndexerSubsystem::Init(){
 
 
 void IndexerSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setOmniWheel(0);
+        setCenterSpindle(0);
     }
+    
 
     updateDiagnostics(diagnosticsData);
 
@@ -62,14 +68,12 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
 void IndexerSubsystem::manualMode(RobotData &robotData){
     //if you're using the shift button reverse the indexer
     if(robotData.shift){
-        if(robotData.sLTrigger){
-            setCenterSpindle(-robotData.sRTrigger);
-            setOmniWheel(robotData.sRTrigger);
-
-        }else if(robotData.sABtn){ //takes ball out of shooter?
+        if(robotData.sABtn){
             setCenterSpindle(-0.2);
             setOmniWheel(-0.2);
-
+        }else if(robotData.sLTrigger){ //takes ball out of shooter?
+            setCenterSpindle(-robotData.sLTrigger);
+            setOmniWheel(robotData.sLTrigger); 
         }else{
             setOmniWheel(0);
             setCenterSpindle(0);
@@ -100,7 +104,7 @@ double IndexerSubsystem::getSpinnerVel(){
 void IndexerSubsystem::Disabled(){
     setOmniWheel(0);
     setCenterSpindle(0);
-    
+
 }
 
 

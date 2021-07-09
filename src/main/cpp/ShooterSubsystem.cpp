@@ -75,10 +75,16 @@ void ShooterSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosti
 
     updateData(robotData);
 
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setHood(0);
+        setTurret(0);
+        setWheel(0);
     }
 
     updateDiagnostics(diagnosticsData);
@@ -98,6 +104,8 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     frc::SmartDashboard::PutNumber("x", robotData.xOffset);
     frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
     frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
+    frc::SmartDashboard::PutNumber("calc hood", robotData.calcHoodPos);
+
     frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
     frc::SmartDashboard::PutBoolean("turret limit", getTurretLimitSwitch());
 
@@ -176,6 +184,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
 
     }
+    
 
     
 
@@ -189,16 +198,10 @@ void ShooterSubsystem::manualMode(RobotData &robotData){
     setTurret(robotData.sLYStick*.1);
 
     if(robotData.sBBtn){
-        //zeros hood using limitswitch
-        // setHood(-0.1);     
-        // if(getHoodLimitSwitch()){
-        //     setHoodPos(0);
-        //     setHood(0);
-        // }
-
         //spins the flywheel up beforehand
         shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
     }else{
+        setWheel(0);
         setHood(robotData.sRYStick*.1);
     }
 
@@ -242,6 +245,8 @@ void ShooterSubsystem::setWheel(double power){
 double ShooterSubsystem::getWheelVel(){
     return shooterWheelMPOS.GetVelocity();
 }
+
+
 
 
 
