@@ -2,6 +2,7 @@
 
 #include <rev/CANSparkMax.h>
 #include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
 #include <adi/ADIS16448_IMU.h>
 
 #include "RobotData.h"
@@ -49,7 +50,7 @@ class ClimbSubsystem {
         rev::CANEncoder climbArmLPos = climbArmL.GetEncoder();
 
         // Change CAN IDs
-        frc::Solenoid solenoidArm{1};
+        frc::DoubleSolenoid solenoidArm{3,1};
 
         frc::Solenoid solenoidLockR{2};
         frc::Solenoid solenoidLockL{4};

@@ -115,11 +115,11 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
         setTurretPos(0);
         robotData.isZero = true;
     }else if(!robotData.isZero){
-        setTurret(0.1);
+        setTurret(-0.1);
     }else if(robotData.isZero){
         //set the turret to face forward
         //adding the two left/right pov buttons to turn the turret left/right
-        shooterTurretPID.SetReference(-9.25 + (robotData.roughAim*4.5), rev::ControlType::kPosition);
+        shooterTurretPID.SetReference(6 + (robotData.roughAim*4.5), rev::ControlType::kPosition);
 
         if (robotData.shootingMode){ 
             turretSnapshot = getTurretPos();

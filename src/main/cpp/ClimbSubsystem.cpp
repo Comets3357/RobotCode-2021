@@ -110,47 +110,54 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
 
     //manualMode(robotData);
 
-    if (!robotData.climbZeroing){
-        
-        if(robotData.manualMode){
-            if (robotData.climbMode){
-                startingPhase = 0;
-                climbArmL.Set(0);
-                climbArmR.Set(0);
-                manualMode(robotData);
-            }
-        } else {
-            if (robotData.climbMode){
-                semiAutoMode(robotData);
-            }
-        }
-    } else {
-        zeroLoop += 1;
-        if (robotData.sXBtn){
-            climbArmLPos.SetPosition(0);
-            climbArmRPos.SetPosition(0);
-            solenoidLockL.Set(false);
-            solenoidLockR.Set(false);
-            solenoidArm.Set(true);
-            robotData.climbZeroing = false;
-        }
-        climbArmL.Set(0.1);
-        climbArmR.Set(0.1);
-        if (!climbArmLLimit.Get()) {
-            climbArmL.Set(0);
-        }
-        if (climbArmRLimit.Get()) {
-            climbArmR.Set(0);
-        }
-        if ((!climbArmLLimit.Get() && climbArmRLimit.Get()) || zeroLoop > 75) {
-            climbArmLPos.SetPosition(0);
-            climbArmRPos.SetPosition(0);
-            solenoidLockL.Set(false);
-            solenoidLockR.Set(false);
-            solenoidArm.Set(true);
-            robotData.climbZeroing = false;
-        }
+    if (robotData.sBBtn) {
+        solenoidArm.Set(solenoidArm.kForward);
     }
+    if (robotData.sABtn) {
+        solenoidArm.Set(solenoidArm.kReverse);
+    }
+
+    // if (!robotData.climbZeroing){
+        
+    //     if(robotData.manualMode){
+    //         if (robotData.climbMode){
+    //             startingPhase = 0;
+    //             climbArmL.Set(0);
+    //             climbArmR.Set(0);
+    //             manualMode(robotData);
+    //         }
+    //     } else {
+    //         if (robotData.climbMode){
+    //             semiAutoMode(robotData);
+    //         }
+    //     }
+    // } else {
+    //     zeroLoop += 1;
+    //     if (robotData.sXBtn){
+    //         climbArmLPos.SetPosition(0);
+    //         climbArmRPos.SetPosition(0);
+    //         solenoidLockL.Set(false);
+    //         solenoidLockR.Set(false);
+    //         solenoidArm.Set(solenoidArm.kForward);
+    //         robotData.climbZeroing = false;
+    //     }
+    //     climbArmL.Set(0.1);
+    //     climbArmR.Set(0.1);
+    //     if (!climbArmLLimit.Get()) {
+    //         climbArmL.Set(0);
+    //     }
+    //     if (climbArmRLimit.Get()) {
+    //         climbArmR.Set(0);
+    //     }
+    //     if ((!climbArmLLimit.Get() && climbArmRLimit.Get()) || zeroLoop > 75) {
+    //         climbArmLPos.SetPosition(0);
+    //         climbArmRPos.SetPosition(0);
+    //         solenoidLockL.Set(false);
+    //         solenoidLockR.Set(false);
+    //         solenoidArm.Set(solenoidArm.kForward);
+    //         robotData.climbZeroing = false;
+    //     }
+    // }
 }
 
 void ClimbSubsystem::manualMode(RobotData &robotData){
@@ -187,9 +194,9 @@ void ClimbSubsystem::manualMode(RobotData &robotData){
     }
 
     if (climbArmLPos.GetPosition() < -10 || climbArmRPos.GetPosition() < -10) {
-        solenoidArm.Set(false);
+        solenoidArm.Set(solenoidArm.kReverse);
     } else {
-        solenoidArm.Set(true);
+        solenoidArm.Set(solenoidArm.kForward);
     }
 }
 
@@ -212,7 +219,7 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
         climbArmL.Set(0.2);
         if (timer > 20){
             if (climbArmRPos.GetPosition() > -72 || climbArmLPos.GetPosition() > -72) {//i dont know the exact numbers yet
-                solenoidArm.Set(false);
+                solenoidArm.Set(solenoidArm.kReverse);
                 if (climbArmRPos.GetPosition() > -72) {
                     climbArmR.Set(-0.3);
                 } else {
@@ -247,7 +254,7 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
         } else {
             climbArmR.Set(0);
             climbArmL.Set(0);
-            solenoidArm.Set(true);
+            solenoidArm.Set(solenoidArm.kForward);
             initiated = false;
             initiationRunning = false;
             timer = 0;

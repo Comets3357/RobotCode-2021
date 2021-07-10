@@ -36,7 +36,7 @@ struct RobotData
     bool manualMode = false;
     bool shift; //shift for more button options
     bool shootingMode;
-    bool climbMode = false;
+    bool climbMode = true;
     bool limelightOn;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
