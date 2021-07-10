@@ -112,10 +112,24 @@ void DriveSubsystem::Disabled()
 // updates encoder and gyro values
 void DriveSubsystem::updateData(RobotData &robotData)
 {
+    // converts from tank to arcade drive
+    double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
+    double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
+
+    // we may use arcarde drive for something in the future
+
+    // converts from arcade back to tank drive
+    robotData.Rdrive = (frontBack + leftRight);
+    robotData.Ldrive = (frontBack - leftRight);
+
+
+
     //add back wheel encoders at some point
     robotData.currentRDBPos = dbRMEncoder.GetPosition();
     robotData.currentLDBPos = dbLMEncoder.GetPosition();
 
+    robotData.LdriveVel = dbRMEncoder.GetVelocity();
+    robotData.RdriveVel = dbLMEncoder.GetVelocity();
 
     // gyro.SetYawAxis(frc::ADIS16448_IMU::IMUAxis::kZ);
 
@@ -123,8 +137,8 @@ void DriveSubsystem::updateData(RobotData &robotData)
     //add negative sign for comp bot, remove for test db
     // robotData.rawAngle = gyro.GetAngle();
     // double tempRobotAngle = gyro.GetAngle();
-    robotData.rawAngle = gyro.GetGyroAngleZ();
-    double tempRobotAngle = gyro.GetGyroAngleZ();
+    robotData.rawAngle = -gyro.GetGyroAngleZ();
+    double tempRobotAngle = -gyro.GetGyroAngleZ();
 
     //calculates the non continuous angle
     while(tempRobotAngle >= 360){
@@ -145,11 +159,9 @@ void DriveSubsystem::updateData(RobotData &robotData)
 // adjusts for the deadzone and converts joystick input to velocity values for PID
 void DriveSubsystem::teleopControl(RobotData &robotData)
 {
+    // converts from tank to arcade drive
     double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
     double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
-
-    robotData.Rdrive = (frontBack + leftRight);
-    robotData.Ldrive = (frontBack - leftRight);
     
     //deadzone NOT needed for drone controller
     if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
@@ -242,7 +254,11 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
                 lDrive = lDistLeft * 170;
             } else {
                 lDrive = 5000;
-            } 
+            }
+            if (lDrive < 200)
+            {
+                lDrive = 200;
+            }
         } else {
             lDrive = 0;
         }
@@ -253,6 +269,10 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
             } else {
                 rDrive = 5000;
             } 
+            if (rDrive < 200)
+            {
+                rDrive = 200;
+            }
         } else {
             rDrive = 0;
         }
@@ -269,6 +289,10 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
             } else {
                 lDrive = -5000;
             } 
+            if (lDrive > -200)
+            {
+                lDrive = -200;
+            }
         } else {
             lDrive = 0;
         }
@@ -278,7 +302,11 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
                 rDrive = rDistLeft * 170;
             } else {
                 rDrive = -5000;
-            } 
+            }
+            if (rDrive > -200)
+            {
+                rDrive = -200;
+            }
         } else {
             rDrive = 0;
         }
@@ -384,6 +412,9 @@ void DriveSubsystem::courseCorrection(bool isForward, RobotData &robotData){
     // else (going back)
         // current angle > initial - slow down right side
         // else slow down left side
+
+    frc::SmartDashboard::PutNumber("rawAngle", robotData.rawAngle);
+    frc::SmartDashboard::PutNumber("intiialAngle", robotData.initialAngle);
 
     if(isForward){
         if(robotData.rawAngle > robotData.initialAngle){

@@ -29,6 +29,8 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
     // frc::SmartDashboard::PutNumber("desired angle", robotData.desiredAngleDiff);
     // frc::SmartDashboard::PutNumber("initial angle", robotData.initialAngle);
 
+    robotData.manualMode = false;
+    robotData.sLTrigger = false;
 
     switch (autonSelect)
     {
@@ -59,7 +61,6 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         switch (robotData.autonStep)
         {
         case 0:
-            robotData.manualMode = false;
             startDelay(4.5, robotData);
             robotData.shootingMode = true;
             robotData.driveMode = driveMode_potato;
@@ -126,16 +127,19 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
 
     //has not been tested with balls
     case autonSelect_trenchRun:
+
+        robotData.sBBtn = true;
+
         switch (robotData.autonStep)
         {
         case 0:
             //spin up flywheel
             robotData.shootingMode = false;
             robotData.sBBtn = true;
-            //intake and indexer in intaking mode 
+            //intake and indexer in intaking mode
             robotData.sRTrigger = true;
             //start delay to give time to intake
-            startDelay(1.5, robotData);
+            // startDelay(1, robotData);
             //init drive forward
             robotData.desiredDBDist = 50;
             robotData.driveMode = driveMode_initDriveStraight;
@@ -143,22 +147,23 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         case 1:
             //wait for intake to come down
             robotData.driveMode = driveMode_potato;
-            checkDelay(robotData);
+            // checkDelay(robotData);
+            robotData.autonStep++;  // gonna remove delay if possible
             break;
         case 2:
             //drive forward
             robotData.driveMode = driveMode_driveStraight;
             //spin up flywheel
-            robotData.sBBtn = true;
             //intake and indexer in intaking mode 
             robotData.sRTrigger = true;
             //move on when two balls have been collected (in encoder values)
+            // starts shooting when almost at stop
+            checkEarlyShooting(robotData);
             break;
         case 3:
             //start delay and go into shooting mode
-            startDelay(4.5, robotData);
+            startDelay(3.5, robotData);
             robotData.shootingMode = true;
-            robotData.sBBtn = false;
             //intake in shooting mode/not collecting balls
             robotData.sRTrigger = false; 
             robotData.driveMode = driveMode_potato;
@@ -175,7 +180,7 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.shootingMode = false;
             robotData.sRTrigger = true;
             //wait for intake to come down 
-            startDelay(1.5, robotData);
+            startDelay(0.25, robotData);
             robotData.desiredDBDist = 40;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
@@ -186,7 +191,29 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
         case 7:
             robotData.driveMode = driveMode_driveStraight;
             break;
-        
+        case 8:
+            // drive back from under control panel
+            robotData.desiredDBDist = -40;
+            robotData.driveMode = driveMode_initDriveStraight;
+            break;
+        case 9:
+            robotData.driveMode = driveMode_driveStraight;
+            // not shooting early so we don't clip cp with hood
+            // checkEarlyShooting(robotData);
+            // so we fire up flywheel
+            startDelay(3.5, robotData);
+            break;
+        case 10:
+            robotData.shootingMode = true;
+            robotData.driveMode = driveMode_potato;
+            checkDelay(robotData);
+            break;
+        case 11:
+            robotData.shootingMode = false;
+            robotData.driveMode = driveMode_potato;
+            robotData.sBBtn = false;
+            robotData.autonStep++;
+
         default:
             // robotData.sABtn = false;
             robotData.driveMode = driveMode_potato;
@@ -736,4 +763,17 @@ void Auton::checkDelay(RobotData &robotData)
         robotData.autonStep++;
     }
     
+}
+
+// checks to see if db moving slowly enough to start up shooting
+void Auton::checkEarlyShooting(RobotData &robotData)
+{
+    if (((robotData.Ldrive + robotData.Rdrive) / 2) < 1600)
+    {
+        robotData.shootingMode = true;
+    }
+    else
+    {
+        robotData.shootingMode = false;
+    }
 }
