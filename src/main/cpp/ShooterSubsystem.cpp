@@ -317,8 +317,8 @@ void ShooterSubsystem::setShooterPID(rev::CANPIDController motor, int pidSlot, d
 
 }
 
-// void ShooterSubsystem::Disabled(){
-//     setHood(0);
-//     setTurret(0);
-//     setWheel(0);
-// }
+void ShooterSubsystem::DisabledInit(){
+    setHood(0);
+    setTurret(0);
+    setWheel(0);
+}

@@ -99,7 +99,7 @@ void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostics
     //updateDiagnostics(diagnosticsData);
 }
 
-void DriveSubsystem::Disabled()
+void DriveSubsystem::DisabledInit()
 {
     dbLM.Set(0);
     dbRM.Set(0);

@@ -16,7 +16,7 @@ class DriveSubsystem {
     public: 
         void Init();
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
-        void Disabled();
+        void DisabledInit();
 
     private:
 

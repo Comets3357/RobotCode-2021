@@ -31,8 +31,6 @@
 class Robot : public frc::TimedRobot {
 
   public:
-      bool manualMode = false;
-
       void RobotInit() override;
       void RobotPeriodic() override;
       void AutonomousInit() override;
@@ -69,9 +67,7 @@ class Robot : public frc::TimedRobot {
 
 };
 
-//Notes:
-//GetRawButton and GetRawButtonPressed are not the same
-//button index starts at 1
+
 
 
 

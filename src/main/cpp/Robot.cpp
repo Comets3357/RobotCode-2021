@@ -34,33 +34,30 @@ void Robot::RobotPeriodic(){
 
 void Robot::AutonomousInit()
 {
-    // auton.Init(robotData);
     auton.AutonomousInit(robotData);
-    wpi::outs() << "auton init";
-    frc::SmartDashboard::PutNumber("this is the auton", robotData.autonSelect);
+    // wpi::outs() << "auton init";
+    // frc::SmartDashboard::PutNumber("this is the auton", robotData.autonSelect);
     
 }
 
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
-        wpi::outs() << "running auton";
-        auton.Periodic(robotData.autonSelect, robotData);
-        // auton.Periodic(autonSelect_stealBallsAndShootFar, robotData);
+        // wpi::outs() << "running auton";
+        auton.AutonomousPeriodic(robotData.autonSelect, robotData);
     }
 }
 
 void Robot::TeleopPeriodic()
 {
-    control.Periodic(robotData);
-    robotData.driveMode = driveMode_teleop;
+    control.TeleopPeriodic(robotData);
 }
 
 void Robot::DisabledInit()
 {
-    db.Disabled();
-    indexer.Disabled();
-    intake.Disabled();
-    // shooter.Disabled();
+    db.DisabledInit();
+    indexer.DisabledInit();
+    intake.DisabledInit();
+    shooter.DisabledInit();
 }
 
 void Robot::TestInit()

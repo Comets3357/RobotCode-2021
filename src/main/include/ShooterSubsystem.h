@@ -13,7 +13,7 @@ class ShooterSubsystem {
     public:
 
         void Init();
-        void Disabled();
+        void DisabledInit();
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
         
 

@@ -16,7 +16,7 @@ void Auton::Init(RobotData &robotData)
     
 }
 
-void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
+void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
 {
     
 

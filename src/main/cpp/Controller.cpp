@@ -4,6 +4,10 @@
 #include <frc/DriverStation.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+//Notes:
+//GetRawButton and GetRawButtonPressed are not the same
+//button index starts at 1
+
 void Controller::Init(RobotData &robotData){
 
     //stuff for auton
@@ -36,14 +40,13 @@ void Controller::Init(RobotData &robotData){
     
 }
 
-void Controller::Auton(RobotData &robotData){
-}
 
 
 
-void Controller::Periodic(RobotData &robotData){
+void Controller::TeleopPeriodic(RobotData &robotData){
     updateTeleopData(robotData);
     frc::SmartDashboard::PutBoolean("Manual mode", robotData.manualMode);
+    robotData.driveMode = driveMode_teleop;
 }
 
 /**
@@ -58,8 +61,7 @@ bool Controller::getShiftFactor(){
 }
 
 
-bool Controller::shootingMode(int pov){
-    //probably definitely wrong pov button index
+bool Controller::shootingMode(){
     if(secondary.GetRawButton(3)){
         return true;
     }else{
@@ -104,6 +106,7 @@ bool Controller::climbMode(RobotData &robotData){
 }
 
 bool Controller::getManual(){
+    // checks if unique press
     if (secondary.GetRawButtonPressed(8)){
         inManualMode = !inManualMode;
     }
@@ -140,7 +143,7 @@ void Controller::updateTeleopData(RobotData &robotData){
     //modes
     robotData.manualMode = getManual();
     robotData.shift = getShiftFactor();
-    robotData.shootingMode = shootingMode(robotData.shootingBtn);
+    robotData.shootingMode = shootingMode();
     climbMode(robotData);
 
     //used for driving

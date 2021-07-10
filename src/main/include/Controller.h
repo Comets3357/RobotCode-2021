@@ -2,7 +2,6 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
-#include <frc/Timer.h>
 #include "RobotData.h"
 #include <frc/DriverStation.h>
 
@@ -11,9 +10,8 @@ class Controller {
     
 public:
 
-    void Periodic(RobotData &robotData);
+    void TeleopPeriodic(RobotData &robotData);
     void Init(RobotData &robotData);
-    void Auton(RobotData &robotData);
 
 private:
     
@@ -21,7 +19,7 @@ private:
 
 
     bool getShiftFactor();
-    bool shootingMode(int pov);
+    bool shootingMode();
     bool getManual();
     int roughShooting();
     bool limelightMode(bool shift);

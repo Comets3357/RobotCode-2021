@@ -129,7 +129,7 @@ void IntakeSubsystem::setIntakeRollers(double power){
     rollers.Set(power);
 }
 
-void IntakeSubsystem::Disabled(){
+void IntakeSubsystem::DisabledInit(){
     setIntakeRollers(0);
     setPiston(false);
 }

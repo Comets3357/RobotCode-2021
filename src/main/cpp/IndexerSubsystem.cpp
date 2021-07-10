@@ -101,7 +101,7 @@ double IndexerSubsystem::getSpinnerVel(){
 
 }
 
-void IndexerSubsystem::Disabled(){
+void IndexerSubsystem::DisabledInit(){
     setOmniWheel(0);
     setCenterSpindle(0);
 
