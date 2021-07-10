@@ -69,9 +69,9 @@ void ShooterSubsystem::Init(){
 
 void ShooterSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
 
-    frc::SmartDashboard::PutNumber("hood Position",  getHoodPos()); 
-    frc::SmartDashboard::PutNumber("turret Position",  getTurretPos()); 
-    frc::SmartDashboard::PutNumber("calc hood pos",  robotData.calcHoodPos); 
+    // frc::SmartDashboard::PutNumber("hood Position",  getHoodPos()); 
+    // frc::SmartDashboard::PutNumber("turret Position",  getTurretPos()); 
+    // frc::SmartDashboard::PutNumber("calc hood pos",  robotData.calcHoodPos); 
 
     updateData(robotData);
 
@@ -185,7 +185,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
 void ShooterSubsystem::manualMode(RobotData &robotData){
     
-    frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
+    // frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
 
     //make hood and turret moveable by joystick
     setTurret(robotData.sLYStick*.1);

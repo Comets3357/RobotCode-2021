@@ -3,22 +3,31 @@
 #include "Auton.h"
 #include "Robot.h"
 
-void Auton::Init()
+void Auton::Init(RobotData &robotData)
 {
     timer.Reset();
     timer.Start();
+    autonChooser.AddOption("Potato", AutonSelect::autonSelect_potato);
+    autonChooser.AddOption("Exit Init Line", AutonSelect::autonSelect_exitInitLine);
+    autonChooser.AddOption("Trench Run", AutonSelect::autonSelect_trenchRun);
+    autonChooser.SetDefaultOption("Potato", AutonSelect::autonSelect_potato);
+    frc::SmartDashboard::PutData("Auto", &autonChooser);
+
+    
 }
 
 void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
 {
+    
+
     frc::SmartDashboard::PutNumber("autonSelect", autonSelect);
     // robotData.autonSelect = autonSelect;    // currently not using the robotData.autonSelect
 
     updateTimer(robotData);
     // frc::SmartDashboard::PutNumber("timer", robotData.seconds);
     frc::SmartDashboard::PutNumber("autonStep", robotData.autonStep);
-    frc::SmartDashboard::PutNumber("desired angle", robotData.desiredAngleDiff);
-    frc::SmartDashboard::PutNumber("initial angle", robotData.initialAngle);
+    // frc::SmartDashboard::PutNumber("desired angle", robotData.desiredAngleDiff);
+    // frc::SmartDashboard::PutNumber("initial angle", robotData.initialAngle);
 
 
     switch (autonSelect)
@@ -700,6 +709,9 @@ void Auton::Periodic(AutonSelect autonSelect, RobotData &robotData)
     robotData.autonSelect = autonSelect;
 }
 
+void Auton::AutonomousInit(RobotData &robotData){
+    robotData.autonSelect = autonChooser.GetSelected();
+}
 
 // updates the struct with the amount of time that has passed since the Timer object started keeping track of time
 void Auton::updateTimer(RobotData &robotData)

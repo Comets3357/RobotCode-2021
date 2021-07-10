@@ -49,7 +49,7 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
         pow = -0.6;
     }
 
-    frc::SmartDashboard::PutNumber("speed", pow);
+    // frc::SmartDashboard::PutNumber("speed", pow);
 
 
     //if in shooting mode then you want manual control of the intake

@@ -109,11 +109,11 @@ void LimelightSubsystem::Periodic(RobotData &robotData){
 
     if(robotData.shootingMode){
         table->PutNumber("pipeline", getPipeline(robotData.yOffset)); //set the pipeline based on y offset
-        frc::SmartDashboard::PutBoolean("shooting", true);
+        // frc::SmartDashboard::PutBoolean("shooting", true);
 
     }else{
         table->PutNumber("pipeline",0); //set the limelight to off
-        frc::SmartDashboard::PutBoolean("shooting", false);
+        // frc::SmartDashboard::PutBoolean("shooting", false);
 
     }
 

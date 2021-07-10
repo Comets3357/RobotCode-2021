@@ -1,6 +1,7 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
+
 void Robot::RobotInit()
 {
     intake.Init();
@@ -11,7 +12,7 @@ void Robot::RobotInit()
     diagnostics.LogInit();
     controlpanel.Init();
     climb.Init();
-
+    auton.Init(robotData);
 }
 
 
@@ -26,22 +27,25 @@ void Robot::RobotPeriodic(){
         limelight.Periodic(robotData);
         // diagnostics.LogPeriodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
-        climb.Periodic(robotData, diagnosticsData);
+        climb.Periodic(robotData);
         
     }
 }
 
 void Robot::AutonomousInit()
 {
-    auton.Init();
+    // auton.Init(robotData);
+    auton.AutonomousInit(robotData);
     wpi::outs() << "auton init";
+    frc::SmartDashboard::PutNumber("this is the auton", robotData.autonSelect);
     
 }
 
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
         wpi::outs() << "running auton";
-        auton.Periodic(autonSelect_stealBallsAndShootFar, robotData);
+        auton.Periodic(robotData.autonSelect, robotData);
+        // auton.Periodic(autonSelect_stealBallsAndShootFar, robotData);
     }
 }
 

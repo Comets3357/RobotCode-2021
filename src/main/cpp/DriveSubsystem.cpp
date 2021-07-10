@@ -232,8 +232,8 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
 
     // frc::SmartDashboard::PutNumber("currentLDBPos", robotData.currentLDBPos);
     // frc::SmartDashboard::PutNumber("currentRDBPos", robotData.currentRDBPos);
-    frc::SmartDashboard::PutNumber("lDistLeft", lDistLeft);
-    frc::SmartDashboard::PutNumber("rDistLeft", rDistLeft);
+    // frc::SmartDashboard::PutNumber("lDistLeft", lDistLeft);
+    // frc::SmartDashboard::PutNumber("rDistLeft", rDistLeft);
 
 
     if (robotData.desiredDBDist > 0){
