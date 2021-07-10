@@ -8,7 +8,8 @@ enum AutonSelect
     autonSelect_shootAndDrive,
     autonSelect_shootAndCollectBalls, // pretty much the same as trench run
     autonSelect_trenchRun,
-    autonSelect_stealBallsAndShoot,
+    autonSelect_stealBallsAndShootClose,
+    autonSelect_stealBallsAndShootFar,
     autonSelect_goofy // temporary
 };
 
@@ -99,6 +100,8 @@ struct RobotData
     static const int shootingBtn = 0;
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
+    int roughAim;
+    int roughHood;
 
     //drive base
     double Ldrive;
@@ -116,12 +119,15 @@ struct RobotData
     bool validTarget;
     double calcTurretPos;
     int pipeline; //for LED power
+    bool isZero = false;
+
 
     //gyro data
     //greater angle means clockwise
     double rawAngle;
     double robotAngle; // mod by 360
     double robotTiltAngle;
+    double robotYAngle;
 
 
     double angleLeft;

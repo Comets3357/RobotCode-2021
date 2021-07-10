@@ -101,13 +101,13 @@ void ShooterSubsystem::updateData(RobotData &robotData){
 void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
    //retreive controller input
-    frc::SmartDashboard::PutNumber("x", robotData.xOffset);
-    frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
-    frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
-    frc::SmartDashboard::PutNumber("calc hood", robotData.calcHoodPos);
+    // frc::SmartDashboard::PutNumber("x", robotData.xOffset);
+    // frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
+    // frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
+    // frc::SmartDashboard::PutNumber("calc hood", robotData.calcHoodPos);
 
-    frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
-    frc::SmartDashboard::PutBoolean("turret limit", getTurretLimitSwitch());
+    // frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
+    // frc::SmartDashboard::PutBoolean("turret limit", getTurretLimitSwitch());
 
 
     //if you're shooting 
