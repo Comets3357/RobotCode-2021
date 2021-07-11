@@ -11,7 +11,7 @@ class ClimbSubsystem {
     
     public:
 
-        void Init();
+        void RobotInit();
         void Periodic(RobotData &robotData);
 
         bool initiationRunning = false;

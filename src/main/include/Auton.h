@@ -8,7 +8,7 @@
 class Auton
 {
 public:
-    void Init(RobotData &robotData);
+    void RobotInit(RobotData &robotData);
     void AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData);
     
     void AutonomousInit(RobotData &robotData);

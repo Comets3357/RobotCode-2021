@@ -4,7 +4,7 @@
 
 
 
-void IntakeSubsystem::Init(){
+void IntakeSubsystem::RobotInit(){
 
     rollers.RestoreFactoryDefaults();
     rollers.SetInverted(true);
@@ -38,17 +38,17 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
     double averageDBVel = ((robotData.LdriveVel + robotData.RdriveVel) / 2);
 
     //sets the speed of the intake roller based on how fast the robot is driving 
-    double pow = -1;
-    if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
-        pow = -1;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
+    double pow = -0.9;
+    if(averageDBVel > 3500){
         pow = -0.9;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.5){
+    }else if(averageDBVel > 2800){
         pow = -0.8;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
+    }else if(averageDBVel > 2100){
         pow = -0.7;
-    }else{
+    }else if(averageDBVel > 1000){
         pow = -0.6;
+    }else{
+        pow = -0.5;
     }
 
     // frc::SmartDashboard::PutNumber("speed", pow);
@@ -72,18 +72,20 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
 void IntakeSubsystem::manualMode(RobotData &robotData){
 
+    double averageDBVel = ((robotData.LdriveVel + robotData.RdriveVel) / 2);
+
     //sets the speed of the intake roller based on how fast the robot is driving 
-    double pow = -1;
-    if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
-        pow = -1;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
+    double pow = -0.9;
+    if(averageDBVel > 3500){
         pow = -0.9;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.5){
+    }else if(averageDBVel > 2800){
         pow = -0.8;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
+    }else if(averageDBVel > 2100){
         pow = -0.7;
-    }else{
+    }else if(averageDBVel > 1000){
         pow = -0.6;
+    }else{
+        pow = -0.5;
     }
 
     //if shift trigger run intake rollers opposite with trigger power

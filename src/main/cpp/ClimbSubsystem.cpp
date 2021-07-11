@@ -81,7 +81,7 @@
  *      - Set lock pistons to default position (push into gear)
 **/
 
-void ClimbSubsystem::Init(){
+void ClimbSubsystem::RobotInit(){
     climbArmLPos.SetPosition(0);
     climbArmRPos.SetPosition(0);
 
@@ -110,54 +110,54 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
 
     //manualMode(robotData);
 
-    if (robotData.sBBtn) {
+    /* if (robotData.sBBtn) {
         solenoidArm.Set(solenoidArm.kForward);
     }
     if (robotData.sABtn) {
         solenoidArm.Set(solenoidArm.kReverse);
-    }
+    } */
 
-    // if (!robotData.climbZeroing){
+    if (!robotData.climbZeroing){
         
-    //     if(robotData.manualMode){
-    //         if (robotData.climbMode){
-    //             startingPhase = 0;
-    //             climbArmL.Set(0);
-    //             climbArmR.Set(0);
-    //             manualMode(robotData);
-    //         }
-    //     } else {
-    //         if (robotData.climbMode){
-    //             semiAutoMode(robotData);
-    //         }
-    //     }
-    // } else {
-    //     zeroLoop += 1;
-    //     if (robotData.sXBtn){
-    //         climbArmLPos.SetPosition(0);
-    //         climbArmRPos.SetPosition(0);
-    //         solenoidLockL.Set(false);
-    //         solenoidLockR.Set(false);
-    //         solenoidArm.Set(solenoidArm.kForward);
-    //         robotData.climbZeroing = false;
-    //     }
-    //     climbArmL.Set(0.1);
-    //     climbArmR.Set(0.1);
-    //     if (!climbArmLLimit.Get()) {
-    //         climbArmL.Set(0);
-    //     }
-    //     if (climbArmRLimit.Get()) {
-    //         climbArmR.Set(0);
-    //     }
-    //     if ((!climbArmLLimit.Get() && climbArmRLimit.Get()) || zeroLoop > 75) {
-    //         climbArmLPos.SetPosition(0);
-    //         climbArmRPos.SetPosition(0);
-    //         solenoidLockL.Set(false);
-    //         solenoidLockR.Set(false);
-    //         solenoidArm.Set(solenoidArm.kForward);
-    //         robotData.climbZeroing = false;
-    //     }
-    // }
+        if(robotData.manualMode){
+            if (robotData.climbMode){
+                startingPhase = 0;
+                climbArmL.Set(0);
+                climbArmR.Set(0);
+                manualMode(robotData);
+            }
+        } else {
+            if (robotData.climbMode){
+                semiAutoMode(robotData);
+            }
+        }
+    } else {
+        zeroLoop += 1;
+        if (robotData.sXBtn){
+            climbArmLPos.SetPosition(0);
+            climbArmRPos.SetPosition(0);
+            solenoidLockL.Set(false);
+            solenoidLockR.Set(false);
+            solenoidArm.Set(solenoidArm.kForward);
+            robotData.climbZeroing = false;
+        }
+        climbArmL.Set(0.1);
+        climbArmR.Set(0.1);
+        if (!climbArmLLimit.Get()) {
+            climbArmL.Set(0);
+        }
+        if (climbArmRLimit.Get()) {
+            climbArmR.Set(0);
+        }
+        if ((!climbArmLLimit.Get() && climbArmRLimit.Get()) || zeroLoop > 75) {
+            climbArmLPos.SetPosition(0);
+            climbArmRPos.SetPosition(0);
+            solenoidLockL.Set(false);
+            solenoidLockR.Set(false);
+            solenoidArm.Set(solenoidArm.kForward);
+            robotData.climbZeroing = false;
+        }
+    }
 }
 
 void ClimbSubsystem::manualMode(RobotData &robotData){

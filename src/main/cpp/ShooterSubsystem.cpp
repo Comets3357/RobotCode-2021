@@ -4,7 +4,7 @@
 #include "ShooterSubsystem.h"
 
 
-void ShooterSubsystem::Init(){
+void ShooterSubsystem::RobotInit(){
     shooterWheelM.RestoreFactoryDefaults();
     shooterWheelS.RestoreFactoryDefaults();
     shooterHood.RestoreFactoryDefaults();

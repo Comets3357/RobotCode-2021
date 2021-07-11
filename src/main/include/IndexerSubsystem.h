@@ -13,7 +13,7 @@
 class IndexerSubsystem {
     
     public:
-        void Init();
+        void RobotInit();
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
         void DisabledInit();
 

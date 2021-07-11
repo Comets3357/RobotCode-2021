@@ -3,7 +3,7 @@
 #include <frc/shuffleboard/Shuffleboard.h>
 
 
-void IndexerSubsystem::Init(){
+void IndexerSubsystem::RobotInit(){
     centerSpindle.RestoreFactoryDefaults();
     centerSpindle.SetInverted(false);
     centerSpindle.SetInverted(true);

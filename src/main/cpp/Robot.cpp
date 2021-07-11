@@ -4,15 +4,15 @@
 
 void Robot::RobotInit()
 {
-    intake.Init();
-    db.Init();
-    indexer.Init();
-    shooter.Init();
-    limelight.Init();
+    intake.RobotInit();
+    db.RobotInit();
+    indexer.RobotInit();
+    shooter.RobotInit();
+    limelight.RobotInit();
     diagnostics.LogInit();
-    controlpanel.Init();
-    climb.Init();
-    auton.Init(robotData);
+    controlpanel.RobotInit();
+    climb.RobotInit();
+    auton.RobotInit(robotData);
 }
 
 
@@ -20,7 +20,6 @@ void Robot::RobotInit()
 void Robot::RobotPeriodic(){
     if (!IsDisabled()) {
         db.Periodic(robotData, diagnosticsData);
-        
         intake.Periodic(robotData, diagnosticsData);
         indexer.Periodic(robotData, diagnosticsData);
         shooter.Periodic(robotData, diagnosticsData);

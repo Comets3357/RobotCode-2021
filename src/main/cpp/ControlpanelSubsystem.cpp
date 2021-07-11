@@ -4,7 +4,7 @@
 
 
 
-void ControlpanelSubsystem::Init(){
+void ControlpanelSubsystem::RobotInit(){
 
     cpManipulator.RestoreFactoryDefaults();
     //we inverted the right side and set motors to follow each other

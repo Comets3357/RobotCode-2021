@@ -10,7 +10,7 @@
 class ControlpanelSubsystem {
     
     public: 
-        void Init();
+        void RobotInit();
         void Periodic(RobotData &RobotData);
         void Disabled();
 

@@ -1,7 +1,7 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
-void DriveSubsystem::Init()
+void DriveSubsystem::RobotInit()
 {
 
     dbLM.RestoreFactoryDefaults();
@@ -81,13 +81,12 @@ void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostics
         driveStraight(robotData);
         setVelocity(robotData);
         break;
-    case driveMode_initArc:
-        initArc(robotData);
+    case driveMode_initTurnInPlace:
+        initTurnInPlace(robotData);
         setVelocity(robotData);
         break;
-    case driveMode_arc:
+    case driveMode_turnInPlace:
         turnInPlace(robotData);
-        // arc(robotData);
         setVelocity(robotData);
         break;
     default:
@@ -96,7 +95,7 @@ void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostics
         break;
     }
 
-    //updateDiagnostics(diagnosticsData);
+    updateDiagnostics(diagnosticsData);
 }
 
 void DriveSubsystem::DisabledInit()
@@ -151,7 +150,7 @@ void DriveSubsystem::updateData(RobotData &robotData)
     
     robotData.robotTiltAngle = gyro.GetGyroAngleX();
 
-    frc::SmartDashboard::PutNumber("CURRENT RAW ANGLE", robotData.rawAngle);
+    // frc::SmartDashboard::PutNumber("CURRENT RAW ANGLE", robotData.rawAngle);
 }
 
 // driving functions:
@@ -190,7 +189,7 @@ void DriveSubsystem::setVelocity(RobotData &robotData)
 
 // this function is currently written so that the robot tries to stay at an angle of zero
 // was only used for pid testing
-void DriveSubsystem::courseCorrectedDrive(RobotData &robotData)
+/* void DriveSubsystem::courseCorrectedDrive(RobotData &robotData)
 {
     //if left is behind right / if robotAngle (non continuous) is between 180 and 360
         //give speed to left side 
@@ -201,7 +200,7 @@ void DriveSubsystem::courseCorrectedDrive(RobotData &robotData)
             setPoint = 0;
         }
         dbLMPID.SetReference(setPoint, rev::ControlType::kVelocity);
-}
+} */
 
 
 
@@ -250,8 +249,8 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
 
     if (robotData.desiredDBDist > 0){
         if(lDistLeft > 0){
-            if(lDistLeft * 170 < 5000){
-                lDrive = lDistLeft * 170;
+            if(lDistLeft * 100 < 5000){
+                lDrive = lDistLeft * 100;
             } else {
                 lDrive = 5000;
             }
@@ -264,8 +263,8 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
         }
 
         if(rDistLeft > 0){
-            if(rDistLeft * 170 < 5000){
-                rDrive = rDistLeft * 170;
+            if(rDistLeft * 100 < 5000){
+                rDrive = rDistLeft * 100;
             } else {
                 rDrive = 5000;
             } 
@@ -323,41 +322,17 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
 }
 
 // you need to set a desiredAngleDiff and arcRadius beforehand
-void DriveSubsystem::initArc(RobotData &robotData)
+void DriveSubsystem::initTurnInPlace(RobotData &robotData)
 {
     robotData.initialAngle = robotData.rawAngle;
     // sideRatio is the factor to determine the smaller side
-    robotData.sideRatio = robotData.arcRadius / (robotData.arcRadius + 2);
+    // robotData.sideRatio = robotData.arcRadius / (robotData.arcRadius + 2);
     // frc::SmartDashboard::PutNumber("finalAngle", robotData.finalAngle);
     // frc::SmartDashboard::PutNumber("sideRatio", robotData.sideRatio);
     // wpi::outs() << "initArc" << '\n';
     robotData.autonStep++;
 }
 
-// THIS DOES NOT WORK
-void DriveSubsystem::arc(RobotData &robotData)
-{
-    //when called record initial angle. calculate final angle by adding the robotData.desiredAngleDiff to it. 
-
-    double angleLeft = robotData.desiredAngleDiff - (robotData.rawAngle - robotData.initialAngle);
-
-    // frc::SmartDashboard::PutNumber("angleLeft", angleLeft);
-    // wpi::outs() << "arc" << '\n';
-
-    if (angleLeft < -1){
-        lDrive = -80 * angleLeft * robotData.sideRatio;
-        rDrive = -80 * angleLeft;
-    } else if (angleLeft > 1){
-        lDrive = 80 * angleLeft;
-        rDrive = 80 * angleLeft * robotData.sideRatio;
-    } else {
-        lDrive = 0;
-        rDrive = 0;
-        robotData.autonStep++;
-        wpi::outs() << "FINISHED ARC" << '\n';
-    }
-
-}
 
 // turns the robot in place around its center
 void DriveSubsystem::turnInPlace(RobotData &robotData)
@@ -370,12 +345,12 @@ void DriveSubsystem::turnInPlace(RobotData &robotData)
     frc::SmartDashboard::PutNumber("angleLeft", robotData.angleLeft);
 
     if (robotData.angleLeft > 1){
-        lDrive = -100 * robotData.angleLeft * robotData.sideRatio;
+        lDrive = -100 * robotData.angleLeft * -1;
         rDrive = -100 * robotData.angleLeft;
         wpi::outs() << "turn in place" << '\n';
     } else if (robotData.angleLeft < -1){
         lDrive = 100 * robotData.angleLeft;
-        rDrive = 100 * robotData.angleLeft * robotData.sideRatio;
+        rDrive = 100 * robotData.angleLeft * -1;
         wpi::outs() << "turn in place" << '\n';
     } else {
         lDrive = 0;
