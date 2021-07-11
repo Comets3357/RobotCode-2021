@@ -3,17 +3,19 @@
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
+#include <frc/shuffleboard/Shuffleboard.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 #include <frc/shuffleboard/Shuffleboard.h>
 
 
 class IndexerSubsystem {
     
     public:
-        void Init();
-        void Periodic(RobotData &robotData);
-        void Disabled();
+        void RobotInit();
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        void DisabledInit();
 
 
     private:
@@ -22,6 +24,8 @@ class IndexerSubsystem {
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
         
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
         double getSpinnerVel();
 
@@ -40,5 +44,7 @@ class IndexerSubsystem {
 //encoders:
         rev::CANEncoder centerSpindlePOS = centerSpindle.GetEncoder();
         rev::CANPIDController centerSpindle_pidController = centerSpindle.GetPIDController();
+
+        rev::CANEncoder omniWheelPOS = omniWheel.GetEncoder();
  
 };

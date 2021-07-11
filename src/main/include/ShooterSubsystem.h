@@ -5,15 +5,17 @@
 #include <rev/CANSparkMax.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 
 class ShooterSubsystem {
     
     public:
 
-        void Init();
-        void Periodic(RobotData &robotData);
-        void Disabled();
+        void RobotInit();
+        void DisabledInit();
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        
 
     private:
 
@@ -26,21 +28,26 @@ class ShooterSubsystem {
         double getTurretPos();
         double getWheelPos();
         double getWheelVel();
+        double getHoodOffset();
         bool getTurretLimitSwitch();
         bool getHoodLimitSwitch();
 
-        void setShooterPID(rev::CANPIDController motor, double p, double i, double d, double ff);
+        void setShooterPID(rev::CANPIDController motor, int pidSlot, double p, double i, double d, double ff);
         void setHood(double power);
         void setTurret(double power);
         void setWheel(double power);
         void setHoodPos(double pos);
         void setTurretPos(double pos);
+
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         bool shooting = false;
 
         int secondaryPOVArrayInput;
         int turretSequence = 0;
         int shootPOV;
+        double turretSnapshot = 0;
 
         bool intakeEncoderPositionZero;
 
@@ -82,6 +89,7 @@ class ShooterSubsystem {
         rev::CANPIDController shooterKick_pidController = shooterKick.GetPIDController(); */
     
         
+
 
 
 };

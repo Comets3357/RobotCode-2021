@@ -10,12 +10,14 @@ class LimelightSubsystem : public frc2::SubsystemBase {
     
     public:
 
-        void Init();
+        void RobotInit();
         void Periodic(RobotData &robotData);
 
         double getHorizontalOffset();
         double getVerticalOffset();
-        double calcHoodPOS(double verticalOffset);
+        int getTarget();
+        double calcHoodPOS(double verticalOffset, RobotData &robotData);
+        double calcTurretPOS(double horOffset);
         int getPipeline(double verticalOffset);
 
     private:   
