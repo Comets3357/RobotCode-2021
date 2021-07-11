@@ -2,31 +2,34 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
-#include <frc/Timer.h>
 #include "RobotData.h"
+#include <frc/DriverStation.h>
 
 
 class Controller {
     
 public:
 
-    void Periodic(RobotData &robotData);
-
+    void TeleopPeriodic(RobotData &robotData);
+    void Init(RobotData &robotData);
 
 private:
     
     void updateTeleopData(RobotData &robotData);
 
 
-    int getShiftFactor();
+    bool getShiftFactor();
     bool shootingMode();
     bool getManual();
+    int roughShooting();
+    bool limelightMode(bool shift);
+    int roughHood();
 
 
     bool getButton(int js, int index);
     int getPOV(int js, int index);
     double getAxis(int js, int index);
-    // bool climbMode();
+    bool climbMode(RobotData &robotData);
 
 
     frc::Joystick secondary{1};
@@ -35,6 +38,7 @@ private:
 
     //this is necessary actually for the getManual() function
     bool inManualMode = false;
+    bool limelightOn = false;
 
 
 }; 

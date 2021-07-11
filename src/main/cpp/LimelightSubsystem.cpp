@@ -1,34 +1,39 @@
-#include "frc/smartdashboard/Smartdashboard.h"
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableInstance.h"
+#include <frc/smartdashboard/Smartdashboard.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
 #include "Robot.h"
 #include <cmath>
 
 
-//web interface: http://10.33.57.11:5801/ 
+//web interface: http://limelight:5801/ 
 
 
 
-void LimelightSubsystem::Init(){
-    /* double targetOffsetAngle_Horizontal = 0; Probably don't want to zero this
-    double targetOffsetAngle_Vertical = 0;
-    double targetArea = 0;
-    double targetSkew = 0; */  
- 
-}
+void LimelightSubsystem::RobotInit(){}
 
 /**
  * calculates hood position needed 
  * @param verticalOffset vertical offset from the target from limelight in degrees
  * @return desired encoder position of Shooter Hood
  */
-double LimelightSubsystem::calcHoodPOS(double verticalOffset){ 
-    //currently should be changed, equation isn't working. 
+double LimelightSubsystem::calcHoodPOS(double verticalOffset, RobotData& robotData){ 
     double x = verticalOffset;
-    //return ((-0.000113724*std::pow(x,4.0))+(0.00324167*std::pow(x,3.0))+(-0.0268368*std::pow(x,2.0))+(0.-0.092227*x) + 15.058);
-    //return ((-0.000112298*std::pow(x,4.0))+(.00325782*std::pow(x,3.0))+(-0.0251726*std::pow(x,2.0))+(-0.178706*x) + 15.7186);
-    return ((-0.0000680977*std::pow(x,4.0))+(.00141765*std::pow(x,3.0))+(-0.00521063*std::pow(x,2.0))+(-0.170811*x) + 15.1117);
-    //return ((-0.000211515*std::pow(x,4.0))+(0.00824168*std::pow(x,3.0))+(-0.110289*std::pow(x,2.0))+(0.385964*x) + 14.5673);
+
+    if(verticalOffset == 0){
+        return 0;
+    }else{
+        return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) + /*2.5 +*/ robotData.roughHood; 
+    }
+}
+
+/**
+ * calculates turret position needed 
+ * @param horOffset horizontal offset from the target from limelight in degrees
+ * @return desired encoder position of Shooter turret
+ */
+double LimelightSubsystem::calcTurretPOS(double horOffset){ 
+    double x = horOffset;
+    return (x*0.144034);
 }
 
 /**
@@ -36,7 +41,7 @@ double LimelightSubsystem::calcHoodPOS(double verticalOffset){
  */
 double LimelightSubsystem::getHorizontalOffset(){
     std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the table
-    return table->GetNumber("tx",0.0);
+    return (table->GetNumber("tx",0.0)) + 0.5; //offset
 }
 
 /**
@@ -47,29 +52,70 @@ double LimelightSubsystem::getVerticalOffset(){
     return table->GetNumber("ty",0.0);
 }
 
-
-void LimelightSubsystem::Periodic(RobotData &robotData){
-
-    robotData.xOffset = getHorizontalOffset();
-    robotData.yOffset = getVerticalOffset();
-    robotData.calcHoodPos = calcHoodPOS(robotData.yOffset);
-
-    getVerticalOffset();
-
-
-    std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the networktable
-    table->PutNumber("pipeline", 0); //set the pipeline
-    
-    //prints all the values to dashboard:
-    frc::SmartDashboard::PutNumber("tx",  table->GetNumber("tx",0.0)); //horizontal offset
-    frc::SmartDashboard::PutNumber("ty",  table->GetNumber("ty",0.0)); //vertical offset
-    frc::SmartDashboard::PutNumber("ts",  table->GetNumber("ts",0.0)); //skew offset
-
-
-   
-
+/**
+ * @return if a target is seen or not 0 or 1
+ */
+int LimelightSubsystem::getTarget(){
+    std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the table
+    return table->GetNumber("tv",0.0);
 }
 
 
+/**
+ * @param verticalOffset y offset from limelight
+ * @return needed pipeline based off how close to the target the bot is
+ * 
+ * pipeline 0 = off
+ * pipeline 1 = 40 power
+ * pipeline 2 = 60 power
+ * pipeline 3 = 80 power
+ * pipeline 4 = 100 power
+ */
+int LimelightSubsystem::getPipeline(double verticalOffset){
+
+    int pipeline;
+    if(verticalOffset > 14){
+        pipeline = 1;
+    }else if(verticalOffset > 9){
+        pipeline = 2;
+    }else if(verticalOffset > 6){
+        pipeline = 3;
+    }else if(verticalOffset > 1){
+        pipeline = 4;
+    }else{
+        pipeline = 1;
+
+    }
+
+    //basically if you can see the target turn on the limelight otherwise don't
+    return pipeline;
+}
 
 
+void LimelightSubsystem::Periodic(RobotData &robotData){
+
+   
+   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight"); //opens up the networktable
+
+    //updating data
+    robotData.xOffset = getHorizontalOffset();
+    robotData.yOffset = getVerticalOffset();
+    robotData.targetValue = getTarget();
+    robotData.calcHoodPos = calcHoodPOS(robotData.yOffset, robotData);
+
+    robotData.calcTurretPos = calcTurretPOS(robotData.xOffset);
+    robotData.validTarget = table->GetNumber("tv", 0.0);
+
+
+    if(robotData.shootingMode){
+        table->PutNumber("pipeline", getPipeline(robotData.yOffset)); //set the pipeline based on y offset
+        // frc::SmartDashboard::PutBoolean("shooting", true);
+
+    }else{
+        table->PutNumber("pipeline",0); //set the limelight to off
+        // frc::SmartDashboard::PutBoolean("shooting", false);
+
+    }
+
+
+}

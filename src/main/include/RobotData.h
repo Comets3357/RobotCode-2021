@@ -4,11 +4,15 @@
 enum AutonSelect
 {
     autonSelect_potato,
-    autonSelect_exitInitLine,
-    autonSelect_shootAndDrive,
-    autonSelect_shootAndCollectBalls, // pretty much the same as trench run
-    autonSelect_trenchRun,
-    autonSelect_goofy // temporary
+    autonSelect_exitInitLineRendezvous,
+    autonSelect_exitInitLineDriverStation,
+    autonSelect_shootAndDriveToRendezvous,
+    autonSelect_shootAndDriveToDriverStation,
+    autonSelect_shootAndCollectBalls, 
+    autonSelect_trenchRunHalf,
+    autonSelect_trenchRunFull,
+    autonSelect_stealBallsAndShootDetour,
+    autonSelect_stealBallsAndShoot
 };
 
 // this is for drivebase auton
@@ -16,10 +20,10 @@ enum DriveMode
 {
     driveMode_teleop,
     driveMode_potato,
-    driveMode_initDriveForward,
-    driveMode_driveForward,
-    driveMode_arc,
-    driveMode_initArc
+    driveMode_initDriveStraight,
+    driveMode_driveStraight,
+    driveMode_initTurnInPlace,
+    driveMode_turnInPlace
 };
 
 //could be separated into all separate files for the data *from* each subsystem
@@ -32,12 +36,18 @@ struct RobotData
     //controller data
 
     bool manualMode = false;
-    int shift;
+    bool shift; //shift for more button options
     bool shootingMode;
+    bool climbMode = false;
+    bool limelightOn;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
 
     //primary
+
+    // this will have merge conflict with climb's pLShoulderBtn
+    bool pLShoulderBtn;
+
     double pLXStick;
     double pLYStick = 0;
     double pRXStick;
@@ -48,7 +58,7 @@ struct RobotData
     double pLTrigger;
     double pRTrigger;
     bool pLBumper;
-    bool pRtBumper;
+    bool pRBumper;
 
     bool pXBtn;
     bool pYBtn;
@@ -89,26 +99,45 @@ struct RobotData
     double hoodPosition;
     double turretPosition;
     double flywheelVelocity;
-    bool readyShoot = false;
-    bool isZero = false;
-    static const int shootingBtn = 90;
+    static const int shootingBtn = 0;
     int targetVelocity = 0;
+    bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
+    int roughAim;
+    int roughHood;
+
+    //drive base
+    double Ldrive;
+    double Rdrive;
+
+    double LdriveVel;
+    double RdriveVel;
+
 
     //limelight data
     double xOffset;
     double yOffset;
+    int targetValue;
     double calcHoodPos;
+    bool validTarget;
+    double calcTurretPos;
+    int pipeline; //for LED power
+    bool isZero = false;
+
 
     //gyro data
     //greater angle means clockwise
     double rawAngle;
     double robotAngle; // mod by 360
+    double robotTiltAngle;
+    double robotYAngle;
 
+
+    double angleLeft;
 
     // auton stuff
     int autonStep  = 0;
-
-    // AutonSelect autonSelect{autonSelect_potato}; // don't think we need this unless a subsystem needs access
+    
+    AutonSelect autonSelect;    // only for diagnostics purposes; do not use
     DriveMode driveMode{driveMode_teleop};  // should have a default?
 
     //turn
@@ -125,6 +154,9 @@ struct RobotData
     double currentLDBPos;
     double currentRDBPos;
     // prolly wanna check the other two encoders
+
+    //climb
+    bool climbZeroing = true;
 
 
     
