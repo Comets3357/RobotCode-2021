@@ -254,9 +254,9 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
             } else {
                 lDrive = 5000;
             }
-            if (lDrive < 200)
+            if (lDrive < 400)
             {
-                lDrive = 200;
+                lDrive = 400;
             }
         } else {
             lDrive = 0;
@@ -268,9 +268,9 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
             } else {
                 rDrive = 5000;
             } 
-            if (rDrive < 200)
+            if (rDrive < 400)
             {
-                rDrive = 200;
+                rDrive = 400;
             }
         } else {
             rDrive = 0;
@@ -288,9 +288,9 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
             } else {
                 lDrive = -5000;
             } 
-            if (lDrive > -200)
+            if (lDrive > -400)
             {
-                lDrive = -200;
+                lDrive = -400;
             }
         } else {
             lDrive = 0;
@@ -302,9 +302,9 @@ void DriveSubsystem::driveStraight(RobotData &robotData)
             } else {
                 rDrive = -5000;
             }
-            if (rDrive > -200)
+            if (rDrive > -400)
             {
-                rDrive = -200;
+                rDrive = -400;
             }
         } else {
             rDrive = 0;
@@ -344,14 +344,31 @@ void DriveSubsystem::turnInPlace(RobotData &robotData)
     frc::SmartDashboard::PutNumber("current angle", robotData.rawAngle);
     frc::SmartDashboard::PutNumber("angleLeft", robotData.angleLeft);
 
+    // originally using 100 rpm
     if (robotData.angleLeft > 1){
-        lDrive = -100 * robotData.angleLeft * -1;
-        rDrive = -100 * robotData.angleLeft;
-        wpi::outs() << "turn in place" << '\n';
+        lDrive = -30 * robotData.angleLeft * -1;
+        rDrive = -30 * robotData.angleLeft;
+        // wpi::outs() << "turn in place" << '\n';
+
+        // minimum speed
+        if (rDrive > -240)
+        {
+            rDrive = -240;
+            lDrive = 240;
+        }
+
     } else if (robotData.angleLeft < -1){
-        lDrive = 100 * robotData.angleLeft;
-        rDrive = 100 * robotData.angleLeft * -1;
-        wpi::outs() << "turn in place" << '\n';
+        lDrive = 30 * robotData.angleLeft;
+        rDrive = 30 * robotData.angleLeft * -1;
+        // wpi::outs() << "turn in place" << '\n';
+
+        // minimum speed
+        if (rDrive < 240)
+        {
+            rDrive = 240;
+            lDrive = -240;
+        }
+
     } else {
         lDrive = 0;
         rDrive = 0;
