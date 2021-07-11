@@ -66,9 +66,9 @@ void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
 }
 
 void ControlpanelSubsystem::manualMode(RobotData &robotData){ 
-    // if(){
-    //     cpManipulator.Set(0.2);
-    // }
+    if(false){
+        cpManipulator.Set(0.2);
+    }
 }
 
 void ControlpanelSubsystem::Disabled(){
