@@ -62,7 +62,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             robotData.shootingMode = false;
             robotData.sRTrigger = false;
-            robotData.sBBtn = false;
             break;
         }
         break;
@@ -82,7 +81,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             robotData.shootingMode = false;
             robotData.sRTrigger = false;
-            robotData.sBBtn = false;
             break;
         }
         break;
@@ -120,7 +118,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             robotData.shootingMode = false;
             robotData.sRTrigger = false;
-            robotData.sBBtn = false;
             break;
         }
         break;
@@ -195,7 +192,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             robotData.shootingMode = false;
             robotData.sRTrigger = false;
-            robotData.sBBtn = false;
             break;
         }
         break;
@@ -350,7 +346,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             robotData.shootingMode = false;
             robotData.sRTrigger = false;
-            robotData.sBBtn = false;
             break;
         }
         break; 
@@ -358,13 +353,13 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
     //doesn't go in front of the init line at all
     case autonSelect_stealBallsAndShoot:
 
-        
+        robotData.sBBtn = true;
         switch (robotData.autonStep)
         {
         case 0:
             //spin up flywheel
-            robotData.sBBtn = true;
             robotData.shootingMode = false;
+            robotData.sBBtn = true;
             //intake and indexer in intaking mode 
             robotData.sRTrigger = true;
             //start delay to give time for intake to drop
@@ -388,8 +383,10 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             //move on when two balls have been collected (in encoder values)
             break;
         case 3:
+            // bring intake up
+            robotData.sRTrigger = false;
             //drive
-            robotData.desiredDBDist = -45;
+            robotData.desiredDBDist = -30;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
         case 4:
@@ -421,7 +418,7 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             // later test adding checkEarlyShooting?
             break;
         case 11:
-            startDelay(6, robotData);
+            startDelay(4.5, robotData);
             robotData.shootingMode = true; //shooting button
             robotData.driveMode = driveMode_potato;
             robotData.autonStep++;
@@ -435,7 +432,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             robotData.shootingMode = false;
             robotData.sRTrigger = false;
-            robotData.sBBtn = false;
             break;
         }
         break;
@@ -443,80 +439,90 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
     // goes around any possible robots on init line
     case autonSelect_stealBallsAndShootDetour:
         
+        robotData.sBBtn = true;
         switch (robotData.autonStep)
         {
         case 0:
             //spin up flywheel
-            robotData.sBBtn = true;
             robotData.shootingMode = false;
             //intake and indexer in intaking mode 
             robotData.sRTrigger = true;
+            //start delay to give time for intake to drop
+            startDelay(.25, robotData);
             //init drive forward
             robotData.desiredDBDist = 65;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
         case 1:
+            //wait for intake to come down
+            robotData.driveMode = driveMode_potato;
+            checkDelay(robotData);
+            break;
+        case 2:
             robotData.driveMode = driveMode_driveStraight;
             //intake and indexer in intaking mode 
             robotData.sRTrigger = true;
             //move on when two balls have been collected (in encoder values)
             break;
-        case 2:
+        case 3:
+            // bring intake up
+            robotData.sRTrigger = false;
             //drive
             robotData.desiredDBDist = -10;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
-        case 3:
+        case 4:
             robotData.driveMode = driveMode_driveStraight;
             break;
-        case 4:
+        case 5:
             robotData.desiredAngleDiff = -45;
             robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initTurnInPlace;
             break;
-        case 5:
+        case 6:
             robotData.driveMode = driveMode_turnInPlace;
             break;
-        case 6:
+        case 7:
             robotData.desiredDBDist = -50;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
-        case 7:
+        case 8:
             robotData.driveMode = driveMode_driveStraight;
             break;
-        case 8:
+        case 9:
             // turn
             robotData.desiredAngleDiff = 90;
             robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initTurnInPlace;
             break;
-        case 9:
+        case 10:
             robotData.driveMode = driveMode_turnInPlace;
             break;
-        case 10:
+        case 11:
             robotData.desiredDBDist = -50;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
-        case 11:
+        case 12:
             robotData.driveMode = driveMode_driveStraight;
             break;
-        case 12:
+        case 13:
             robotData.desiredAngleDiff = -90;
+            robotData.arcRadius = -1;
             robotData.driveMode = driveMode_initTurnInPlace;
             break;
-        case 13:
+        case 14:
             robotData.driveMode = driveMode_turnInPlace;
             break;
-        case 14:
+        case 15:
             robotData.desiredDBDist = 30;
             robotData.driveMode = driveMode_initDriveStraight;
             break;
-        case 15:
+        case 16:
             robotData.driveMode = driveMode_driveStraight;
             checkEarlyShooting(robotData);
-            startDelay(6, robotData);
+            startDelay(4.5, robotData);
             break;
-        case 16:
+        case 17:
             robotData.driveMode = driveMode_potato;
             checkDelay(robotData);
             break;
@@ -524,7 +530,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
             robotData.driveMode = driveMode_potato;
             robotData.shootingMode = false;
             robotData.sRTrigger = false;
-            robotData.sBBtn = false;
             break;
         }
         break;
