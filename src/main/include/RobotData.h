@@ -8,7 +8,7 @@ enum AutonSelect
     autonSelect_exitInitLineDriverStation,
     autonSelect_shootAndDriveToRendezvous,
     autonSelect_shootAndDriveToDriverStation,
-    autonSelect_shootAndCollectBalls, 
+    // autonSelect_shootAndCollectBalls, 
     autonSelect_trenchRunHalf,
     autonSelect_trenchRunFull,
     autonSelect_stealBallsAndShootDetour,
@@ -104,6 +104,7 @@ struct RobotData
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
     int roughAim;
     int roughHood;
+    bool stopAntiJam = false;
 
     //drive base
     double Ldrive;

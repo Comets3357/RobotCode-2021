@@ -117,9 +117,9 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
     }else if(!robotData.isZero){
         setTurret(-0.1);
     }else if(robotData.isZero){
-        //set the turret to face forward
+        
         //adding the two left/right pov buttons to turn the turret left/right
-        shooterTurretPID.SetReference(12 + (robotData.roughAim*4.5), rev::ControlType::kPosition);
+        
 
         if (robotData.shootingMode){ 
             turretSnapshot = getTurretPos();
@@ -140,6 +140,14 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
                 
                 //uses PID to get the shooter wheel up to speed and stay there
                 shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
+                
+                if (getWheelVel() > robotData.targetVelocity - 300)
+                {
+                    robotData.stopAntiJam = true;
+                }
+                else {
+                    robotData.stopAntiJam = false;
+                }
 
                 //once the shooter has high enough velocity and is aimed correctly tell robot to begin shooting (start indexer)
                 if ((getWheelVel() > robotData.targetVelocity) && (std::abs(getTurretPos() - (turretSnapshot + robotData.calcTurretPos)) <= 1) && (std::abs(getHoodPos() - robotData.calcHoodPos) <= 2) ){
@@ -154,7 +162,8 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
         } else {  //not shooting
 
-        
+            //set the turret to face forward
+            shooterTurretPID.SetReference(12 + (robotData.roughAim*4.5), rev::ControlType::kPosition);
             //spins up flywheel beforehand
             if(robotData.sBBtn){
                 shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);

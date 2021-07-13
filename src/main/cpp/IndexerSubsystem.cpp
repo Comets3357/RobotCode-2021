@@ -44,7 +44,12 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
 
                     //reverse direction for omniwheel to bring balls into shooter
                     setOmniWheel(-0.7);
-            }else{
+            }
+            else if (robotData.stopAntiJam) {
+                setCenterSpindle(0.47);
+                setOmniWheel(0.3);
+            }
+            else{
                 if (tickCount > 40) {
                     setCenterSpindle(-0.47);
                 } else {
@@ -59,21 +64,14 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
     }else{
 
         if(robotData.sRTrigger){ //when intaking balls, spin the indexer
-            if(tickCount > 40){
-                setCenterSpindle(-0.1);  // omni should not reverse
-            }else{
-                setCenterSpindle(0.1);
-            }
             setOmniWheel(0.15);
-            
+            setCenterSpindle(0.1);
         }else {
             setOmniWheel(0);
             setCenterSpindle(0);
         }
 
     }
-
-    tickCount = (tickCount+1)%50;
 }
 
 void IndexerSubsystem::manualMode(RobotData &robotData){
@@ -117,8 +115,6 @@ void IndexerSubsystem::DisabledInit(){
     setCenterSpindle(0);
 
 }
-
-
 
 
 
