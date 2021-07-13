@@ -33,6 +33,7 @@ class IndexerSubsystem {
 //state variables:
         int shootPOV = -1;
         int omniDir = 1;
+        int tickCount = 0;
 
         
 //motors:

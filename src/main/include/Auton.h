@@ -18,6 +18,7 @@ private:
     void checkDelay(RobotData &robotData);
     void updateTimer(RobotData &robotData);
     void checkEarlyShooting(RobotData &robotData);
+    void endAllTasks(RobotData &robotData);
 
     frc::Timer timer{};
     frc::SendableChooser<AutonSelect> autonChooser;

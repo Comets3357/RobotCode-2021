@@ -42,6 +42,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
         // wpi::outs() << "running auton";
+        frc::SmartDashboard::PutNumber("timer", robotData.seconds);
         auton.AutonomousPeriodic(robotData.autonSelect, robotData);
     }
 }
