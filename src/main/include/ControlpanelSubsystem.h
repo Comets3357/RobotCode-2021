@@ -5,6 +5,7 @@
 #include "rev/ColorSensorV3.h"
 #include "rev/ColorMatch.h"
 #include "RobotData.h"
+#include <string>
 
 
 class ControlpanelSubsystem {
@@ -18,6 +19,16 @@ class ControlpanelSubsystem {
         void manualMode(RobotData &robotData);
 
     private:
+
+        bool rotating = false;
+        int colorsPast = 0;
+        std::string lastColor = " ";
+        std::string targetColor = " ";
+        bool goingToColor = false;
+        bool rotatingToggle = false;
+        bool armToggle = false;
+        bool armUp = false;
+
 
 
 //motors:

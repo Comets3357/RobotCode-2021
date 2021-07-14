@@ -30,7 +30,6 @@ class ClimbSubsystem {
 
         int zeroLoop = 0;
 
-    private:
 
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);

@@ -40,6 +40,8 @@ struct RobotData
     bool shootingMode;
     bool climbMode = false;
     bool limelightOn;
+    bool autonEnabled = false;
+    bool teleopEnabled = false;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
 
@@ -158,6 +160,10 @@ struct RobotData
 
     //climb
     bool climbZeroing = true;
+
+    //control panel
+    bool armUpOnRequest = false;
+    bool lastArmUp = false;
 
 
     
