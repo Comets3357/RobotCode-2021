@@ -40,22 +40,23 @@ void IndexerSubsystem::semiAutoMode(RobotData &robotData){
 
             //retrieve data from shooter for when shooting wheel is up to speed etc.
             if(robotData.readyShoot){
-                setCenterSpindle(0.47);
+                setCenterSpindle(0.47 * 0.7);
 
                 //reverse direction for omniwheel to bring balls into shooter
-                setOmniWheel(-0.7);
+                setOmniWheel(-0.7 * 0.7);
             }
             else if (robotData.stopAntiJam) {
-                setCenterSpindle(0.47);
-                setOmniWheel(0.3);
+                setCenterSpindle(0.47 * 0.7);
+                setOmniWheel(0.3 * 0.7);
             }
             else{
                 if (tickCount > 40) {
-                    setCenterSpindle(-0.47);
+                    // replace the + with a - to add shooting anti jam
+                    setCenterSpindle(+0.47 * 0.7);
                 } else {
-                    setCenterSpindle(0.47);
+                    setCenterSpindle(0.47 * 0.7);
                 }
-                setOmniWheel(0.3);
+                setOmniWheel(0.3 * 0.7);
             }
         }
         
@@ -136,6 +137,10 @@ void IndexerSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
      * center spindle encoder
      * omni wheel encoder
      */
+
+    frc::SmartDashboard::PutNumber("omni vel", omniWheelPOS.GetVelocity());
+    frc::SmartDashboard::PutNumber("omni current", omniWheel.GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("omni volt", omniWheel.GetBusVoltage());
 
     diagnosticsData.mControlCurrents.at(11) = centerSpindle.GetOutputCurrent();
     diagnosticsData.mControlVoltages.at(11) = centerSpindle.GetBusVoltage();
