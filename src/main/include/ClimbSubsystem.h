@@ -55,8 +55,11 @@ class ClimbSubsystem {
         frc::Solenoid solenoidLockL{4};
 
         rev::CANDigitalInput climbArmRLimit = climbArmR.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
+
+        rev::CANDigitalInput climbArmLLimit = climbArmL.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
+
         //rev::CANDigitalInput climbArmRLimit = climbArmR.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
-        frc::DigitalInput climbArmLLimit {0};
+        // frc::DigitalInput climbArmLLimit {0};
 
         // frc::ADIS16448_IMU imu{};
 };

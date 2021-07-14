@@ -147,7 +147,7 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
             climbArmL.Set(0);
             climbArmR.Set(0);
         } else {
-            if (!climbArmLLimit.Get()) {
+            if (climbArmLLimit.Get()) {
                 climbArmL.Set(0);
             }
             else {
@@ -158,7 +158,7 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
             } else {
                 climbArmR.Set(0.1);
             }
-            if (!climbArmLLimit.Get() && climbArmRLimit.Get()) {
+            if (climbArmLLimit.Get() && climbArmRLimit.Get()) {
                 climbArmLPos.SetPosition(0);
                 climbArmRPos.SetPosition(0);
                 solenoidLockL.Set(false);
