@@ -141,7 +141,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
                 //uses PID to get the shooter wheel up to speed and stay there
                 shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
                 
-                if (getWheelVel() > robotData.targetVelocity - 300)
+                if (getWheelVel() > robotData.targetVelocity - 0)
                 {
                     robotData.stopAntiJam = true;
                 }
