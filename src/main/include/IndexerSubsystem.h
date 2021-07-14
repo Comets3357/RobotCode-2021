@@ -13,9 +13,9 @@
 class IndexerSubsystem {
     
     public:
-        void Init();
+        void RobotInit();
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
-        void Disabled();
+        void DisabledInit();
 
 
     private:
@@ -33,6 +33,7 @@ class IndexerSubsystem {
 //state variables:
         int shootPOV = -1;
         int omniDir = 1;
+        int tickCount = 0;
 
         
 //motors:

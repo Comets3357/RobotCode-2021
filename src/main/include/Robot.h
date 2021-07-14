@@ -6,6 +6,8 @@
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
 #include <frc/Timer.h>
+#include <frc/smartdashboard/SendableChooser.h>
+
 
 //Header files from us
 #include "Auton.h"
@@ -19,6 +21,7 @@
 #include "Diagnostics.h"
 #include "ControlpanelSubsystem.h"
 #include "ClimbSubsystem.h"
+#include "LEDSubsystem.h"
 
 #include "RobotData.h"
 
@@ -29,8 +32,6 @@
 class Robot : public frc::TimedRobot {
 
   public:
-      bool manualMode = false;
-
       void RobotInit() override;
       void RobotPeriodic() override;
       void AutonomousInit() override;
@@ -41,6 +42,9 @@ class Robot : public frc::TimedRobot {
       void TestPeriodic() override;
 
   private:
+
+    
+    
       DriveSubsystem db{};
       ShooterSubsystem shooter{};
       IndexerSubsystem indexer{};
@@ -48,6 +52,7 @@ class Robot : public frc::TimedRobot {
       LimelightSubsystem limelight{};
       ControlpanelSubsystem controlpanel{};
       ClimbSubsystem climb{};
+      LEDSubsystem LEDS{};
 
       Controller control{};
       Auton auton{};
@@ -64,9 +69,7 @@ class Robot : public frc::TimedRobot {
 
 };
 
-//Notes:
-//GetRawButton and GetRawButtonPressed are not the same
-//button index starts at 1
+
 
 
 

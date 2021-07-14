@@ -14,9 +14,9 @@
 class DriveSubsystem {
     
     public: 
-        void Init();
+        void RobotInit();
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
-        void Disabled();
+        void DisabledInit();
 
     private:
 
@@ -24,24 +24,21 @@ class DriveSubsystem {
         double rDrive = 0;
         const double cStraight = 1;
         const double cTurn = 1;
-        bool climbMode = false;
 
         void updateData(RobotData &robotData);
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
-        
-        void teleopControl(RobotData &robotData); // converts js inputs to desire velocity
-        void setVelocity(RobotData &robotData);
 
-        void courseCorrectedDrive(RobotData &robotData); // was only used for pid testing
+        // void courseCorrectedDrive(RobotData &robotData); // was only used for pid testing
 
-
+        void teleopControl(RobotData &robotData);
         void potato(RobotData &robotData);
         void initDriveStraight(RobotData &robotData);
         void driveStraight(RobotData &robotData);
-        void initArc(RobotData &robotData);
-        void arc(RobotData &robotData); // DOES NOT WORK
+        void initTurnInPlace(RobotData &robotData);
         void turnInPlace(RobotData &robotData);
+        // void turnToAngle(RobotData &robotData);
 
+        void setVelocity(RobotData &robotData);
         void courseCorrection(bool isForward, RobotData &robotData); //ACTUAL course correction
         
 

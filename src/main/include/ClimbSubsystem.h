@@ -2,18 +2,17 @@
 
 #include <rev/CANSparkMax.h>
 #include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
+#include <adi/ADIS16448_IMU.h>
 
 #include "RobotData.h"
-#include "Diagnostics.h"
 
 class ClimbSubsystem {
     
     public:
 
-        void Init();
-        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
-
-        void updateDiagnostics(DiagnosticsData &diagnosticsData);
+        void RobotInit();
+        void Periodic(RobotData &robotData);
 
         bool initiationRunning = false;
         bool initiated = false;
@@ -29,7 +28,8 @@ class ClimbSubsystem {
 
         bool lockToggle = true;
 
-    private:
+        int zeroLoop = 0;
+
 
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
@@ -49,9 +49,14 @@ class ClimbSubsystem {
         rev::CANEncoder climbArmLPos = climbArmL.GetEncoder();
 
         // Change CAN IDs
-        frc::Solenoid solenoidArmR{1};
-        frc::Solenoid solenoidArmL{3};
+        frc::DoubleSolenoid solenoidArm{3,1};
 
         frc::Solenoid solenoidLockR{2};
         frc::Solenoid solenoidLockL{4};
+
+        rev::CANDigitalInput climbArmRLimit = climbArmR.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
+        //rev::CANDigitalInput climbArmRLimit = climbArmR.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        frc::DigitalInput climbArmLLimit {0};
+
+        // frc::ADIS16448_IMU imu{};
 };

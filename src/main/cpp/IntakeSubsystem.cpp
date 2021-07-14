@@ -4,7 +4,7 @@
 
 
 
-void IntakeSubsystem::Init(){
+void IntakeSubsystem::RobotInit(){
 
     rollers.RestoreFactoryDefaults();
     rollers.SetInverted(true);
@@ -18,10 +18,15 @@ void IntakeSubsystem::Init(){
 
 void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
     //decide if in manual mode or auto mode
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setIntakeRollers(0);
+        setPiston(false);
     }
 
     updateDiagnostics(diagnosticsData);
@@ -30,62 +35,58 @@ void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostic
 
 void IntakeSubsystem::semiAutoMode(RobotData &robotData){
 
+    double averageDBVel = ((robotData.LdriveVel + robotData.RdriveVel) / 2);
+
     //sets the speed of the intake roller based on how fast the robot is driving 
-    double pow = -0.8;
-    if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
+    double pow = -0.9;
+    if(averageDBVel > 3500){
+        pow = -0.9;
+    }else if(averageDBVel > 2800){
         pow = -0.8;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
+    }else if(averageDBVel > 2100){
         pow = -0.7;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.5){
+    }else if(averageDBVel > 1000){
         pow = -0.6;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
-        pow = -0.5;
     }else{
-        pow = -0.4;
+        pow = -0.5;
     }
 
-    frc::SmartDashboard::PutNumber("speed", pow);
+    // frc::SmartDashboard::PutNumber("speed", pow);
 
 
-    //if in shooting mode then you want manual control of the intake
-    if (robotData.shootingMode){
-        //setPiston(true);
-        manualMode(robotData);
-
-    } else {
-        //Intake balls
-        if(robotData.sRTrigger){ //runs intake
-            if(!getPiston()){ //if the piston is up put it down
-                setPiston(true);
-            }
-            setIntakeRollers(pow);
-        }else if(robotData.sLTrigger){ //runs intake backwards
-            setIntakeRollers(robotData.sLTrigger);
-        }else{ 
-            if(getPiston()){ //if the piston is down put it up
-                setPiston(false);
-            }
-            setIntakeRollers(0);
+    //Intake balls
+    if(robotData.sRTrigger){ //runs intake
+        if(!getPiston()){ //if the piston is up put it down
+            setPiston(true);
         }
+        setIntakeRollers(pow);
+    }else if(robotData.sLTrigger){ //runs intake backwards
+        setIntakeRollers(robotData.sLTrigger);
+    }else{ 
+        if(getPiston()){ //if the piston is down put it up
+            setPiston(false);
+        }
+        setIntakeRollers(0);
     }
 }
 
 void IntakeSubsystem::manualMode(RobotData &robotData){
 
-    //sets the speed of the intake roller based on how fast the robot is driving 
-    double pow = -0.4;
-    if((robotData.Rdrive+robotData.Ldrive)/2 > 0.7){
-        pow = -0.8;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.6){
-        pow = -0.7;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.5){
-        pow = -0.6;
-    }else if((robotData.Rdrive+robotData.Ldrive)/2 > 0.4){
-        pow = -0.5;
-    }else{
-        pow = -0.4;
-    }
+    double averageDBVel = ((robotData.LdriveVel + robotData.RdriveVel) / 2);
 
+    //sets the speed of the intake roller based on how fast the robot is driving 
+    double pow = -0.9;
+    if(averageDBVel > 3500){
+        pow = -0.9;
+    }else if(averageDBVel > 2800){
+        pow = -0.8;
+    }else if(averageDBVel > 2100){
+        pow = -0.7;
+    }else if(averageDBVel > 1000){
+        pow = -0.6;
+    }else{
+        pow = -0.5;
+    }
 
     //if shift trigger run intake rollers opposite with trigger power
     if(robotData.shift){
@@ -97,16 +98,13 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
 
     //else trigger controls roller power
     }else{
-        setIntakeRollers(robotData.sRTrigger);
+        setIntakeRollers(-robotData.sRTrigger);
 
         //r bumper controls pistons
         if(robotData.sRBumper){ 
             setPiston(!getPiston());
         }
     }
-    
-   
-
 }
 
 /**
@@ -133,12 +131,10 @@ void IntakeSubsystem::setIntakeRollers(double power){
     rollers.Set(power);
 }
 
-void IntakeSubsystem::Disabled(){
+void IntakeSubsystem::DisabledInit(){
     setIntakeRollers(0);
     setPiston(false);
 }
-
-
 
 void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 {

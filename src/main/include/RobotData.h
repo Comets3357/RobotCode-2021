@@ -3,14 +3,16 @@
 // auton mode
 enum AutonSelect
 {
-    autonSelect_potato, //0
-    autonSelect_exitInitLine, //1
-    autonSelect_shootAndDrive, //2
-    autonSelect_shootAndCollectBalls, // pretty much the same as trench run //3
-    autonSelect_trenchRun, //4
-    autonSelect_stealBallsAndShootFar, //5
-    autonSelect_stealBallsAndShootClose, //6
-    autonSelect_goofy // temporary //7
+    autonSelect_potato,
+    autonSelect_exitInitLineRendezvous,
+    autonSelect_exitInitLineDriverStation,
+    autonSelect_shootAndDriveToRendezvous,
+    autonSelect_shootAndDriveToDriverStation,
+    // autonSelect_shootAndCollectBalls, 
+    autonSelect_trenchRunHalf,
+    autonSelect_trenchRunFull,
+    autonSelect_stealBallsAndShootDetour,
+    autonSelect_stealBallsAndShoot
 };
 
 // this is for drivebase auton
@@ -20,8 +22,8 @@ enum DriveMode
     driveMode_potato,
     driveMode_initDriveStraight,
     driveMode_driveStraight,
-    driveMode_arc,
-    driveMode_initArc
+    driveMode_initTurnInPlace,
+    driveMode_turnInPlace
 };
 
 //could be separated into all separate files for the data *from* each subsystem
@@ -37,6 +39,9 @@ struct RobotData
     bool shift; //shift for more button options
     bool shootingMode;
     bool climbMode = false;
+    bool limelightOn;
+    bool autonEnabled = false;
+    bool teleopEnabled = false;
 
     //L = left, R = right, p = primary, s = secondary, Btn = button
 
@@ -100,10 +105,15 @@ struct RobotData
     int targetVelocity = 0;
     bool readyShoot = false; //when flywheel reaches velocity and everything is aimed
     int roughAim;
+    int roughHood;
+    bool stopAntiJam = false;
 
     //drive base
     double Ldrive;
     double Rdrive;
+
+    double LdriveVel;
+    double RdriveVel;
 
 
     //limelight data
@@ -112,9 +122,10 @@ struct RobotData
     int targetValue;
     double calcHoodPos;
     bool validTarget;
-    bool isZero = false;
     double calcTurretPos;
     int pipeline; //for LED power
+    bool isZero = false;
+
 
     //gyro data
     //greater angle means clockwise
@@ -128,6 +139,7 @@ struct RobotData
 
     // auton stuff
     int autonStep  = 0;
+    
     AutonSelect autonSelect;    // only for diagnostics purposes; do not use
     DriveMode driveMode{driveMode_teleop};  // should have a default?
 
@@ -145,6 +157,13 @@ struct RobotData
     double currentLDBPos;
     double currentRDBPos;
     // prolly wanna check the other two encoders
+
+    //climb
+    bool climbZeroing = true;
+
+    //control panel
+    bool armUpOnRequest = false;
+    bool lastArmUp = false;
 
 
     

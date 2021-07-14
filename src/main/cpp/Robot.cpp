@@ -1,22 +1,34 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
+
 void Robot::RobotInit()
 {
-    intake.Init();
-    db.Init();
-    indexer.Init();
-    shooter.Init();
-    limelight.Init();
+    intake.RobotInit();
+    db.RobotInit();
+    indexer.RobotInit();
+    shooter.RobotInit();
+    limelight.RobotInit();
     diagnostics.LogInit();
-    controlpanel.Init();
-    climb.Init();
-
+    controlpanel.RobotInit();
+    climb.RobotInit();
+    auton.RobotInit(robotData);
 }
 
 
 
 void Robot::RobotPeriodic(){
+    LEDS.Periodic(robotData);
+    if (IsAutonomousEnabled()) {
+        robotData.autonEnabled = true;
+    } else {
+        robotData.autonEnabled = false;
+    }
+    if (IsEnabled() && !IsAutonomousEnabled()) {
+        robotData.teleopEnabled = true;
+    } else {
+        robotData.teleopEnabled = false;
+    }
     if (!IsDisabled()) {
         db.Periodic(robotData, diagnosticsData);
         intake.Periodic(robotData, diagnosticsData);
@@ -25,37 +37,37 @@ void Robot::RobotPeriodic(){
         limelight.Periodic(robotData);
         // diagnostics.LogPeriodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
-        climb.Periodic(robotData, diagnosticsData);
+        climb.Periodic(robotData);
         
     }
 }
 
 void Robot::AutonomousInit()
 {
-    auton.Init();
-    wpi::outs() << "auton init";
+    auton.AutonomousInit(robotData);
+    // wpi::outs() << "auton init";
+    // frc::SmartDashboard::PutNumber("this is the auton", robotData.autonSelect);
     
 }
 
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
-        wpi::outs() << "running auton";
-        auton.Periodic(autonSelect_trenchRun, robotData);
+        // wpi::outs() << "running auton";
+        auton.AutonomousPeriodic(robotData.autonSelect, robotData);
     }
 }
 
 void Robot::TeleopPeriodic()
 {
-    control.Periodic(robotData);
-    robotData.driveMode = driveMode_teleop;
+    control.TeleopPeriodic(robotData);
 }
 
 void Robot::DisabledInit()
 {
-    db.Disabled();
-    indexer.Disabled();
-    intake.Disabled();
-    // shooter.Disabled();
+    db.DisabledInit();
+    indexer.DisabledInit();
+    intake.DisabledInit();
+    shooter.DisabledInit();
 }
 
 void Robot::TestInit()

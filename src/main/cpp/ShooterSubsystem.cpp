@@ -4,7 +4,7 @@
 #include "ShooterSubsystem.h"
 
 
-void ShooterSubsystem::Init(){
+void ShooterSubsystem::RobotInit(){
     shooterWheelM.RestoreFactoryDefaults();
     shooterWheelS.RestoreFactoryDefaults();
     shooterHood.RestoreFactoryDefaults();
@@ -69,16 +69,22 @@ void ShooterSubsystem::Init(){
 
 void ShooterSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
 
-    frc::SmartDashboard::PutNumber("hood Position",  getHoodPos()); 
-    frc::SmartDashboard::PutNumber("turret Position",  getTurretPos()); 
-    frc::SmartDashboard::PutNumber("calc hood pos",  robotData.calcHoodPos); 
+    // frc::SmartDashboard::PutNumber("hood Position",  getHoodPos()); 
+    // frc::SmartDashboard::PutNumber("turret Position",  getTurretPos()); 
+    // frc::SmartDashboard::PutNumber("calc hood pos",  robotData.calcHoodPos); 
 
     updateData(robotData);
 
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setHood(0);
+        setTurret(0);
+        setWheel(0);
     }
 
     updateDiagnostics(diagnosticsData);
@@ -95,103 +101,116 @@ void ShooterSubsystem::updateData(RobotData &robotData){
 void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
    //retreive controller input
-    frc::SmartDashboard::PutNumber("x", robotData.xOffset);
-    frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
-    frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
-    frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
-    frc::SmartDashboard::PutBoolean("turret limit", getTurretLimitSwitch());
+    // frc::SmartDashboard::PutNumber("x", robotData.xOffset);
+    // frc::SmartDashboard::PutNumber("Wheel vel", getWheelVel());
+    // frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
+    // frc::SmartDashboard::PutNumber("calc hood", robotData.calcHoodPos);
+
+    // frc::SmartDashboard::PutBoolean("hoodlimit", getHoodLimitSwitch());
+    // frc::SmartDashboard::PutBoolean("turret limit", getTurretLimitSwitch());
 
 
     //if you're shooting 
-    if (robotData.shootingMode){ 
-        turretSnapshot = getTurretPos();
-
-        //if we're close to the target the velocity doesn't need to be as high, gets us shooting faster
-        if(robotData.yOffset > 5){
-            robotData.targetVelocity = 2400;
-        }else{
-            robotData.targetVelocity = 3000;
-        }
-    
-        //if the bot can see a target
-        if(robotData.targetValue != 0){
-
-            //Use PID to set Hood and Turret based off limelight values
-            shooterHoodPID.SetReference(robotData.calcHoodPos, rev::ControlType::kPosition);
-            shooterTurretPID.SetReference(robotData.calcTurretPos + getTurretPos(), rev::ControlType::kPosition);
-            
-            //uses PID to get the shooter wheel up to speed and stay there
-            shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
-
-            //once the shooter has high enough velocity and is aimed correctly tell robot to begin shooting (start indexer)
-            if ((getWheelVel() > robotData.targetVelocity) && (std::abs(getTurretPos() - (turretSnapshot + robotData.calcTurretPos)) <= 1) && (std::abs(getHoodPos() - robotData.calcHoodPos) <= 2) ){
-                robotData.readyShoot = true;
-            }else{
-                robotData.readyShoot = false;
-            }
-
-        }
-        //robotData.isZero = false;
+    if(getTurretLimitSwitch()){ //for the beginning of the math zero the turret 
+        setTurretPos(0);
+        robotData.isZero = true;
+    }else if(!robotData.isZero){
+        setTurret(-0.1);
+    }else if(robotData.isZero){
+        
+        //adding the two left/right pov buttons to turn the turret left/right
         
 
-    } else {  //not shooting
+        if (robotData.shootingMode){ 
+            turretSnapshot = getTurretPos();
 
-    
-        //spins up flywheel beforehand
-        if(robotData.sBBtn){
-            shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
-        }else{
-            if(getWheelVel() < 1200){ //once the flywheel reaches a low enough velocity begin constant velociy
-                shooterWheelMPID.SetReference(1000, rev::ControlType::kVelocity, 1); //uses second pid
+            //if we're close to the target the velocity doesn't need to be as high, gets us shooting faster
+            if(robotData.yOffset > 5){
+                robotData.targetVelocity = 2400;
             }else{
-                setWheel(0); //starts the shooting wheel slowing down
+                robotData.targetVelocity = 3000;
+            }
+        
+            //if the bot can see a target
+            if(robotData.targetValue != 0){
+
+                //Use PID to set Hood and Turret based off limelight values
+                shooterHoodPID.SetReference(robotData.calcHoodPos, rev::ControlType::kPosition);
+                shooterTurretPID.SetReference(robotData.calcTurretPos + getTurretPos(), rev::ControlType::kPosition);
+                
+                //uses PID to get the shooter wheel up to speed and stay there
+                shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
+                
+                if (getWheelVel() > robotData.targetVelocity - 0)
+                {
+                    robotData.stopAntiJam = true;
+                }
+                else {
+                    robotData.stopAntiJam = false;
+                }
+
+                //once the shooter has high enough velocity and is aimed correctly tell robot to begin shooting (start indexer)
+                if ((getWheelVel() > robotData.targetVelocity) && (std::abs(getTurretPos() - (turretSnapshot + robotData.calcTurretPos)) <= 1) && (std::abs(getHoodPos() - robotData.calcHoodPos) <= 2) ){
+                    robotData.readyShoot = true;
+                }else{
+                    robotData.readyShoot = false;
+                }
+
+            }
+            //robotData.isZero = false;
+            
+
+        } else {  //not shooting
+
+            //set the turret to face forward
+            shooterTurretPID.SetReference(12 + (robotData.roughAim*4.5), rev::ControlType::kPosition);
+            //spins up flywheel beforehand
+            if(robotData.sBBtn){
+                shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
+            }else{
+                if(getWheelVel() < 1200){ //once the flywheel reaches a low enough velocity begin constant velociy
+                    shooterWheelMPID.SetReference(1000, rev::ControlType::kVelocity, 1); //uses second pid
+                }else{
+                    setWheel(0); //starts the shooting wheel slowing down
+                }
+
+
             }
 
+            
+
+            robotData.readyShoot = false;
+
+            //zeros the hood after
+            setHood(-0.2);
+            if(getHoodLimitSwitch()){
+                setHoodPos(0);
+                setHood(0);
+            }
 
         }
 
-        if(getTurretLimitSwitch()){ //for the beginning of the math zero the turret 
-            setTurretPos(0);
-            robotData.isZero = true;
-        }else if(!robotData.isZero){
-            setTurret(0.1);
-        }else if(robotData.isZero){
-            //set the turret to face forward
-            //adding the two left/right pov buttons to turn the turret left/right
-            shooterTurretPID.SetReference(-9.25 + (robotData.roughAim*4.5), rev::ControlType::kPosition);
-        }
 
-        robotData.readyShoot = false;
-
-        //zeros the hood after
-        setHood(-0.2);
-        if(getHoodLimitSwitch()){
-            setHoodPos(0);
-            setHood(0);
-        }
 
     }
+    
+
+    
 
 }
 
 void ShooterSubsystem::manualMode(RobotData &robotData){
     
-    frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
+    // frc::SmartDashboard::PutNumber("turret pos", getTurretPos());
 
     //make hood and turret moveable by joystick
     setTurret(robotData.sLYStick*.1);
 
     if(robotData.sBBtn){
-        //zeros hood using limitswitch
-        // setHood(-0.1);     
-        // if(getHoodLimitSwitch()){
-        //     setHoodPos(0);
-        //     setHood(0);
-        // }
-
         //spins the flywheel up beforehand
         shooterWheelMPID.SetReference(3400, rev::ControlType::kVelocity);
     }else{
+        setWheel(0);
         setHood(robotData.sRYStick*.1);
     }
 
@@ -235,6 +254,8 @@ void ShooterSubsystem::setWheel(double power){
 double ShooterSubsystem::getWheelVel(){
     return shooterWheelMPOS.GetVelocity();
 }
+
+
 
 
 
@@ -305,8 +326,8 @@ void ShooterSubsystem::setShooterPID(rev::CANPIDController motor, int pidSlot, d
 
 }
 
-// void ShooterSubsystem::Disabled(){
-//     setHood(0);
-//     setTurret(0);
-//     setWheel(0);
-// }
+void ShooterSubsystem::DisabledInit(){
+    setHood(0);
+    setTurret(0);
+    setWheel(0);
+}

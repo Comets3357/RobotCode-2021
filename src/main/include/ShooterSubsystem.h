@@ -12,8 +12,8 @@ class ShooterSubsystem {
     
     public:
 
-        void Init();
-        void Disabled();
+        void RobotInit();
+        void DisabledInit();
         void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
         
 
@@ -28,6 +28,7 @@ class ShooterSubsystem {
         double getTurretPos();
         double getWheelPos();
         double getWheelVel();
+        double getHoodOffset();
         bool getTurretLimitSwitch();
         bool getHoodLimitSwitch();
 
@@ -37,6 +38,7 @@ class ShooterSubsystem {
         void setWheel(double power);
         void setHoodPos(double pos);
         void setTurretPos(double pos);
+
 
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
@@ -68,7 +70,7 @@ class ShooterSubsystem {
         rev::CANEncoder shooterWheelSPOS = shooterWheelS.GetEncoder();
 
 //limit switches;
-        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        rev::CANDigitalInput turretReverseLimit = shooterTurret.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
         rev::CANDigitalInput hoodReverseLimit = shooterHood.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
 
 //PIDs;
