@@ -18,6 +18,17 @@ void Robot::RobotInit()
 
 
 void Robot::RobotPeriodic(){
+    LEDS.Periodic(robotData);
+    if (IsAutonomousEnabled()) {
+        robotData.autonEnabled = true;
+    } else {
+        robotData.autonEnabled = false;
+    }
+    if (IsEnabled() && !IsAutonomousEnabled()) {
+        robotData.teleopEnabled = true;
+    } else {
+        robotData.teleopEnabled = false;
+    }
     if (!IsDisabled()) {
         db.Periodic(robotData, diagnosticsData);
         intake.Periodic(robotData, diagnosticsData);
@@ -42,7 +53,6 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic() {
     if (!IsDisabled()) {
         // wpi::outs() << "running auton";
-        frc::SmartDashboard::PutNumber("timer", robotData.seconds);
         auton.AutonomousPeriodic(robotData.autonSelect, robotData);
     }
 }
