@@ -56,7 +56,7 @@ class ClimbSubsystem {
 
         rev::CANDigitalInput climbArmRLimit = climbArmR.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
 
-        rev::CANDigitalInput climbArmLLimit = climbArmL.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
+        rev::CANDigitalInput climbArmLLimit = climbArmL.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
 
         //rev::CANDigitalInput climbArmRLimit = climbArmR.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
         // frc::DigitalInput climbArmLLimit {0};
