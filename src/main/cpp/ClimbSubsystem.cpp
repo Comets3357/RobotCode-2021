@@ -100,7 +100,7 @@ void ClimbSubsystem::RobotInit(){
     // imu.Reset();
 }
 
-void ClimbSubsystem::Periodic(RobotData &robotData){
+void ClimbSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
 
 
     frc::SmartDashboard::PutNumber("left",  climbArmLLimit.Get());
@@ -170,6 +170,8 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
         
         
     }
+
+    updateDiagnostics(diagnosticsData);
 }
 
 void ClimbSubsystem::manualMode(RobotData &robotData){
@@ -349,4 +351,26 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
 
     
 
+}
+
+
+void ClimbSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    diagnosticsData.mControlCurrents.at(34) = climbArmL.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(34) = climbArmL.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(34) = climbArmL.GetMotorTemperature();
+    diagnosticsData.mControlPositions.at(34) = climbArmLPos.GetPosition();
+    diagnosticsData.mControlVelocities.at(34) = climbArmLPos.GetVelocity();
+    diagnosticsData.mControlFaults.at(34) = climbArmL.GetFaults();
+
+    diagnosticsData.mControlCurrents.at(35) = climbArmR.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(35) = climbArmR.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(35) = climbArmR.GetMotorTemperature();
+    diagnosticsData.mControlPositions.at(35) = climbArmRPos.GetPosition();
+    diagnosticsData.mControlVelocities.at(35) = climbArmRPos.GetVelocity();
+    diagnosticsData.mControlFaults.at(35) = climbArmR.GetFaults();
+
+    diagnosticsData.solenoidArm = solenoidArm.Get();
+    diagnosticsData.solenoidArm = solenoidLockL.Get();
+    diagnosticsData.solenoidArm = solenoidLockR.Get();
 }

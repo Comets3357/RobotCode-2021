@@ -24,7 +24,7 @@ void ControlpanelSubsystem::RobotInit(){
 
 }
 
-void ControlpanelSubsystem::Periodic(RobotData &robotData){
+void ControlpanelSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
   if (robotData.climbMode) {
     if(robotData.manualMode){
         manualMode(robotData);
@@ -32,6 +32,8 @@ void ControlpanelSubsystem::Periodic(RobotData &robotData){
         semiAutoMode(robotData);
     }
   }
+
+  updateDiagnostics(diagnosticsData);
 
 } 
 
@@ -163,3 +165,15 @@ void ControlpanelSubsystem::Disabled(){
 
 }
 
+
+void ControlpanelSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+  diagnosticsData.mControlCurrents.at(41) = cpManipulator.GetOutputCurrent();
+  diagnosticsData.mControlVoltages.at(41) = cpManipulator.GetBusVoltage();
+  diagnosticsData.mControlTemps.at(41) = cpManipulator.GetMotorTemperature();
+
+  diagnosticsData.mControlPositions.at(41) = cpManipulatorEncoder.GetPosition();
+  diagnosticsData.mControlVelocities.at(41) = cpManipulatorEncoder.GetVelocity();
+
+  diagnosticsData.mControlFaults.at(41) = cpManipulator.GetFaults();
+}

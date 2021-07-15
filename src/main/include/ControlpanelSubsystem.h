@@ -2,23 +2,26 @@
 
 #include <frc/TimedRobot.h>
 #include <rev/CANSparkMax.h>
+#include <string>
+
 #include "rev/ColorSensorV3.h"
 #include "rev/ColorMatch.h"
 #include "RobotData.h"
-#include <string>
+#include "Diagnostics.h"
 
 
 class ControlpanelSubsystem {
     
     public: 
         void RobotInit();
-        void Periodic(RobotData &RobotData);
+        void Periodic(RobotData &RobotData, DiagnosticsData &diagnosticsData);
         void Disabled();
 
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
 
     private:
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
         bool rotating = false;
         int colorsPast = 0;
@@ -34,6 +37,7 @@ class ControlpanelSubsystem {
 //motors:
         static const int cpManipulatorID = 41;
         rev::CANSparkMax cpManipulator{cpManipulatorID, rev::CANSparkMax::MotorType::kBrushless};
+        rev::CANEncoder cpManipulatorEncoder = cpManipulator.GetEncoder();
 
         static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
         rev::ColorSensorV3 m_colorSensor{i2cPort};
