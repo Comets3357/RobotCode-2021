@@ -6,13 +6,16 @@
 #include <adi/ADIS16448_IMU.h>
 
 #include "RobotData.h"
+#include "Diagnostics.h"
 
 class ClimbSubsystem {
     
     public:
 
         void RobotInit();
-        void Periodic(RobotData &robotData);
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
         bool initiationRunning = false;
         bool initiated = false;
