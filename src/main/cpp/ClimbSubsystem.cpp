@@ -108,6 +108,11 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
 
     frc::SmartDashboard::PutNumber("climb mode",  robotData.climbMode);
 
+    frc::SmartDashboard::PutNumber("climbArmL",  climbArmL.Get());
+    frc::SmartDashboard::PutNumber("climbArmR",  climbArmR.Get());
+
+    // frc::SmartDashboard::PutNumber("isZero",  robotData);
+
     //manualMode(robotData);
 
     /* if (robotData.sBBtn) {
@@ -135,7 +140,7 @@ void ClimbSubsystem::Periodic(RobotData &robotData){
         }
     } else {
         zeroLoop += 1;
-        if (robotData.sXBtn){
+        if (robotData.sLYStickBtn){
             climbArmLPos.SetPosition(0);
             climbArmRPos.SetPosition(0);
             climbArmL.Set(0);
@@ -210,17 +215,29 @@ void ClimbSubsystem::manualMode(RobotData &robotData){
     } else {
         solenoidArm.Set(solenoidArm.kForward);
     }
+
+    if (!solenoidLockL.Get() && climbArmL.Get() < 0) {
+        climbArmL.Set(0);
+    }
+
+    if (!solenoidLockR.Get() && climbArmR.Get() < 0) {
+        climbArmR.Set(0);
+    }
 }
 
 void ClimbSubsystem::semiAutoMode(RobotData &robotData){
 
-    if (robotData.armUpOnRequest != robotData.lastArmUp && startingPhase == 0) {
-        if (robotData.armUpOnRequest){
-            solenoidArm.Set(solenoidArm.kForward);
-        } else {
-            solenoidArm.Set(solenoidArm.kReverse);
+    if (robotData.armUpOnRequest && startingPhase == 0 && !initiated && !initiationRunning) {
+        if (robotData.armUpOnRequest) {
+            if (robotData.lastArmUp) {
+                solenoidArm.Set(solenoidArm.kForward);
+            } else {
+                solenoidArm.Set(solenoidArm.kReverse);
+            }
         }
-        robotData.lastArmUp = robotData.armUpOnRequest;
+        robotData.armUpOnRequest = false;
+    } else {
+        robotData.armUpOnRequest = false;
     }
 
     // Climb inititation
@@ -238,7 +255,7 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
         timer += 1;
         climbArmR.Set(0.2);
         climbArmL.Set(0.2);
-        if (timer > 20){
+        if (timer > 30){
             if (climbArmRPos.GetPosition() > -80 || climbArmLPos.GetPosition() > -80) {//i dont know the exact numbers yet
                 solenoidArm.Set(solenoidArm.kReverse);
                 if (climbArmRPos.GetPosition() > -80) {
@@ -261,13 +278,13 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
             }
         }
     } else if (initiationRunning && initiated) {
-        if (climbArmRPos.GetPosition() < 0 || climbArmLPos.GetPosition() < 0) {
-            if (climbArmLPos.GetPosition() < 0){
+        if (climbArmRPos.GetPosition() < -5 || climbArmLPos.GetPosition() < -5) {
+            if (climbArmLPos.GetPosition() < -5){
                 climbArmL.Set(0.3);
             } else {
                 climbArmL.Set(0);
             }
-            if (climbArmRPos.GetPosition() < 0){
+            if (climbArmRPos.GetPosition() < -5){
                 climbArmR.Set(0.3);
             } else {
                 climbArmR.Set(0);
@@ -279,6 +296,8 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
             initiated = false;
             initiationRunning = false;
             timer = 0;
+            robotData.climbZeroing = true;
+
         }
     }
 
@@ -320,31 +339,40 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
             climbArmR.Set(0);
             climbArmL.Set(0);
         } else if (robotData.robotTiltAngle > 4){
-            startingPhase = 3;
+            startingPhase = 0;
             timer = 0;
         } else if (robotData.robotTiltAngle < -4){
-            startingPhase = 3;
+            startingPhase = 0;
             timer = 0;
         }
-    } else if (startingPhase == 3){
+    }
+    // } else if (startingPhase == 3){
 
-        solenoidLockR.Set(true);
-        climbArmR.Set(0.2);
-        timer += 1;
-        if (timer > 10) {
-            climbArmR.Set(0);
-            climbArmL.Set(0);
-            if (robotData.robotTiltAngle > 4){
-                climbArmR.Set(-0.2);//i dont know the exact numbers yet
-            } else if (robotData.robotTiltAngle < -4){
-                climbArmR.Set(0.5);//i dont know the exact numbers yet
-            } else {
-                startingPhase = 2;
-                climbArmR.Set(0);//i dont know the exact numbers yet
-                climbArmL.Set(0);//i dont know the exact numbers yet
-                solenoidLockR.Set(false);
-            }
-        }
+    //     solenoidLockR.Set(true);
+    //     climbArmR.Set(0.2);
+    //     timer += 1;
+    //     if (timer > 10) {
+    //         climbArmR.Set(0);
+    //         climbArmL.Set(0);
+    //         if (robotData.robotTiltAngle > 4){
+    //             climbArmR.Set(-0.2);//i dont know the exact numbers yet
+    //         } else if (robotData.robotTiltAngle < -4){
+    //             climbArmR.Set(0.5);//i dont know the exact numbers yet
+    //         } else {
+    //             startingPhase = 2;
+    //             climbArmR.Set(0);//i dont know the exact numbers yet
+    //             climbArmL.Set(0);//i dont know the exact numbers yet
+    //             solenoidLockR.Set(false);
+    //         }
+    //     }
+    // }
+
+    if (!solenoidLockL.Get() && climbArmL.Get() < 0) {
+        climbArmL.Set(0);
+    }
+
+    if (!solenoidLockR.Get() && climbArmR.Get() < 0) {
+        climbArmR.Set(0);
     }
 
     

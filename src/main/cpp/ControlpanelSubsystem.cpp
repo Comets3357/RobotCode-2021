@@ -25,6 +25,10 @@ void ControlpanelSubsystem::RobotInit(){
 }
 
 void ControlpanelSubsystem::Periodic(RobotData &robotData){
+  frc::SmartDashboard::PutNumber("armup", armUp);
+  frc::SmartDashboard::PutNumber("armtoggle",  armToggle);
+  frc::SmartDashboard::PutNumber("armuponrequest",  robotData.armUpOnRequest);
+  frc::SmartDashboard::PutNumber("lastarm",  robotData.lastArmUp);
   if (robotData.climbMode) {
     if(robotData.manualMode){
         manualMode(robotData);
@@ -70,9 +74,10 @@ void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
         rotating = false;
         cpManipulator.Set(0);
         colorsPast = 0;
+        lastColor = " ";
       }
+      rotatingToggle = false;
     }
-    rotatingToggle = false;
   } else {
     rotatingToggle = true;
   }
@@ -112,7 +117,7 @@ void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
     }
   }
 
-  if (rotating && (lastColor != colorString)){
+  if (rotating && lastColor != colorString){
     colorsPast += 1;
     lastColor = colorString;
   }
@@ -128,11 +133,13 @@ void ControlpanelSubsystem::semiAutoMode(RobotData &robotData){
     
     if (armToggle){
       if (!armUp){
-        robotData.armUpOnRequest = false;
+        robotData.armUpOnRequest = true;
         armUp = true;
+        robotData.lastArmUp = true;
       } else {
         robotData.armUpOnRequest = true;
         armUp = false;
+        robotData.lastArmUp = false;
       }
     }
     armToggle = false;

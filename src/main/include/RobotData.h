@@ -74,6 +74,8 @@ struct RobotData
 
     //sStick
 
+    bool sLYStickBtn;
+
     double sLXStick;
     double sLYStick = 0;
     double sRXStick;

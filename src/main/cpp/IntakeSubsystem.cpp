@@ -59,7 +59,7 @@ void IntakeSubsystem::semiAutoMode(RobotData &robotData){
         if(!getPiston()){ //if the piston is up put it down
             setPiston(true);
         }
-        setIntakeRollers(pow);
+        setIntakeRollers(pow + 0.15);
     }else if(robotData.sLTrigger){ //runs intake backwards
         setIntakeRollers(robotData.sLTrigger);
     }else{ 
@@ -91,7 +91,7 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
     //if shift trigger run intake rollers opposite with trigger power
     if(robotData.shift){
         if(robotData.sRTrigger){
-            setIntakeRollers(robotData.sRTrigger*-pow);
+            setIntakeRollers((robotData.sRTrigger*-pow) + 0.15);
         } else {
             setIntakeRollers(0);
         }
