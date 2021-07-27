@@ -163,12 +163,12 @@ void DriveSubsystem::teleopControl(RobotData &robotData)
     double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
     
     //deadzone NOT needed for drone controller
-    if(robotData.pLYStick <= -.08 || robotData.pLYStick >= .08){
+    if(robotData.pLYStick <= -.1 || robotData.pLYStick >= .1){
         lDrive = (frontBack - leftRight);
     } else {
        lDrive = 0;
     }
-    if(robotData.pRYStick <= -.08 || robotData.pRYStick >= .08){
+    if(robotData.pRYStick <= -.1 || robotData.pRYStick >= .1){
         rDrive = (frontBack + leftRight);
     } else {
        rDrive = 0;
