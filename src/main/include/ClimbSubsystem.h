@@ -2,6 +2,7 @@
 
 #include <rev/CANSparkMax.h>
 #include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
 #include <adi/ADIS16448_IMU.h>
 
 #include "RobotData.h"
@@ -10,32 +11,26 @@ class ClimbSubsystem {
     
     public:
 
-        void Init();
+        void RobotInit();
         void Periodic(RobotData &robotData);
 
         bool initiationRunning = false;
         bool initiated = false;
 
-        int startingPhase = 0;
-
-        double voltageTargetL;
-        double voltageTargetR;
-
-        int timer;
+        bool climbing = false;
 
         bool movingLeft = false;
 
         bool lockToggle = true;
 
-    private:
+        int zeroLoop = 0;
+
 
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
 
-        void setPistonR(bool direction);
-        void setPistonL(bool direction);
-        void setLockR(bool direction);
-        void setLockL(bool direction);
+        void climbRunToPosition(double pos, double pow);
+        void climbLevel(double degree, double degreeRange);
 
         // Change SparkMax IDs
         static const int climbArmRID = 34;
@@ -47,11 +42,17 @@ class ClimbSubsystem {
         rev::CANEncoder climbArmLPos = climbArmL.GetEncoder();
 
         // Change CAN IDs
-        frc::Solenoid solenoidArmR{1};
-        frc::Solenoid solenoidArmL{3};
+        frc::DoubleSolenoid solenoidArm{3,1};
 
         frc::Solenoid solenoidLockR{2};
         frc::Solenoid solenoidLockL{4};
 
-        frc::ADIS16448_IMU imu{};
+        rev::CANDigitalInput climbArmRLimit = climbArmR.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
+
+        rev::CANDigitalInput climbArmLLimit = climbArmL.GetForwardLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyOpen);
+
+        //rev::CANDigitalInput climbArmRLimit = climbArmR.GetReverseLimitSwitch(rev::CANDigitalInput::LimitSwitchPolarity::kNormallyClosed);
+        // frc::DigitalInput climbArmLLimit {0};
+
+        // frc::ADIS16448_IMU imu{};
 };

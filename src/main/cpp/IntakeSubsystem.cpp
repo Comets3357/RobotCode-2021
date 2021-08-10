@@ -4,189 +4,113 @@
 
 
 
-void IntakeSubsystem::Init(){
-    //just the basics to start off
+void IntakeSubsystem::RobotInit(){
+
     rollers.RestoreFactoryDefaults();
     rollers.SetInverted(true);
     rollers.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-
-/*  intakePivot_pidController.SetP(pkP);
-    intakePivot_pidController.SetI(pkI);
-    intakePivot_pidController.SetD(pkD);
-    intakePivot_pidController.SetIZone(pkIz);
-    intakePivot_pidController.SetFF(pkFF);
-    intakePivot_pidController.SetOutputRange(pkMinOutput, pkMaxOutput);
-
-    wheels_pidController.SetP(wkP);
-    wheels_pidController.SetI(wkI);
-    wheels_pidController.SetD(wkD);
-    wheels_pidController.SetIZone(wkIz);
-    wheels_pidController.SetFF(wkFF);
-    wheels_pidController.SetOutputRange(wkMinOutput, wkMaxOutput);
- */
-
     rollers.SetSmartCurrentLimit(45);
-
-
+    setIntakeRollers(0);
+    setPiston(false);
+    setIntakeRollers(0);
 
 }
 
-void IntakeSubsystem::SetPivot(int Position){
-    if (intakePivotPOS.GetPosition() > Position+1){
-        intakePivot.Set(-0.2);
-    } else if (intakePivotPOS.GetPosition() < Position-1){
-        intakePivot.Set(0.2);
-    } else{
-        intakePivot.Set(0);
-    }
-}
-
-void IntakeSubsystem::Periodic(frc::Joystick &sStick, IndexerSubsystem &index){
-    if (index.ball3 == 1){
-
-        if (index.getPOS() < 5){
-            index.setIndexerBelt(0.5);
-        } else{
-            //index.setIndexerBelt(0);
-            index.ball3 = 2;
-            index.intakeRun = true;
-        }
-
-    } else if (index.ball4){
-
-        // if(wheelsPOS.GetPosition() < -2){
-        //     wheels.Set(-0.2);
-            
-        
-        // } else{
-        //     index.intakeRun = true;
-        //     index.ball4 = false;
-        // }
-    } else if (index.ball5){
-        // if (intakePivotPOS.GetPosition() > 1){
-        //     intakePivot.Set(-0.2);
-        //     wheelsPOS.SetPosition(0);
-        // } else if (intakePivotPOS.GetPosition() < -1){
-        //     intakePivot.Set(0.25);
-        //     wheelsPOS.SetPosition(0);
-        // } else if(wheelsPOS.GetPosition() < 1){
-        //     intakePivot.Set(0);
-        //     wheels.Set(0.2);
-            
-        
-        // } else{
-        //     index.intakeRun = true;
-        //     index.ball5 = false;
-        // }
-    }
-    //go back button for intake
-    run = index.IntakeRun();
-      
-    if (sStick.GetRawButton(1)){
-        goBack = false;
-        
-        wheels.Set(0);
-        
-        //index.setIndexerBelt(0);
-    }
-}
-
-    //toggle between manual and auto
-    if (sStick.GetRawButton(8) && !manualIntakeButtonDown && run){
-        if (!manualIntake){
-            manualIntake = true;
-            manualIntakeButtonDown = true;  
-        } else if (manualIntake){
-            manualIntake = false;
-            manualIntakeButtonDown = true;
-        }
-    } else if (!sStick.GetRawButton(8)){
-        manualIntakeButtonDown = false;
-    }
-
-    //manual intake
-    if (manualIntake && !goBack && run){
-
-        if (sStick.GetRawAxis(3) > 0.5){
-            
-            if (intakePivotPOS.GetPosition() < 13){
-                intakePivot.Set(0.1);
-                
-                wheels.Set(0.3);
-                
-            
-            } else{
-                intakePivot.Set(0);
-                if (wheelsPOS.GetVelocity() < 1150){
-                    //index.setIndexerBelt(0.36);
-
-                } else{
-                    //index.setIndexerBelt(0);
-                }
-
-            }
-        } else{
-            
-            wheels.Set(0);
-            
-            
-            if (intakePivotPOS.GetPosition() > 0){
-                intakePivot.Set(-0.1);
-            
-            } else{
-                intakePivot.Set(0);
-            }
-            
-        }
-        
-    //automatic intake
-    } else if (!manualIntake && !goBack && run){
-        if (sStick.GetRawAxis(3) > 0.5){
-            
-            wheels.Set(0.3);
-              
-            
-            if (wheelsPOS.GetVelocity() > 1200){
-                wheelsIntake = true;
-            }
-            if (wheelsPOS.GetVelocity() < 1150 && wheelsIntake){
-                //index.setIndexerBelt(0.36);
-
-            } else{
-                //index.setIndexerBelt(0);
-            }
+void IntakeSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
+    //decide if in manual mode or auto mode
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
         } else {
-            wheelsIntake = false;
-            
-            wheels.Set(0);
-            
-            
+            semiAutoMode(robotData);
         }
-
-    }
-
-    
-    frc::SmartDashboard::PutNumber("Encoder Position", wheelsPOS.GetPosition());
-    frc::SmartDashboard::PutNumber("intake velocity", wheelsPOS.GetVelocity());
-
-void IntakeSubsystem::manualMode(RobotData &robotData){
-
-    if(robotData.sLTrigger){
-        setPiston(true);
-    } else {
+    }else{
+        setIntakeRollers(0);
         setPiston(false);
     }
 
-    if(robotData.sLBumper){
-        setIntakeRollers(0.3*robotData.shift);
-    } else {
-        setIntakeRollers(0);
-    }
-
+    updateDiagnostics(diagnosticsData);
 }
 
 
-void IntakeSubsystem::setPiston(bool direction){
+void IntakeSubsystem::semiAutoMode(RobotData &robotData){
+
+    double averageDBVel = ((robotData.LdriveVel + robotData.RdriveVel) / 2);
+
+    //sets the speed of the intake roller based on how fast the robot is driving 
+    double pow = -0.9;
+    if(averageDBVel > 3500){
+        pow = -0.9;
+    }else if(averageDBVel > 2800){
+        pow = -0.8;
+    }else if(averageDBVel > 2100){
+        pow = -0.7;
+    }else if(averageDBVel > 1000){
+        pow = -0.6;
+    }else{
+        pow = -0.5;
+    }
+
+    // frc::SmartDashboard::PutNumber("speed", pow);
+
+
+    //Intake balls
+    if(robotData.sRTrigger){ //runs intake
+        if(!getPiston()){ //if the piston is up put it down
+            setPiston(true);
+        }
+        setIntakeRollers(pow + 0.15);
+    }else if(robotData.sLTrigger){ //runs intake backwards
+        setIntakeRollers(robotData.sLTrigger);
+    }else{ 
+        if(getPiston()){ //if the piston is down put it up
+            setPiston(false);
+        }
+        setIntakeRollers(0);
+    }
+}
+
+void IntakeSubsystem::manualMode(RobotData &robotData){
+
+    double averageDBVel = ((robotData.LdriveVel + robotData.RdriveVel) / 2);
+
+    //sets the speed of the intake roller based on how fast the robot is driving 
+    double pow = -0.9;
+    if(averageDBVel > 3500){
+        pow = -0.9;
+    }else if(averageDBVel > 2800){
+        pow = -0.8;
+    }else if(averageDBVel > 2100){
+        pow = -0.7;
+    }else if(averageDBVel > 1000){
+        pow = -0.6;
+    }else{
+        pow = -0.5;
+    }
+
+    //if shift trigger run intake rollers opposite with trigger power
+    if(robotData.shift){
+        if(robotData.sRTrigger){
+            setIntakeRollers((robotData.sRTrigger*-pow) + 0.15);
+        } else {
+            setIntakeRollers(0);
+        }
+
+    //else trigger controls roller power
+    }else{
+        setIntakeRollers(-robotData.sRTrigger);
+
+        //r bumper controls pistons
+        if(robotData.sRBumper){ 
+            setPiston(!getPiston());
+        }
+    }
+}
+
+/**
+ * @param direction false is retracted and true is extended
+ */
+void IntakeSubsystem::setPiston(bool direction){  
     if (direction){
         solenoidOne.Set(true);
     } else {
@@ -195,9 +119,37 @@ void IntakeSubsystem::setPiston(bool direction){
     
 }
 
+bool IntakeSubsystem::getPiston(){
+    if(solenoidOne.Get() == true){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 void IntakeSubsystem::setIntakeRollers(double power){
     rollers.Set(power);
 }
 
+void IntakeSubsystem::DisabledInit(){
+    setIntakeRollers(0);
+    setPiston(false);
+}
 
+void IntakeSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * solenoidOne
+     * intake rollers 32
+     */
+    diagnosticsData.solenoidOneValue = solenoidOne.Get();
 
+    diagnosticsData.mControlCurrents.at(32) = rollers.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(32) = rollers.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(32) = rollers.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(32) = rollersEncoder.GetPosition();
+    diagnosticsData.mControlVelocities.at(32) = rollersEncoder.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(32) = rollers.GetFaults();
+}

@@ -1,120 +1,162 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/shuffleboard/Shuffleboard.h>
 
-void IndexerSubsystem::Init(){
+
+void IndexerSubsystem::RobotInit(){
     centerSpindle.RestoreFactoryDefaults();
     centerSpindle.SetInverted(false);
+    centerSpindle.SetInverted(true);
+
     centerSpindle.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     centerSpindle.SetSmartCurrentLimit(45);
 }
-//only setting power when needed according to shooter file
-//not much more is needed since we'll have to change everything for the spindexer
 
-void IndexerSubsystem::Periodic(RobotData &robotData){
-    if(robotData.manualMode){
-        manualMode(robotData);
-    } else {
-        semiAutoMode(robotData);
+
+void IndexerSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
+    if(!robotData.climbMode){
+        if(robotData.manualMode){
+            manualMode(robotData);
+        } else {
+            semiAutoMode(robotData);
+        }
+    }else{
+        setOmniWheel(0);
+        setCenterSpindle(0);
     }
+    
+
+    updateDiagnostics(diagnosticsData);
 
 }
 
 void IndexerSubsystem::semiAutoMode(RobotData &robotData){
-    shootPOV = robotData.sDPad;
-    frc::SmartDashboard::PutNumber("spinner",  robotData.sRYStick);
 
-    if(shootPOV == 0){
+    //if shooting
+    if(robotData.shootingMode){
 
-        if(robotData.readyShoot){
-            setOmniWheel(-0.6);
-        } else {
-            setOmniWheel(0.3);
-        }
-    } else if (shootPOV == -1){
+        //if the limelight can see a target
+        if(robotData.targetValue != 0){
 
-        // setSpinner(0);
-        // setOmni(0);
+            //retrieve data from shooter for when shooting wheel is up to speed etc.
+            if(robotData.readyShoot){
+                setCenterSpindle(0.47 * 0.7);
 
-    } else {
-        indexerBelt.Set(-0.3);
-    }
-
-}
-void IndexerSubsystem::Reset(){
-    indexerBeltPOS.SetPosition(0);
-}
-
-double IndexerSubsystem::getPOS(){
-    return indexerBeltPOS.GetPosition();
-
-}
-
-bool IndexerSubsystem::getGoBack(){
-    return goBack;
-}
-
-bool IndexerSubsystem::IntakeRun(){
-    return intakeRun;
-}
-//returns GoBack(if the balls are being pushed out of the intake)
-void IndexerSubsystem::setGoBack(bool GoBack){
-    goBack = GoBack;
-}
-
-void IndexerSubsystem::Periodic(frc::Joystick &sStick){
-    if (!goBack){
-        if (!indexSensor.Get() || !indexSensor2.Get()){
-            if (powerCells <= 3){
-                indexerBelt.Set(.36);
-                if (!ballIn){
-                    powerCells += 1;
-                }
-                ballIn = true;
-            } else if (powerCells == 3 && ball3 == 2){
-                ball4 = true;
-                intakeRun = false;
-                powerCells += 1;
-            // indexerBelt.Set(sStick.GetRawAxis(1));
-            } else if (powerCells == 4 && ball4 == 2){
-                powerCells += 1;
-                ball5 = true;
-                intakeRun = false;
-
+                //reverse direction for omniwheel to bring balls into shooter
+                setOmniWheel(-0.7 * 0.7);
             }
-
-            
-            
-            
-
-        } else if (powerCells == 3 && ball3 == 0 && !ballIn){
-                ball3 = 1;
-                indexerBeltPOS.SetPosition(0);
-                intakeRun = false;
-
-        }else{
-
-        
-            indexerBelt.Set(sStick.GetRawAxis(1));
-            ballIn = false;
+            else if (robotData.stopAntiJam) {
+                setCenterSpindle(0.47 * 0.7);
+                setOmniWheel(0.3 * 0.7);
+            }
+            else{
+                if (tickCount > 40) {
+                    // replace the + with a - to add shooting anti jam
+                    setCenterSpindle(+0.47 * 0.7);
+                } else {
+                    setCenterSpindle(0.47 * 0.7);
+                }
+                setOmniWheel(0.3 * 0.7);
+            }
         }
+        
+
+
+    }else{
+
+        if(robotData.sRTrigger){ //when intaking balls, spin the indexer
+            if(tickCount > 40){
+                setCenterSpindle(-0.1);  // omni should not reverse
+            }else{
+                setCenterSpindle(0.1);
+            }
+            setOmniWheel(0.15);
+            
+        }else {
+            setOmniWheel(0);
+            setCenterSpindle(0);
+        }
+
     }
-    //sets the goback variable
-    if (sStick.GetRawButton(4)){
-        goBack = true;
-    } else if (sStick.GetRawButton(2)){
-        goBack = false;
+
+    tickCount = (tickCount+1)%50;
+}
+
+void IndexerSubsystem::manualMode(RobotData &robotData){
+    //if you're using the shift button reverse the indexer
+    if(robotData.shift){
+        if(robotData.sABtn){
+            setCenterSpindle(-0.2);
+            setOmniWheel(-0.2);
+        }else if(robotData.sLTrigger){ //takes ball out of shooter?
+            setCenterSpindle(-robotData.sLTrigger);
+            setOmniWheel(robotData.sLTrigger); 
+        }else{
+            setOmniWheel(0);
+            setCenterSpindle(0);
+        }
+    }else{ 
+        //otherwise run the indexer based on trigger power
+        setCenterSpindle(robotData.sLTrigger);
+        setOmniWheel(robotData.sLTrigger);
+
     }
+}
 
-    
-    
+void IndexerSubsystem::setCenterSpindle(double power){
+    centerSpindle.Set(power);
+
+}
+
+void IndexerSubsystem::setOmniWheel(double power){
+    omniWheel.Set(power);
+
+}
+
+double IndexerSubsystem::getSpinnerVel(){
+    return centerSpindlePOS.GetVelocity();
+
+}
+
+void IndexerSubsystem::DisabledInit(){
+    setOmniWheel(0);
+    setCenterSpindle(0);
+
+}
 
 
 
 
-    //this section of the code controls the pivot
-    //currently plainly manual
-    frc::SmartDashboard::PutNumber("powercells", powerCells);
-    frc::SmartDashboard::PutNumber("indexer sensor",indexSensor.Get());
 
+void IndexerSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
+{
+    /**
+     * center spindle/kick 11
+     * omni wheel 12
+     * 
+     * center spindle encoder
+     * omni wheel encoder
+     */
 
+    frc::SmartDashboard::PutNumber("omni vel", omniWheelPOS.GetVelocity());
+    frc::SmartDashboard::PutNumber("omni current", omniWheel.GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("omni volt", omniWheel.GetBusVoltage());
+
+    diagnosticsData.mControlCurrents.at(11) = centerSpindle.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(11) = centerSpindle.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(11) = centerSpindle.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(11) = centerSpindlePOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(11) = centerSpindlePOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(11) = centerSpindle.GetFaults();
+
+    diagnosticsData.mControlCurrents.at(12) = omniWheel.GetOutputCurrent();
+    diagnosticsData.mControlVoltages.at(12) = omniWheel.GetBusVoltage();
+    diagnosticsData.mControlTemps.at(12) = omniWheel.GetMotorTemperature();
+
+    diagnosticsData.mControlPositions.at(12) = omniWheelPOS.GetPosition();
+    diagnosticsData.mControlVelocities.at(12) = omniWheelPOS.GetVelocity();
+
+    diagnosticsData.mControlFaults.at(12) = omniWheel.GetFaults();
 }
