@@ -30,7 +30,7 @@ class ClimbSubsystem {
         void manualMode(RobotData &robotData);
 
         void climbRunToPosition(double pos, double pow);
-        void climbLevel(double degree, double degreeRange);
+        void setClimbArmPowers(double left, double right);
 
         // Change SparkMax IDs
         static const int climbArmRID = 34;
