@@ -13,19 +13,14 @@ class ClimbSubsystem {
     public:
 
         void RobotInit();
-        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        void Periodic(RobotData &robotData);
 
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
         bool initiationRunning = false;
         bool initiated = false;
 
-        int startingPhase = 0;
-
-        double voltageTargetL;
-        double voltageTargetR;
-
-        int timer;
+        bool climbing = false;
 
         bool movingLeft = false;
 
@@ -37,10 +32,8 @@ class ClimbSubsystem {
         void semiAutoMode(RobotData &robotData);
         void manualMode(RobotData &robotData);
 
-        void setPistonR(bool direction);
-        void setPistonL(bool direction);
-        void setLockR(bool direction);
-        void setLockL(bool direction);
+        void climbRunToPosition(double pos, double pow);
+        void setClimbArmPowers(double left, double right);
 
         // Change SparkMax IDs
         static const int climbArmRID = 34;

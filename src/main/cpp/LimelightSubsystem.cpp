@@ -22,7 +22,7 @@ double LimelightSubsystem::calcHoodPOS(double verticalOffset, RobotData& robotDa
     if(verticalOffset == 0){
         return 0;
     }else{
-        return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) -1 + /*2.5 +*/ robotData.roughHood; 
+        return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) + /*2.5 +*/ robotData.roughHood; 
     }
 }
 
@@ -70,18 +70,28 @@ int LimelightSubsystem::getTarget(){
  * pipeline 2 = 60 power
  * pipeline 3 = 80 power
  * pipeline 4 = 100 power
+ * at indiana below
+ * pipline 5 = backup for 1
+ * pipeline 6 = backup for 2
+ * pipeline 7 = backup for 3
+ * pipeline 8 = backup for 4
  */
 int LimelightSubsystem::getPipeline(double verticalOffset){
 
     int pipeline;
+
     if(verticalOffset > 14){
-        pipeline = 1;
+        // pipeline = 1;
+        pipeline = 5;
     }else if(verticalOffset > 9){
-        pipeline = 2;
+        // pipeline = 2;
+        pipeline = 6;
     }else if(verticalOffset > 6){
-        pipeline = 3;
+        // pipeline = 3;
+        pipeline = 7;
     }else if(verticalOffset > 1){
-        pipeline = 4;
+        // pipeline = 4;
+        pipeline = 8;
     }else{
         pipeline = 1;
 

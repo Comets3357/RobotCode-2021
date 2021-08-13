@@ -17,7 +17,7 @@ void Auton::RobotInit(RobotData &robotData)
     autonChooser.AddOption("Half Trench Run", AutonSelect::autonSelect_trenchRunHalf);
     autonChooser.AddOption("Thief Run Short", AutonSelect::autonSelect_stealBallsAndShoot);
     autonChooser.AddOption("Thief Run With Detour", AutonSelect::autonSelect_stealBallsAndShootDetour);
-    autonChooser.SetDefaultOption("Potato", AutonSelect::autonSelect_potato);
+    autonChooser.SetDefaultOption("Exit Init Line Towards Rendezvous", AutonSelect::autonSelect_exitInitLineRendezvous);
 
     frc::SmartDashboard::PutData("Auto", &autonChooser);
 }
@@ -37,6 +37,8 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
 
     robotData.manualMode = false;
     robotData.sLTrigger = false;
+
+    autonSelect = autonChooser.GetSelected();
 
     switch (autonSelect)
     {
@@ -404,10 +406,9 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
 
     default:
         endAllTasks(robotData);
+        autonSelect = autonSelect_shootAndDriveToRendezvous;
         break;
     }
-
-    robotData.autonSelect = autonSelect;
 }
 
 void Auton::AutonomousInit(RobotData &robotData)

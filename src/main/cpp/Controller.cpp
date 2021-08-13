@@ -13,6 +13,8 @@ void Controller::Init(RobotData &robotData){
     //stuff for auton
     //timer.Reset();
 
+    robotData.sLYStickBtn = 0;
+
     //initializing struct values
     robotData.pLYStick = 0;
     robotData.pRYStick = 0;
@@ -155,6 +157,8 @@ void Controller::updateTeleopData(RobotData &robotData){
         robotData.pRYStick = -getAxis(0, 5);
     }
     
+    robotData.sLYStickBtn = getButton(1,9);
+
     //primary button control
     robotData.pABtn = getButton(0,1);
     robotData.pBBtn = getButton(0,2);

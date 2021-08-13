@@ -111,17 +111,10 @@ std::string Diagnostics::convertAlliance(int param)
 
 std::string Diagnostics::convertAutonSelect(int param)
 {
-    std::array<std::string, 9> autonSelectStrings
+    std::array<std::string, 6> autonSelectStrings
     {
-        "potato",
-        "exitInitLineRendezvous",
-        "exitInitLineDriverStation",
-        "shootAndDriveToRendezvous",
-        "shootAndDriveToDriverStation",
-        "trenchRunHalf",
-        "trenchRunFull",
-        "stealBallsAndShootDetour",
-        "stealBallsAndShoot"
+        "potato", "exitInitLine", "shootAndDrive", "shootAndCollectBalls",
+        "trenchRun", "goofy"
     };
     return autonSelectStrings.at(param);
 }
@@ -130,12 +123,8 @@ std::string Diagnostics::convertDriveMode(int param)
 {
     std::array<std::string, 6> driveModeStrings
     {
-        "teleop",
-        "potato",
-        "initDriveStraight",
-        "driveStraight",
-        "initTurnInPlace",
-        "turnInPlace"
+        "teleop", "potato", "initDriveStraight", "driveStraight",
+        "arc", "initArc"
     };
     return driveModeStrings.at(param);
 }
@@ -178,8 +167,8 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, robotData.robotTiltAngle);
     addLogSnippet(log, robotData.robotYAngle);
 
-    std::array<int, 14> mControlIDs{1, 2, 3, 4, 32, 11, 12, 23, 22, 20, 21, 34, 35, 41};
-    for (int i = 0; i < 13; i++)
+    std::array<int, 11> mControlIDs{1, 2, 3, 4, 32, 11, 12, 23, 22, 20, 21};
+    for (int i = 0; i < 11; i++)
     {
         addLogSnippet(log, diagnosticsData.mControlCurrents.at(
                                mControlIDs.at(i)));
@@ -213,7 +202,9 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, diagnosticsData.compShortedFault);
     addLogSnippet(log, diagnosticsData.compNotConnectedFault);
 
-    addLogSnippet(log, diagnosticsData.solenoidArm);
+    addLogSnippet(log, diagnosticsData.solenoidOneValue);
+    addLogSnippet(log, diagnosticsData.solenoidArmL);
+    addLogSnippet(log, diagnosticsData.solenoidArmR);
     addLogSnippet(log, diagnosticsData.solenoidLockL);
     addLogSnippet(log, diagnosticsData.solenoidLockR);
 
@@ -227,24 +218,23 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
 
     addLogSnippet(log, robotData.pLYStick);
     addLogSnippet(log, robotData.pRYStick);
+    addLogSnippet(log, robotData.pABtn);
+    addLogSnippet(log, robotData.pLShoulderBtn);
 
     addLogSnippet(log, robotData.sLYStick);
     addLogSnippet(log, robotData.sRYStick);
-    addLogSnippet(log, robotData.sLTrigger);
-    addLogSnippet(log, robotData.sRTrigger);
     addLogSnippet(log, robotData.sABtn);
     addLogSnippet(log, robotData.sBBtn);
     addLogSnippet(log, robotData.sXBtn);
     addLogSnippet(log, robotData.sYBtn);
     addLogSnippet(log, robotData.sLBumper);
     addLogSnippet(log, robotData.sRBumper);
-    addLogSnippet(log, robotData.sLCenterBtn);
     addLogSnippet(log, robotData.sRCenterBtn);
     addLogSnippet(log, robotData.sDPad);
 
-    addLogSnippet(log, convertAutonSelect(robotData.autonSelect));
+    addLogSnippet(log, "not updated" /* convertAutonSelect(robotData.autonSelect) */);
     addLogSnippet(log, robotData.autonStep);
-    addLogSnippet(log, convertDriveMode(robotData.driveMode));
+    addLogSnippet(log, "not udpdated" /* convertDriveMode(robotData.driveMode) */);
 
     addLogSnippet(log, robotData.climbMode);
 
@@ -396,27 +386,6 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "mControl21Temp, "
         "mControl21Faults, "
 
-        "mControl34Voltage, "
-        "mControl34Current, "
-        "mControl34Position, "
-        "mControl34Velocity, "
-        "mControl34Temp, "
-        "mControl34Faults, "
-
-        "mControl35Voltage, "
-        "mControl35Current, "
-        "mControl35Position, "
-        "mControl35Velocity, "
-        "mControl35Temp, "
-        "mControl35Faults, "
-
-        "mControl41Voltage, "
-        "mControl41Current, "
-        "mControl41Position, "
-        "mControl41Velocity, "
-        "mControl41Temp, "
-        "mControl41Faults, "
-
         "pdpTotalVoltage, "
         "pdpTotalCurrent, "
         "pdpTotalPower, "
@@ -447,7 +416,9 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "compShortedFault, "
         "compNotConnectedFault, "
 
-        "solenoidArm, "
+        "solenoidOneValue, "
+        "solenoidArmL, "
+        "solenoidArmR, "
         "solenoidLockL, "
         "solenoidLockR, "
 
@@ -461,19 +432,17 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
 
         "pLYStick, "
         "pRYStick, "
+        "pABtn, "
+        "pLShoulderBtn, "
 
-        // controller vals
         "sLYStick, "
         "sRYStick, "
-        "sLTrigger"
-        "sRTrigger"
         "sABtn, "
         "sBBtn, "
         "sXBtn, "
         "sYBtn, "
         "sLBumper, "
         "sRBumper, "
-        "sLCenterBtn, "
         "sRCenterBtn, "
         "sDPad, "
 
