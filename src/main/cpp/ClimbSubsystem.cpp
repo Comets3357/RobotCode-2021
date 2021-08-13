@@ -316,7 +316,7 @@ void ClimbSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
     diagnosticsData.mControlVelocities.at(35) = climbArmRPos.GetVelocity();
     diagnosticsData.mControlFaults.at(35) = climbArmR.GetFaults();
 
-    diagnosticsData.solenoidArm = solenoidArm.Get();
-    diagnosticsData.solenoidArm = solenoidLockL.Get();
-    diagnosticsData.solenoidArm = solenoidLockR.Get();
+    // diagnosticsData.solenoidArm = solenoidArm.Get();
+    // diagnosticsData.solenoidArm = solenoidLockL.Get();
+    // diagnosticsData.solenoidArm = solenoidLockR.Get();
 }

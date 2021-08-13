@@ -37,7 +37,7 @@ void Robot::RobotPeriodic(){
         limelight.Periodic(robotData);
         // diagnostics.LogPeriodic(robotData, diagnosticsData);
         controlpanel.Periodic(robotData);
-        climb.Periodic(robotData);
+        climb.Periodic(robotData, diagnosticsData);
         
     }
     db.Periodic(robotData, diagnosticsData);

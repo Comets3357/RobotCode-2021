@@ -13,7 +13,7 @@ class ClimbSubsystem {
     public:
 
         void RobotInit();
-        void Periodic(RobotData &robotData);
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
 
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
