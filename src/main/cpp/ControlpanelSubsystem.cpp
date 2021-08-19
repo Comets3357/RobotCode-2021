@@ -8,7 +8,7 @@
 void ControlpanelSubsystem::RobotInit(){
 
     cpManipulator.RestoreFactoryDefaults();
-    //we inverted the right side and set motors to follow each other
+    
     cpManipulator.SetInverted(false);
 
     cpManipulator.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);

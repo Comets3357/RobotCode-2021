@@ -426,10 +426,10 @@ void DriveSubsystem::courseCorrection(bool isForward, RobotData &robotData){
             if(robotData.initialAngle - robotData.rawAngle > 10){
                 rDrive *= .7;
                 lDrive *= 1.1;
-            } else if(robotData.rawAngle - robotData.initialAngle > 5){
+            } else if(robotData.initialAngle - robotData.rawAngle > 5){
                 rDrive *= .8;
                 lDrive *= 1.05;
-            } else if (robotData.rawAngle - robotData.initialAngle > 2){
+            } else if (robotData.initialAngle - robotData.rawAngle > 2){
                 rDrive *= .8;
             } else {
                 rDrive *= .9;
@@ -453,10 +453,10 @@ void DriveSubsystem::courseCorrection(bool isForward, RobotData &robotData){
             if(robotData.initialAngle - robotData.rawAngle > 10){
                 lDrive *= .7;
                 rDrive *= 1.1;
-            } else if(robotData.rawAngle - robotData.initialAngle > 5){
+            } else if(robotData.initialAngle - robotData.rawAngle > 5){
                 lDrive *= .8;
                 rDrive *= 1.05;
-            } else if (robotData.rawAngle - robotData.initialAngle > 2){
+            } else if (robotData.initialAngle - robotData.rawAngle > 2){
                 lDrive *= .8;
             } else {
                 lDrive *= .9;
