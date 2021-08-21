@@ -22,7 +22,13 @@ double LimelightSubsystem::calcHoodPOS(double verticalOffset, RobotData& robotDa
     if(verticalOffset == 0){
         return 0;
     }else{
-        return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) + -4 + robotData.roughHood; 
+        // can't extend hood if above certain db speed
+        if (((robotData.LdriveVel + robotData.RdriveVel) / 2) < 600) {
+            return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) + -20 + robotData.roughHood;
+        }
+        else {
+            return 0;
+        }
     }
 }
 

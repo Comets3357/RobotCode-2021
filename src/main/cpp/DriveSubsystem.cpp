@@ -177,7 +177,7 @@ void DriveSubsystem::teleopControl(RobotData &robotData)
     else
     {
         robotData.maxStraight = 1;
-        robotData.maxTurn = 0.3;
+        robotData.maxTurn = 0.5;
     }
 
     frc::SmartDashboard::PutBoolean("responsive", robotData.pRShoulderSwitch);
@@ -201,8 +201,10 @@ void DriveSubsystem::teleopControl(RobotData &robotData)
 
     if (robotData.pLShoulderSwitch)
     {
-        lDrive = -rDrive;
-        rDrive = -lDrive;
+        double tempL = -rDrive;
+        double tempR = -lDrive;
+        lDrive = tempL;
+        rDrive = tempR;
     }
 
     //set as percent vbus
