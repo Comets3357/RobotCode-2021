@@ -22,7 +22,7 @@ double LimelightSubsystem::calcHoodPOS(double verticalOffset, RobotData& robotDa
     if(verticalOffset == 0){
         return 0;
     }else{
-        return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) + /*2.5 +*/ robotData.roughHood; 
+        return ((-0.000729167*std::pow(x,4.0))+(.0186908*std::pow(x,3.0))+(-0.0374669*std::pow(x,2.0))+(-2.01681*x) + 78.2293) + -4 + robotData.roughHood; 
     }
 }
 

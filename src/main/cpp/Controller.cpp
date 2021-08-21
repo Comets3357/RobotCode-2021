@@ -168,6 +168,9 @@ void Controller::updateTeleopData(RobotData &robotData){
     robotData.pLBumper = getButton(0, 5); 
     robotData.pRBumper = getButton(0, 6); 
 
+    robotData.pLShoulderSwitch = getButton(0, 2);
+    robotData.pRShoulderSwitch = getButton(0, 1);
+
     //secondary controls 
         // indexes are NOT all right yet
     //robotData.sLCenterBtn = getAxis(1, 8); //only used within controller class

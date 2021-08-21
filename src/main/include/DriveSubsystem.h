@@ -22,8 +22,6 @@ class DriveSubsystem {
 
         double lDrive = 0;
         double rDrive = 0;
-        const double cStraight = 1;
-        const double cTurn = 1;
 
         void updateData(RobotData &robotData);
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
