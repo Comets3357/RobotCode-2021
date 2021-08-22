@@ -187,6 +187,14 @@ void ClimbSubsystem::manualMode(RobotData &robotData){
     } else {
         solenoidArm.Set(solenoidArm.kForward);
     }
+
+    if (!solenoidLockL.Get() && climbArmL.Get() < 0) {
+        climbArmL.Set(0);
+    }
+
+    if (!solenoidLockR.Get() && climbArmR.Get() < 0) {
+        climbArmR.Set(0);
+    }
 }
 
 void ClimbSubsystem::semiAutoMode(RobotData &robotData){

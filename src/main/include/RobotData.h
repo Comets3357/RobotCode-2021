@@ -47,9 +47,6 @@ struct RobotData
 
     //primary
 
-    // this will have merge conflict with climb's pLShoulderBtn
-    bool pLShoulderBtn;
-
     double pLXStick;
     double pLYStick = 0;
     double pRXStick;
@@ -71,6 +68,9 @@ struct RobotData
     bool pRCenterBtn;
 
     int pDPad;
+
+    bool pLShoulderSwitch;
+    bool pRShoulderSwitch;
 
     //sStick
 
@@ -116,6 +116,9 @@ struct RobotData
 
     double LdriveVel;
     double RdriveVel;
+
+    double maxStraight = 1;
+    double maxTurn = 0.3;
 
 
     //limelight data

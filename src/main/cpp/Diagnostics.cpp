@@ -219,7 +219,8 @@ std::string Diagnostics::appendLogValues(RobotData &robotData, DiagnosticsData &
     addLogSnippet(log, robotData.pLYStick);
     addLogSnippet(log, robotData.pRYStick);
     addLogSnippet(log, robotData.pABtn);
-    addLogSnippet(log, robotData.pLShoulderBtn);
+    addLogSnippet(log, robotData.pLShoulderSwitch);
+    addLogSnippet(log, robotData.pRShoulderSwitch);
 
     addLogSnippet(log, robotData.sLYStick);
     addLogSnippet(log, robotData.sRYStick);
@@ -433,7 +434,8 @@ void Diagnostics::constructParamHeader(std::string &paramHeader)
         "pLYStick, "
         "pRYStick, "
         "pABtn, "
-        "pLShoulderBtn, "
+        "pLShoulderSwitch, "
+        "pRShoulderSwitch, "
 
         "sLYStick, "
         "sRYStick, "

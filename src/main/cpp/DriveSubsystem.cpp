@@ -16,8 +16,10 @@ void DriveSubsystem::RobotInit()
     dbLS.Follow(dbLM);
     dbRS.Follow(dbRM);
 
-    dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-    dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    dbRS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    dbLS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
 
     dbLM.SetSmartCurrentLimit(45);
     dbRM.SetSmartCurrentLimit(45);
@@ -62,6 +64,13 @@ void DriveSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostics
     // frc::SmartDashboard::PutNumber("GetGyroAngleZ", gyro.GetGyroAngleZ());
     // frc::SmartDashboard::PutNumber("getAngle", gyro.GetAngle());
 
+    if (frc::DriverStation::GetInstance().IsEnabled())
+    {
+        dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        dbRS.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+        dbLS.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    }
 
     //determines how the drivebase will be controlled
     switch (robotData.driveMode)
@@ -103,7 +112,9 @@ void DriveSubsystem::DisabledInit()
     dbLM.Set(0);
     dbRM.Set(0);
     dbRM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    dbRS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     dbLM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    dbLS.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
 }
 
 
@@ -112,8 +123,8 @@ void DriveSubsystem::DisabledInit()
 void DriveSubsystem::updateData(RobotData &robotData)
 {
     // converts from tank to arcade drive
-    double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
-    double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
+    double frontBack = robotData.maxStraight*(robotData.pLYStick + robotData.pRYStick)/2;
+    double leftRight = robotData.maxTurn*(robotData.pRYStick - robotData.pLYStick)/2;
 
     // we may use arcarde drive for something in the future
 
@@ -142,7 +153,7 @@ void DriveSubsystem::updateData(RobotData &robotData)
     //calculates the non continuous angle
     while(tempRobotAngle >= 360){
         tempRobotAngle -= 360;
-    }
+    }   
     while(tempRobotAngle <= 0){
         tempRobotAngle += 360;
     }
@@ -158,9 +169,23 @@ void DriveSubsystem::updateData(RobotData &robotData)
 // adjusts for the deadzone and converts joystick input to velocity values for PID
 void DriveSubsystem::teleopControl(RobotData &robotData)
 {
+    if (robotData.pRShoulderSwitch)
+    {
+        robotData.maxStraight = 1;
+        robotData.maxTurn = 1;
+    }
+    else
+    {
+        robotData.maxStraight = 1;
+        robotData.maxTurn = 0.5;
+    }
+
+    frc::SmartDashboard::PutBoolean("responsive", robotData.pRShoulderSwitch);
+    // frc::SmartDashboard::PutBoolean("")
+
     // converts from tank to arcade drive
-    double frontBack = cStraight*(robotData.pLYStick + robotData.pRYStick)/2;
-    double leftRight = cTurn*(robotData.pRYStick - robotData.pLYStick)/2;
+    double frontBack = robotData.maxStraight*(robotData.pLYStick + robotData.pRYStick)/2;
+    double leftRight = robotData.maxTurn*(robotData.pRYStick - robotData.pLYStick)/2;
     
     //deadzone NOT needed for drone controller
     if(robotData.pLYStick <= -.1 || robotData.pLYStick >= .1){
@@ -172,6 +197,14 @@ void DriveSubsystem::teleopControl(RobotData &robotData)
         rDrive = (frontBack + leftRight);
     } else {
        rDrive = 0;
+    }
+
+    if (robotData.pLShoulderSwitch)
+    {
+        double tempL = -rDrive;
+        double tempR = -lDrive;
+        lDrive = tempL;
+        rDrive = tempR;
     }
 
     //set as percent vbus
