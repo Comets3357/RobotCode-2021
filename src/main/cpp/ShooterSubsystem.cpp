@@ -58,13 +58,6 @@ void ShooterSubsystem::RobotInit(){
     shooterTurret.BurnFlash();
 
     //rev::CANSparkMaxLowLevel::EnableExternalUSBControl(true);
-
-    //zeros hood at the begining
-    setHood(-0.1);
-    if(getHoodLimitSwitch()){
-        setHoodPos(0);
-        setHood(0);
-    }
 }
 
 void ShooterSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData){
@@ -158,6 +151,7 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
 
             }
             //robotData.isZero = false;
+            hoodZero = false;
             
 
         } else {  //not shooting
@@ -180,12 +174,17 @@ void ShooterSubsystem::semiAutoMode(RobotData &robotData){
             
 
             robotData.readyShoot = false;
-
-            //zeros the hood after
-            setHood(-0.2);
-            if(getHoodLimitSwitch()){
-                setHoodPos(0);
-                setHood(0);
+            if(!hoodZero){
+                if(getHoodPos() > 4){
+                    shooterHoodPID.SetReference(4, rev::ControlType::kPosition);
+                }else{
+                    setHood(-0.2);
+                    if(getHoodLimitSwitch()){
+                        setHoodPos(0);
+                        setHood(0);
+                        hoodZero = true;
+                    }
+                } 
             }
 
         }

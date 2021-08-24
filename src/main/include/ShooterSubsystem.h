@@ -43,6 +43,7 @@ class ShooterSubsystem {
         void updateDiagnostics(DiagnosticsData &diagnosticsData);
         
         bool shooting = false;
+        bool hoodZero = false;
 
         int secondaryPOVArrayInput;
         int turretSequence = 0;
