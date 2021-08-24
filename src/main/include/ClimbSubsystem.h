@@ -22,6 +22,8 @@ class ClimbSubsystem {
 
         bool climbing = false;
 
+        bool climbUp = false;
+
         bool movingLeft = false;
 
         bool lockToggle = true;

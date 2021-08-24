@@ -109,8 +109,8 @@ void ClimbSubsystem::Periodic(RobotData &robotData, DiagnosticsData &diagnostics
 
     frc::SmartDashboard::PutNumber("climb mode",  robotData.climbMode);
 
-    frc::SmartDashboard::PutNumber("climbArmL",  climbArmL.Get());
-    frc::SmartDashboard::PutNumber("climbArmR",  climbArmR.Get());
+    frc::SmartDashboard::PutNumber("climbArmL",  climbArmLPos.GetPosition());
+    frc::SmartDashboard::PutNumber("climbArmR",  climbArmRPos.GetPosition());
 
 
     if (!robotData.climbZeroing){
@@ -187,14 +187,6 @@ void ClimbSubsystem::manualMode(RobotData &robotData){
     } else {
         solenoidArm.Set(solenoidArm.kForward);
     }
-
-    if (!solenoidLockL.Get() && climbArmL.Get() < 0) {
-        climbArmL.Set(0);
-    }
-
-    if (!solenoidLockR.Get() && climbArmR.Get() < 0) {
-        climbArmR.Set(0);
-    }
 }
 
 void ClimbSubsystem::semiAutoMode(RobotData &robotData){
@@ -260,44 +252,54 @@ void ClimbSubsystem::semiAutoMode(RobotData &robotData){
 
    
     if (climbing) {
-        if (climbArmLPos.GetPosition() < -30 || climbArmRPos.GetPosition() < -30){
+        if (climbArmLPos.GetPosition() < -30 || climbArmRPos.GetPosition() < -30 ){
             //if the robot is level and
-            if (robotData.robotTiltAngle < 4 && robotData.robotTiltAngle > -4){
+            if (robotData.robotTiltAngle < 4 && robotData.robotTiltAngle > -4 && !climbUp){
                 setClimbArmPowers(0.3,0.3);
-            } else {
+            } else if (!climbUp){
                 //if the robot isnt level it will try to level it while going up
                 if (robotData.robotTiltAngle > 4) {
                     setClimbArmPowers(0.3,0);
                 } else if (robotData.robotTiltAngle < -4) {
                     setClimbArmPowers(0,0.3);
                 }
+            } else if (climbArmLPos.GetPosition() < -40 || climbArmRPos.GetPosition() < -40){
+                climbUp = false;
             }
-        } else{ // if the climb is at the desired height it will level without raising
-
-            //if the robot isnt level it will try to level it
-            if (robotData.robotTiltAngle > 4) {
-                climbArmL.Set(0.2);
-            } else if (robotData.robotTiltAngle < -4) {
-                climbArmL.Set(-0.2);
-            } else {
-                setClimbArmPowers(0,0);
-            }
+        } else {
+            setClimbArmPowers(0,0);
+            climbUp = true;
         }
     }
 }
 
 
 void ClimbSubsystem::climbRunToPosition(double pos, double pow) {
-    if (climbArmRPos.GetPosition() > pos || climbArmLPos.GetPosition() > pos) {
-        if (climbArmRPos.GetPosition() > pos) {
-            climbArmR.Set(pow);
-        } else {
-            climbArmR.Set(0);
+    if (pow < 0){
+        if (climbArmRPos.GetPosition() > pos || climbArmLPos.GetPosition() > pos) {
+            if (climbArmRPos.GetPosition() > pos) {
+                climbArmR.Set(pow);
+            } else {
+                climbArmR.Set(0);
+            }
+            if (climbArmLPos.GetPosition() > pos) {
+                climbArmL.Set(pow);
+            } else {
+                climbArmL.Set(0);
+            }
         }
-        if (climbArmLPos.GetPosition() > pos) {
-            climbArmL.Set(pow);
-        } else {
-            climbArmL.Set(0);
+    } else {
+        if (climbArmRPos.GetPosition() < pos || climbArmLPos.GetPosition() < pos) {
+            if (climbArmRPos.GetPosition() < pos) {
+                climbArmR.Set(pow);
+            } else {
+                climbArmR.Set(0);
+            }
+            if (climbArmLPos.GetPosition() < pos) {
+                climbArmL.Set(pow);
+            } else {
+                climbArmL.Set(0);
+            }
         }
     }
 }
@@ -310,19 +312,19 @@ void ClimbSubsystem::setClimbArmPowers(double left, double right) {
 
 void ClimbSubsystem::updateDiagnostics(DiagnosticsData &diagnosticsData)
 {
-    diagnosticsData.mControlCurrents.at(34) = climbArmL.GetOutputCurrent();
-    diagnosticsData.mControlVoltages.at(34) = climbArmL.GetBusVoltage();
-    diagnosticsData.mControlTemps.at(34) = climbArmL.GetMotorTemperature();
-    diagnosticsData.mControlPositions.at(34) = climbArmLPos.GetPosition();
-    diagnosticsData.mControlVelocities.at(34) = climbArmLPos.GetVelocity();
-    diagnosticsData.mControlFaults.at(34) = climbArmL.GetFaults();
+    // diagnosticsData.mControlCurrents.at(34) = climbArmL.GetOutputCurrent();
+    // diagnosticsData.mControlVoltages.at(34) = climbArmL.GetBusVoltage();
+    // diagnosticsData.mControlTemps.at(34) = climbArmL.GetMotorTemperature();
+    // diagnosticsData.mControlPositions.at(34) = climbArmLPos.GetPosition();
+    // diagnosticsData.mControlVelocities.at(34) = climbArmLPos.GetVelocity();
+    // diagnosticsData.mControlFaults.at(34) = climbArmL.GetFaults();
 
-    diagnosticsData.mControlCurrents.at(35) = climbArmR.GetOutputCurrent();
-    diagnosticsData.mControlVoltages.at(35) = climbArmR.GetBusVoltage();
-    diagnosticsData.mControlTemps.at(35) = climbArmR.GetMotorTemperature();
-    diagnosticsData.mControlPositions.at(35) = climbArmRPos.GetPosition();
-    diagnosticsData.mControlVelocities.at(35) = climbArmRPos.GetVelocity();
-    diagnosticsData.mControlFaults.at(35) = climbArmR.GetFaults();
+    // diagnosticsData.mControlCurrents.at(35) = climbArmR.GetOutputCurrent();
+    // diagnosticsData.mControlVoltages.at(35) = climbArmR.GetBusVoltage();
+    // diagnosticsData.mControlTemps.at(35) = climbArmR.GetMotorTemperature();
+    // diagnosticsData.mControlPositions.at(35) = climbArmRPos.GetPosition();
+    // diagnosticsData.mControlVelocities.at(35) = climbArmRPos.GetVelocity();
+    // diagnosticsData.mControlFaults.at(35) = climbArmR.GetFaults();
 
     // diagnosticsData.solenoidArm = solenoidArm.Get();
     // diagnosticsData.solenoidArm = solenoidLockL.Get();
