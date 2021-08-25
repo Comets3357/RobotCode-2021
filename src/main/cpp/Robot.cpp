@@ -40,7 +40,6 @@ void Robot::RobotPeriodic(){
         climb.Periodic(robotData, diagnosticsData);
         
     }
-    db.Periodic(robotData, diagnosticsData);
 }
 
 void Robot::AutonomousInit()
