@@ -9,7 +9,7 @@ class Auton
 {
 public:
     void RobotInit(RobotData &robotData);
-    void AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData);
+    void AutonomousPeriodic(AutonSelect &autonSelect, RobotData &robotData);
     
     void AutonomousInit(RobotData &robotData);
 

@@ -182,11 +182,11 @@ void ClimbSubsystem::manualMode(RobotData &robotData){
         climbArmR.Set(0);
     }
 
-    if (climbArmLPos.GetPosition() < -10 || climbArmRPos.GetPosition() < -10) {
+    /* if (climbArmLPos.GetPosition() < -10 || climbArmRPos.GetPosition() < -10) {
         solenoidArm.Set(solenoidArm.kReverse);
     } else {
         solenoidArm.Set(solenoidArm.kForward);
-    }
+    } */
 }
 
 void ClimbSubsystem::semiAutoMode(RobotData &robotData){

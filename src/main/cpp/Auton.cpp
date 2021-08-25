@@ -20,9 +20,12 @@ void Auton::RobotInit(RobotData &robotData)
     autonChooser.SetDefaultOption("Exit Init Line Towards Rendezvous", AutonSelect::autonSelect_exitInitLineRendezvous);
 
     frc::SmartDashboard::PutData("Auto", &autonChooser);
+
+    robotData.autonSelect = autonChooser.GetSelected();
+    robotData.autonStep = 0;
 }
 
-void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
+void Auton::AutonomousPeriodic(AutonSelect &autonSelect, RobotData &robotData)
 {
 
     // frc::SmartDashboard::PutNumber("autonSelect", autonSelect);
@@ -406,7 +409,6 @@ void Auton::AutonomousPeriodic(AutonSelect autonSelect, RobotData &robotData)
 
     default:
         endAllTasks(robotData);
-        autonSelect = autonSelect_shootAndDriveToRendezvous;
         break;
     }
 }

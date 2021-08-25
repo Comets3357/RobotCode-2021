@@ -145,7 +145,7 @@ struct RobotData
     // auton stuff
     int autonStep  = 0;
     
-    AutonSelect autonSelect{autonSelect_shootAndDriveToRendezvous};
+    AutonSelect autonSelect{autonSelect_potato};
     DriveMode driveMode{driveMode_teleop};  // should have a default?
 
     //turn
