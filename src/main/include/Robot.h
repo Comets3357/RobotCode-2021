@@ -4,17 +4,27 @@
 //Header files from FRC
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
-#include "rev/CANSparkMax.h"
-#include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
+#include <frc/Timer.h>
+#include <frc/smartdashboard/SendableChooser.h>
+
 
 //Header files from us
+#include "Auton.h"
 #include "IntakeSubsystem.h"
 #include "DriveSubsystem.h"
 #include "IndexerSubsystem.h"
 #include "ShooterSubsystem.h"
-#include "Auto.h"
-#include "Manual.h"
 #include "Controller.h"
+#include "LimelightSubsystem.h"
+#include "Auton.h"
+#include "Diagnostics.h"
+#include "ControlpanelSubsystem.h"
+#include "ClimbSubsystem.h"
+#include "LEDSubsystem.h"
+
+#include "RobotData.h"
+
 
 
 
@@ -22,33 +32,44 @@
 class Robot : public frc::TimedRobot {
 
   public:
-      bool manualMode = false;
       void RobotInit() override;
+      void RobotPeriodic() override;
+      void AutonomousInit() override;
+      void AutonomousPeriodic() override;
       void TeleopPeriodic() override;
+      void DisabledInit() override;
+      void TestInit() override;
+      void TestPeriodic() override;
 
-      //frc::Joystick mainStick{0}; //primary controller
-      frc::Joystick sStick{0}; //secondary controller
-      frc::Joystick mainStick{1};
+  private:
 
+    
+    
       DriveSubsystem db{};
       ShooterSubsystem shooter{};
       IndexerSubsystem indexer{};
       IntakeSubsystem intake{};
-      Manual manual{};
-      Auto autoo{};
+      LimelightSubsystem limelight{};
+      ControlpanelSubsystem controlpanel{};
+      ClimbSubsystem climb{};
+      LEDSubsystem LEDS{};
+
       Controller control{};
+      Auton auton{};
+      Diagnostics diagnostics{};
+      DiagnosticsData diagnosticsData{};
+      RobotData robotData{};
+
+      
 
 
 
-  private:
 
 
 
 };
 
-//Notes:
-//GetRawButton and GetRawButtonPressed are not the same
-//button index starts at 1
+
 
 
 

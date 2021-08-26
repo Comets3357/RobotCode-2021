@@ -1,21 +1,34 @@
 #pragma once
 
-#include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
-#include "rev/CANSparkMax.h"
-#include <frc2/command/SubsystemBase.h>
-#include <frc/DoubleSolenoid.h>
+#include <rev/CANSparkMax.h>
+#include <frc/Solenoid.h>
+
+#include "RobotData.h"
+#include "Diagnostics.h"
 
 
-class IntakeSubsystem : public frc2::SubsystemBase {
+class IntakeSubsystem {
     
     public:
 
-        void Init();
-        void setIntakeWheels(double power);
-        void setPiston(bool direction);
+        void RobotInit();
+        void Periodic(RobotData &robotData, DiagnosticsData &diagnosticsData);
+        void DisabledInit();
+
 
     private:
+
+        int shootPOV;
+        
+        void setIntakeRollers(double avgDrive);
+        void setPiston(bool direction);
+        bool getPiston();
+        void semiAutoMode(RobotData &robotData);
+        void manualMode(RobotData &robotData);
+    
+
+        void updateDiagnostics(DiagnosticsData &diagnosticsData);
 
         /* bool goBack = false;
         bool manualIntakeButtonDown = false;
@@ -26,14 +39,10 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
         int shiftFactor = 1;
 
+        static const int intakeRollersID = 32;
+        rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
+        rev::CANEncoder rollersEncoder = rollers.GetEncoder();
 
-        static const int intakeWheelsID = 32;
-        rev::CANSparkMax wheels{intakeWheelsID, rev::CANSparkMax::MotorType::kBrushless};
-
-        frc::DoubleSolenoid solenoidOne{1, 2};
-        
-
-       /*  rev::CANPIDController intakePivot_pidController = intakePivot.GetPIDController();
-        rev::CANPIDController wheels_pidController = wheels.GetPIDController(); */
+        frc::Solenoid solenoidOne{0};
 
 };
