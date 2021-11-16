@@ -101,9 +101,15 @@ void IntakeSubsystem::manualMode(RobotData &robotData){
         setIntakeRollers(-robotData.sRTrigger);
 
         //r bumper controls pistons
-        if(robotData.sRBumper){ 
+        if(robotData.sRBumper && !alreadyToggledIntakePos){ 
             setPiston(!getPiston());
+            alreadyToggledIntakePos = true;
+        } 
+        if (!robotData.sRBumper) {
+            alreadyToggledIntakePos = false;
         }
+
+        
     }
 }
 

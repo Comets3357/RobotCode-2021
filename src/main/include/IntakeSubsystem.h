@@ -39,6 +39,8 @@ class IntakeSubsystem {
 
         int shiftFactor = 1;
 
+        bool alreadyToggledIntakePos = false;
+
         static const int intakeRollersID = 32;
         rev::CANSparkMax rollers{intakeRollersID, rev::CANSparkMax::MotorType::kBrushless};
         rev::CANEncoder rollersEncoder = rollers.GetEncoder();
